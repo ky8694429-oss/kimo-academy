@@ -22,7 +22,7 @@
             background-size: 400% 400%; animation: gradientBG 15s ease infinite; color: var(--text); 
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; display: flex; min-height: 100vh; 
             position: relative; user-select: none; overflow-x: hidden;
-            font-size: 18px; /* تكبير الخط الأساسي */
+            font-weight: 600; /* جعل الخط العام أتخن */
         } 
         
         @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
@@ -30,21 +30,22 @@
         .news-banner {
             position: fixed; top: 0; left: 0; right: 0; 
             background: var(--accent); color: #000; 
-            padding: 15px 50px; z-index: 10001; 
+            padding: 12px 50px; z-index: 10001; 
             display: none; align-items: center; justify-content: center;
-            font-weight: 900; font-size: 20px; /* تكبير خط الشريط */
-            border-bottom: 3px solid rgba(0,0,0,0.1);
+            font-weight: 900; font-size: 17px; border-bottom: 3px solid rgba(0,0,0,0.1);
             box-shadow: 0 4px 15px rgba(0, 212, 255, 0.3);
+        }
+        .news-banner .close-news {
+            position: absolute; left: 20px; cursor: pointer; font-size: 20px; transition: 0.3s;
         }
 
         .top-tools { 
-            position: fixed; top: 0; left: 0; right: 0; height: 70px; 
+            position: fixed; top: 0; left: 0; right: 0; height: 60px; 
             display: none; align-items: center; justify-content: flex-end; 
             padding: 0 20px; gap: 15px; z-index: 998; background: rgba(0,0,0,0.2); 
             backdrop-filter: blur(5px); border-bottom: 1px solid rgba(255,255,255,0.05); 
         }
 
-        /* Sidebar */
         aside { 
             width: var(--sidebar-width); background: var(--sidebar-bg); 
             backdrop-filter: blur(15px); border-left: 1px solid #30363d; 
@@ -55,67 +56,60 @@
         }
         
         .sidebar-header {
-            padding: 25px 20px; display: flex; align-items: center; justify-content: space-between;
+            padding: 20px; display: flex; align-items: center; justify-content: space-between;
             border-bottom: 1px solid #333; min-width: var(--sidebar-width);
         }
-        .sidebar-header b { font-size: 24px; color: var(--accent); font-weight: 900; }
+        .sidebar-header b { font-size: 22px; color: var(--accent); font-weight: 900; white-space: nowrap; }
 
         .nav-link { 
-            padding: 22px 25px; cursor: pointer; color: #8b949e; 
+            padding: 18px 25px; cursor: pointer; color: #8b949e; 
             display: flex; align-items: center; gap: 20px; transition: 0.3s; 
-            border-right: 5px solid transparent; font-size: 20px; font-weight: 800;
+            border-right: 4px solid transparent; font-size: 19px; font-weight: 800;
             min-width: 280px;
         }
-        .nav-link i { font-size: 26px; }
+        .nav-link:hover, .nav-link.active { color: var(--accent); background: rgba(0, 212, 255, 0.08); border-right-color: var(--accent); }
 
         main { 
-            flex: 1; padding: 40px; display: none; padding-top: 120px; 
+            flex: 1; padding: 30px; display: none; padding-top: 100px; 
             padding-bottom: 120px; overflow-y: auto;
             margin-right: var(--sidebar-width);
-            transition: margin-right 0.4s;
+            transition: margin-right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
         
-        /* تكبير العناوين */
-        h1 { font-size: 45px; font-weight: 900; }
-        h2 { font-size: 35px; font-weight: 850; }
-        h3 { font-size: 28px; font-weight: 800; }
-
-        /* إشعار الامتحان المتاح */
-        .exam-alert {
-            background: linear-gradient(90deg, #ff4d4d, #b30000);
-            color: white; padding: 20px; border-radius: 15px;
-            margin-bottom: 30px; display: none; align-items: center; gap: 15px;
-            font-size: 22px; font-weight: bold; animation: pulseDanger 2s infinite;
-            box-shadow: 0 0 20px rgba(255, 77, 77, 0.4);
+        h1, h2, h3 { font-weight: 900; letter-spacing: -0.5px; }
+        
+        .support-cloud { 
+            position: fixed; right: 20px; color: white; width: 60px; height: 60px; 
+            border-radius: 50%; display: flex; align-items: center; justify-content: center; 
+            font-size: 30px; cursor: pointer; z-index: 9999; animation: pulse 2s infinite; 
+            text-decoration: none; 
         }
-        @keyframes pulseDanger { 0% { opacity: 1; } 50% { opacity: 0.7; } 100% { opacity: 1; } }
+        #wa-btn { bottom: 30px; background: var(--whatsapp); }
+        #tg-btn { bottom: 105px; background: var(--telegram); }
 
-        .content-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 30px; }
+        #login-gate { position: fixed; inset: 0; background: var(--main-bg); z-index: 20000; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .gate-box { background: var(--card-bg); padding: 35px; border-radius: 25px; border: 1px solid #30363d; width: 100%; max-width: 400px; text-align: center; }
+        .gate-box input { font-weight: 700; }
+
+        .content-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; }
         .subject-card { 
             background: linear-gradient(145deg, var(--card-bg), #161b22); 
-            border: 2px solid #30363d; border-radius: 25px; padding: 45px 20px; 
+            border: 1px solid #30363d; border-radius: 20px; padding: 35px; 
             text-align: center; cursor: pointer; transition: 0.4s; 
         }
-        .subject-card:hover { border-color: var(--accent); transform: scale(1.05); }
-        .subject-card i { font-size: 60px; margin-bottom: 20px; }
-        .subject-card h3 { font-size: 26px; }
+        .subject-card h3 { font-weight: 900; margin: 0; font-size: 22px; }
 
-        .card { background: rgba(13, 17, 23, 0.8); border-radius: 20px; padding: 30px; border: 1px solid #30363d; }
-        .btn-accent { 
-            background: var(--accent); color: #000; padding: 20px; border: none; 
-            border-radius: 15px; cursor: pointer; font-weight: 900; width: 100%; 
-            font-size: 22px; transition: 0.3s; 
-        }
+        .card { background: rgba(13, 17, 23, 0.8); border-radius: 18px; padding: 25px; border: 1px solid #30363d; text-align: center; }
+        .card h4 { font-weight: 800; font-size: 18px; }
 
-        footer { position: fixed; bottom: 0; right: 0; left: 0; background: #010409; padding: 20px; font-size: 16px; border-top: 2px solid var(--accent); z-index: 997; }
+        .btn-accent { background: var(--accent); color: #000; padding: 16px; border: none; border-radius: 12px; cursor: pointer; font-weight: 900; width: 100%; font-size: 19px; transition: 0.3s; }
 
-        #std-name, #std-phone { font-size: 18px; height: 55px; }
+        footer { position: fixed; bottom: 0; right: 0; left: 0; background: #010409; color: #fff; text-align: center; padding: 15px 0; font-size: 14px; border-top: 2px solid var(--accent); z-index: 997; font-weight: 700; }
 
         @media (max-width: 768px) {
             aside { width: 0; }
-            body.sidebar-collapsed aside { width: 300px; }
-            main { margin-right: 0 !important; padding: 20px; padding-top: 100px; }
-            h1 { font-size: 32px; }
+            body.sidebar-collapsed aside { width: 280px; }
+            main { margin-right: 0 !important; }
         }
     </style>
 </head>
@@ -127,10 +121,11 @@
     </div>
 
     <div id="top-bar" class="top-tools">
-        <button class="tool-btn logout-top" onclick="logout()" style="border-radius: 12px; border:2px solid var(--danger); color:var(--danger); background:none; width:50px; height:50px; cursor:pointer; font-size: 20px;"><i class="fas fa-sign-out-alt"></i></button>
+        <button class="tool-btn logout-top" onclick="logout()" title="تسجيل خروج" style="border-radius: 10px; border:1px solid var(--danger); color:var(--danger); background:none; width:40px; height:40px; cursor:pointer;"><i class="fas fa-sign-out-alt"></i></button>
     </div>
 
-    <a href="https://wa.me/201023175098" target="_blank" class="support-cloud" id="wa-btn" style="display: none; position: fixed; right: 20px; bottom: 30px; background: var(--whatsapp); width: 65px; height: 65px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 35px; z-index: 9999; color: white;"><i class="fab fa-whatsapp"></i></a>
+    <a href="https://wa.me/201023175098" target="_blank" class="support-cloud" id="wa-btn" style="display: none;"><i class="fab fa-whatsapp"></i></a>
+    <a href="https://t.me/K_I_M_O_8" target="_blank" class="support-cloud" id="tg-btn" style="display: none;"><i class="fab fa-telegram-plane"></i></a>
 
     <div id="login-gate">
         <div class="gate-box">
@@ -155,38 +150,30 @@
             <div class="nav-link" style="color:var(--green)" onclick="tab(this, 'p-students')"><i class="fas fa-users-cog"></i> <span>الطلاب</span></div>
             <div class="nav-link" style="color:var(--green)" onclick="tab(this, 'p-admin')"><i class="fas fa-tools"></i> <span>الإدارة</span></div>
         </div>
+        
         <div class="nav-link" style="margin-top:auto; color:#ff4d4d; border-top: 1px solid #333;" onclick="logout()"><i class="fas fa-power-off"></i> <span>خروج</span></div>
     </aside>
 
     <main id="content">
         <div id="p-home" class="page active">
-            <div id="exam-notification" class="exam-alert" onclick="tab(null, 'p-exams-list')" style="cursor: pointer;">
-                <i class="fas fa-exclamation-triangle"></i>
-                <span>تنبيه: يوجد امتحان جديد متاح الآن! ادخل وحل فوراً 🔥</span>
-            </div>
-
             <h1>أهلاً بك، <span id="display-name" style="color:var(--accent)"></span> 🔥</h1>
-            <div id="home-leaderboard" style="margin-bottom: 40px;">
-                <h3 style="color: var(--gold);"><i class="fas fa-trophy"></i> أساطير الأكاديمية (TOP 10)</h3>
-                <div id="top-10-container"></div>
-            </div>
             <div id="latest-content"></div>
         </div>
         
         <div id="p-lessons" class="page">
             <div id="subjects-container-video"><div class="content-grid" id="subjects-grid-video"></div></div>
-            <div id="specific-subject-videos" style="display:none;"><button onclick="showSubjects('video')" class="btn-accent" style="width:auto; margin-bottom:20px;">العودة</button><div class="content-grid" id="video-list"></div></div>
+            <div id="specific-subject-videos" style="display:none;"><button onclick="showSubjects('video')" class="btn-accent" style="width:auto; margin-bottom:20px; padding: 10px 25px;">العودة</button><h2 id="current-video-subject-title"></h2><div class="content-grid" id="video-list"></div></div>
         </div>
         <div id="p-files" class="page">
             <div id="subjects-container-file"><div class="content-grid" id="subjects-grid-file"></div></div>
-            <div id="specific-subject-files" style="display:none;"><button onclick="showSubjects('file')" class="btn-accent" style="width:auto; margin-bottom:20px;">العودة</button><div class="content-grid" id="file-list"></div></div>
+            <div id="specific-subject-files" style="display:none;"><button onclick="showSubjects('file')" class="btn-accent" style="width:auto; margin-bottom:20px; padding: 10px 25px;">العودة</button><h2 id="current-file-subject-title"></h2><div class="content-grid" id="file-list"></div></div>
         </div>
         <div id="p-exams-list" class="page"><h2>الامتحانات المتاحة 📝</h2><div class="content-grid" id="available-exams-grid"></div></div>
         <div id="p-students" class="page"><h2>قائمة الطلاب 👥</h2><div id="students-table-body"></div></div>
         <div id="p-admin" class="page">
             <div class="card" style="margin-bottom: 25px; border-color: var(--gold);">
                 <h3 style="color: var(--gold);">📢 تحديث إعلان المنصة</h3>
-                <input type="text" id="adm-news-text" placeholder="اكتب الخبر العريض هنا..." style="width:100%; padding:15px; margin-bottom:15px; border-radius:10px; background:#000; border:1px solid #333; color:#fff; font-size:18px;">
+                <input type="text" id="adm-news-text" placeholder="اكتب الخبر العريض هنا..." style="width:100%; padding:12px; margin-bottom:10px; border-radius:8px; background:#000; border:1px solid #333; color:#fff; font-weight:700;">
                 <button class="btn-accent" onclick="updateNewsTicker()">تحديث ونشر الإعلان 🔥</button>
             </div>
             <div id="admin-subjects-selection"><div class="content-grid" id="admin-subjects-grid"></div></div>
@@ -210,10 +197,7 @@
         };
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
-        const lessonsRef = database.ref('lessons'), 
-              studentsRef = database.ref('students'), 
-              settingsRef = database.ref('settings'), 
-              examsRef = database.ref('exams'); // مرجع الامتحانات
+        const lessonsRef = database.ref('lessons'), studentsRef = database.ref('students'), settingsRef = database.ref('settings');
 
         function toggleSidebar() {
             document.body.classList.toggle('sidebar-collapsed');
@@ -242,6 +226,7 @@
             document.getElementById('news-banner').style.display = 'flex'; 
             document.getElementById('content').style.display = 'block';
             document.getElementById('wa-btn').style.display = 'flex';
+            document.getElementById('tg-btn').style.display = 'flex';
             document.getElementById('display-name').innerText = data.name.split(' ')[0];
             if (data.phone === "01023175098") document.getElementById('adm-links').style.display = 'block';
             
@@ -249,26 +234,26 @@
                 document.getElementById('banner-text').innerText = "📢 " + (snap.val() || "مرحباً بكم في كيمو أكاديمي");
             });
 
-            // فحص وجود امتحانات لإظهار الإشعار الأحمر
-            examsRef.on('value', snap => {
-                const hasExams = snap.exists();
-                document.getElementById('exam-notification').style.display = hasExams ? 'flex' : 'none';
-            });
-
-            loadData(); renderSubjectGrids();
+            loadData(); renderSubjectGrids(); renderAdminSubjects();
         }
 
+        function updateNewsTicker() {
+            const txt = document.getElementById('adm-news-text').value;
+            if(txt) settingsRef.update({ newsTicker: txt }).then(() => alert("تم تحديث الإعلان!"));
+        }
+
+        let allData = {};
         function loadData() { lessonsRef.on('value', snap => { allData = snap.val() || {}; renderLatest(); }); }
         
         function renderLatest() {
             let items = Object.entries(allData).reverse().slice(0, 4);
-            document.getElementById('latest-content').innerHTML = `<h3>آخر الإضافات 🔥</h3><div class="content-grid">${items.map(([id, i]) => `<div class="card"><small>${i.subject}</small><h4 style="font-size:22px;">${i.title}</h4><button class="btn-accent" style="font-size:16px; padding:12px;" onclick="window.open('${i.url}')">فتح المحتوى</button></div>`).join('')}</div>`;
+            document.getElementById('latest-content').innerHTML = `<h3>آخر الإضافات 🔥</h3><div class="content-grid">${items.map(([id, i]) => `<div class="card"><small style="font-weight:900; color:var(--accent)">${i.subject}</small><h4 style="margin:10px 0;">${i.title}</h4><button class="btn-accent" style="font-size:14px; padding:10px;" onclick="window.open('${i.url}')">فتح المحتوى</button></div>`).join('')}</div>`;
         }
 
         function renderSubjectGrids() {
             const subs = ["اللغة العربية", "اللغة الإنجليزية", "الفيزياء", "الكيمياء", "الأحياء", "الرياضيات"];
             let html = "";
-            subs.forEach(s => html += `<div class="subject-card" onclick="openSubject('${s}', 'video')"><i class="fas fa-graduation-cap" style="color:var(--accent)"></i><h3>${s}</h3></div>`);
+            subs.forEach(s => html += `<div class="subject-card" onclick="openSubject('${s}', 'video')"><i class="fas fa-graduation-cap"></i><h3>${s}</h3></div>`);
             document.getElementById('subjects-grid-video').innerHTML = html;
             document.getElementById('subjects-grid-file').innerHTML = html;
         }
@@ -276,17 +261,23 @@
         function openSubject(name, type) {
             document.getElementById(type === 'video' ? 'subjects-container-video' : 'subjects-container-file').style.display = 'none';
             document.getElementById(type === 'video' ? 'specific-subject-videos' : 'specific-subject-files').style.display = 'block';
-            let h = `<h2>محتوى ${name}</h2><div class="content-grid">`;
+            let h = "";
             for(let id in allData) {
-                if(allData[id].subject === name) h += `<div class="card"><h4>${allData[id].title}</h4><button class="btn-accent" onclick="window.open('${allData[id].url}')">فتح</button></div>`;
+                if(allData[id].subject === name) h += `<div class="card"><h4>${allData[id].title}</h4><button class="btn-accent" onclick="window.open('${allData[id].url}')">مشاهدة</button></div>`;
             }
-            h += "</div>";
-            document.getElementById(type === 'video' ? 'video-list' : 'file-list').innerHTML = h;
+            document.getElementById(type === 'video' ? 'video-list' : 'file-list').innerHTML = h || "لا يوجد محتوى حالياً";
         }
 
         function showSubjects(type) {
             document.getElementById(type === 'video' ? 'subjects-container-video' : 'subjects-container-file').style.display = 'block';
             document.getElementById(type === 'video' ? 'specific-subject-videos' : 'specific-subject-files').style.display = 'none';
+        }
+
+        function renderAdminSubjects() {
+            const subs = ["اللغة العربية", "اللغة الإنجليزية", "الفيزياء", "الكيمياء", "الأحياء", "الرياضيات"];
+            let h = "";
+            subs.forEach(s => h += `<div class="subject-card" onclick="alert('جاهز للرفع لمادة ${s}')"><h3>${s}</h3></div>`);
+            document.getElementById('admin-subjects-grid').innerHTML = h;
         }
 
         function tab(el, id) {

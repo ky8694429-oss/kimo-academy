@@ -104,7 +104,6 @@
 
         .en-num { font-family: sans-serif !important; direction: ltr !important; display: inline-block; }
 
-        /* تعديلات قائمة الطلاب */
         .student-row { 
             display: grid; 
             grid-template-columns: 1.2fr 1fr 1fr; 
@@ -118,6 +117,8 @@
         .student-row button { padding: 5px 10px; border-radius: 5px; border: none; cursor: pointer; font-family: 'Cairo'; font-size: 12px; margin: 0 2px; background: #30363d; color: #fff; }
         .student-row button:last-child { background: var(--danger); }
 
+        .admin-stat-card { background: var(--card-bg); padding: 15px; border-radius: 15px; border: 1px solid #30363d; text-align: center; }
+
         @media (max-width: 768px) {
             aside { display: none !important; }
             .mobile-nav { position: fixed; bottom: 50px; left: 0; right: 0; background: var(--sidebar-bg); display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid var(--accent); z-index: 1001; }
@@ -127,6 +128,11 @@
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .content-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; }
+        
+        /* تسيق أزرار الأدمن الجديدة */
+        .admin-controls { display: flex; gap: 5px; margin-top: 10px; justify-content: center; }
+        .btn-pin { background: var(--gold); color: #000; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 12px; font-weight: bold; }
+        .btn-del { background: var(--danger); color: #fff; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 12px; }
     </style>
 </head>
 <body oncontextmenu="return false;"> 
@@ -193,6 +199,8 @@
     <main id="content">
         <div id="p-home" class="page active">
             <h1>مرحباً، <span id="display-name" style="color:var(--accent)">طالبنا</span> 👋</h1>
+            <h3>المحتوى المثبت:</h3>
+            <div id="pinned-content" class="content-grid" style="margin-bottom: 30px;"></div>
             <h3>آخر الدروس المضافة:</h3>
             <div id="latest-content"></div>
         </div>
@@ -209,12 +217,7 @@
 
         <div id="p-exams" class="page">
             <h2>الامتحانات الإلكترونية 📝</h2>
-            <div class="content-grid" id="exams-list">
-                <div class="card">
-                    <h3>لا توجد امتحانات متاحة حالياً</h3>
-                    <p>سيتم إشعارك عند إضافة امتحانات جديدة</p>
-                </div>
-            </div>
+            <div class="content-grid" id="exams-list"></div>
         </div>
 
         <div id="p-chat" class="page">
@@ -241,6 +244,14 @@
                 </div>
                 <div id="students-table-body"></div>
             </div>
+            
+            <h2 style="margin-top:40px;">نتائج الامتحانات 🏆</h2>
+            <div class="card">
+                <div id="results-table-header" style="display:grid; grid-template-columns: 1fr 1fr 0.5fr 1fr; font-weight:bold; border-bottom:2px solid var(--green); padding:10px; font-size:12px;">
+                    <span>الطالب</span><span>الامتحان</span><span>الدرجة</span><span>التاريخ</span>
+                </div>
+                <div id="results-table-body"></div>
+            </div>
         </div>
 
         <div id="p-admin" class="page">
@@ -259,6 +270,13 @@
                     <input type="text" id="generated-link" readonly style="width:70%; padding:5px; background:#000; color:var(--green); border:1px solid var(--green)">
                     <button onclick="copyLink()" class="btn-accent" style="width:25%; padding:5px;">نسخ الرابط</button>
                 </div>
+            </div>
+
+            <div class="card" style="margin-bottom:20px; border-color:var(--green)">
+                <h3>📝 إضافة امتحان جديد</h3>
+                <input type="text" id="adm-exam-title" placeholder="اسم الامتحان" style="width:90%; padding:10px; margin-bottom:10px; border-radius:10px;">
+                <input type="text" id="adm-exam-url" placeholder="لينك الامتحان (من جيمني)" style="width:90%; padding:10px; margin-bottom:10px; border-radius:10px;">
+                <button class="btn-accent" onclick="addExam()">نشر الامتحان ✅</button>
             </div>
 
             <div id="admin-subjects-selection">
@@ -302,7 +320,9 @@
 
         const lessonsRef = database.ref('lessons'), studentsRef = database.ref('students'), 
               settingsRef = database.ref('settings'), presenceRef = database.ref('online_students'),
-              blacklistRef = database.ref('blacklist'), chatRef = database.ref('chat'), logsRef = database.ref('logs');
+              blacklistRef = database.ref('blacklist'), chatRef = database.ref('chat'), 
+              logsRef = database.ref('logs'), examsRef = database.ref('exams'), 
+              resultsRef = database.ref('results');
 
         let allData = {}, allStudents = {}, seconds = 0, timerInterval, selectedAdminSubject = "";
         let isFirstLoad = true;
@@ -316,7 +336,6 @@
             "الرياضيات": "https://images.unsplash.com/photo-1509228468518-180dd482195e?q=80&w=400"
         };
 
-        // الإصلاح المعتمد لسحب صورة يوتيوب
         function getYoutubeThumb(url) {
             let videoId = "";
             if (url.includes('v=')) {
@@ -400,6 +419,7 @@
                     document.getElementById('stat-total-std').innerText = s.numChildren();
                     loadStudentsList(allStudents);
                 });
+                resultsRef.on('value', s => loadResultsList(s.val()));
             }
             settingsRef.child('newsTicker').on('value', s => document.getElementById('ticker-content').innerText = s.val() || "مرحباً بكم!");
             loadData(); renderSubjectGrids();
@@ -424,11 +444,19 @@
                     </div>`;
                 box.scrollTop = box.scrollHeight;
             });
+            
+            // استدعاء الامتحانات
+            examsRef.on('value', s => renderExams(s.val()));
         }
 
-        function loadData() { lessonsRef.on('value', s => { allData = s.val() || {}; renderLatest(); }); }
+        function loadData() { 
+            lessonsRef.on('value', s => { 
+                allData = s.val() || {}; 
+                renderLatest(); 
+                renderPinned(); 
+            }); 
+        }
 
-        // الإصلاح المعتمد لعرض قائمة الطلاب بشكل منظم
         function loadStudentsList(data) {
             let h = "";
             for(let phone in data) {
@@ -444,6 +472,19 @@
             document.getElementById('students-table-body').innerHTML = h;
         }
 
+        function loadResultsList(data) {
+            let h = "";
+            for(let id in data) {
+                h += `<div class="student-row" style="grid-template-columns: 1fr 1fr 0.5fr 1fr; font-size:11px;">
+                    <span>${data[id].studentName}</span>
+                    <span>${data[id].examTitle}</span>
+                    <span class="en-num" style="color:var(--accent)">${data[id].score}</span>
+                    <span class="en-num">${data[id].time}</span>
+                </div>`;
+            }
+            document.getElementById('results-table-body').innerHTML = h;
+        }
+
         function viewStudentLogs(phone) {
             logsRef.orderByChild('studentPhone').equalTo(phone).once('value', s => {
                 const logs = s.val(); if(!logs) return alert("لا يوجد نشاط");
@@ -455,12 +496,93 @@
 
         function renderLatest() {
             let items = Object.entries(allData).reverse().slice(0, 4);
+            const user = JSON.parse(localStorage.getItem('kimo_auth_v26'));
             document.getElementById('latest-content').innerHTML = `<div class="content-grid">${items.map(([id, i]) => `
                 <div class="card">
                     <div class="lesson-thumb" style="background-image: url('${getYoutubeThumb(i.url)}')"></div>
                     <h4>${i.title}</h4>
                     <button class="btn-accent" onclick="openContent('${i.url}','${i.type}','${i.title}')">فتح</button>
+                    ${user.phone === "01023175098" ? `
+                        <div class="admin-controls">
+                            <button class="btn-pin" onclick="togglePin('lessons','${id}',${i.isPinned})"><i class="fas fa-thumbtack"></i> ${i.isPinned?'إلغاء':'تثبيت'}</button>
+                            <button class="btn-del" onclick="deleteItem('lessons','${id}')"><i class="fas fa-trash"></i></button>
+                        </div>
+                    `:''}
                 </div>`).join('')}</div>`;
+        }
+
+        function renderPinned() {
+            let pinned = "";
+            const user = JSON.parse(localStorage.getItem('kimo_auth_v26'));
+            for(let id in allData) {
+                if(allData[id].isPinned) {
+                    pinned += `<div class="card" style="border-color:var(--gold)">
+                        <div class="lesson-thumb" style="background-image: url('${getYoutubeThumb(allData[id].url)}')"></div>
+                        <h4>📌 ${allData[id].title}</h4>
+                        <button class="btn-accent" onclick="openContent('${allData[id].url}','${allData[id].type}','${allData[id].title}')">فتح</button>
+                    </div>`;
+                }
+            }
+            document.getElementById('pinned-content').innerHTML = pinned || "<p style='color:#555'>لا يوجد محتوى مثبت حالياً</p>";
+        }
+
+        function renderExams(data) {
+            let h = "";
+            const user = JSON.parse(localStorage.getItem('kimo_auth_v26'));
+            for(let id in data) {
+                h += `<div class="card" style="border-color:var(--green)">
+                    <h3>📝 ${data[id].title}</h3>
+                    <button class="btn-accent" style="background:var(--green); margin-bottom:10px;" onclick="window.open('${data[id].url}','_blank')">ابدأ الامتحان</button>
+                    <div style="background:rgba(0,0,0,0.5); padding:10px; border-radius:10px;">
+                        <small>اكتب درجتك هنا بعد التصحيح:</small>
+                        <div style="display:flex; gap:5px; margin-top:5px;">
+                            <input type="text" id="score-${id}" placeholder="مثلاً 18/20" style="width:70%; background:#000; border:1px solid #333; color:#fff; border-radius:5px; padding:5px;">
+                            <button onclick="submitExamScore('${id}','${data[id].title}')" style="background:var(--accent); border:none; border-radius:5px; padding:5px 10px; cursor:pointer;"><i class="fas fa-paper-plane"></i></button>
+                        </div>
+                    </div>
+                    ${user.phone === "01023175098" ? `
+                        <div class="admin-controls">
+                            <button class="btn-del" onclick="deleteItem('exams','${id}')">حذف الامتحان</button>
+                        </div>
+                    `:''}
+                </div>`;
+            }
+            document.getElementById('exams-list').innerHTML = h || "<p>لا توجد امتحانات</p>";
+        }
+
+        function submitExamScore(id, title) {
+            const score = document.getElementById(`score-${id}`).value;
+            const user = JSON.parse(localStorage.getItem('kimo_auth_v26'));
+            if(!score) return alert("اكتب الدرجة أولاً");
+            resultsRef.push({
+                studentName: user.name,
+                studentPhone: user.phone,
+                examTitle: title,
+                score: score,
+                time: new Date().toLocaleString('ar-EG')
+            });
+            alert("✅ تم إرسال درجتك للمستر كيمو!");
+            document.getElementById(`score-${id}`).value = "";
+        }
+
+        function togglePin(ref, id, currentStatus) {
+            database.ref(ref).child(id).update({ isPinned: !currentStatus });
+        }
+
+        function deleteItem(ref, id) {
+            if(confirm("هل أنت متأكد من الحذف نهائياً؟")) {
+                database.ref(ref).child(id).remove();
+            }
+        }
+
+        function addExam() {
+            const title = document.getElementById('adm-exam-title').value;
+            const url = document.getElementById('adm-exam-url').value;
+            if(!title || !url) return alert("اكمل بيانات الامتحان");
+            examsRef.push({ title, url, isPinned: false });
+            alert("تم إضافة الامتحان!");
+            document.getElementById('adm-exam-title').value = "";
+            document.getElementById('adm-exam-url').value = "";
         }
 
         function showNotification(msg) {
@@ -506,6 +628,7 @@
             document.getElementById(type==='video'?'subjects-container-video':'subjects-container-file').style.display='none';
             document.getElementById(type==='video'?'specific-subject-videos':'specific-subject-files').style.display='block';
             let h = "";
+            const user = JSON.parse(localStorage.getItem('kimo_auth_v26'));
             for(let id in allData) {
                 if(allData[id].subject === name && allData[id].type === type) {
                     const thumb = type==='video' ? getYoutubeThumb(allData[id].url) : 'https://cdn-icons-png.flaticon.com/512/337/337946.png';
@@ -513,6 +636,12 @@
                         <div class="lesson-thumb" style="background-image: url('${thumb}')"></div>
                         <h3>${allData[id].title}</h3>
                         <button class="btn-accent" onclick="openContent('${allData[id].url}','${allData[id].type}','${allData[id].title}')">فتح</button>
+                        ${user.phone === "01023175098" ? `
+                            <div class="admin-controls">
+                                <button class="btn-pin" onclick="togglePin('lessons','${id}',${allData[id].isPinned})">${allData[id].isPinned?'إلغاء':'تثبيت'}</button>
+                                <button class="btn-del" onclick="deleteItem('lessons','${id}')">حذف</button>
+                            </div>
+                        `:''}
                     </div>`;
                 }
             }
@@ -539,7 +668,7 @@
         function handleUpload() {
             const title = document.getElementById('adm-title').value, url = document.getElementById('adm-url').value, type = document.getElementById('adm-type').value;
             if(!title || !url) return alert("اكمل البيانات");
-            lessonsRef.push({ title, url, subject: selectedAdminSubject, type });
+            lessonsRef.push({ title, url, subject: selectedAdminSubject, type, isPinned: false });
             alert("تم!"); showAdminSubjects();
         }
         

@@ -119,8 +119,8 @@
         /* --- تعديل العلامة المائية (Advanced Watermark) --- */
         #floating-watermark { 
             position: fixed; 
-            background: transparent; 
-            color: rgba(255, 255, 255, 0.3); 
+            background: transparent; /* شيل الخلفية السوداء عشان الـ overlay يبان */
+            color: rgba(255, 255, 255, 0.3); /* تقليل الشفافية */
             padding: 5px 12px; 
             border-radius: 20px; 
             font-size: 14px; 
@@ -129,8 +129,9 @@
             display: none; 
             white-space: nowrap; 
             font-weight: bold; 
+            /* الخاصية السحرية */
             mix-blend-mode: overlay; 
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.5); 
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5); /* عشان تبان على الخلفيات الفاتحة برضه */
         }
 
         #chat-messages { height: 400px; overflow-y: auto; background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); background-size: contain; padding: 15px; border-radius: 12px; border: 1px solid #333; margin-bottom: 10px; display: flex; flex-direction: column; gap: 10px; }
@@ -171,48 +172,10 @@
         .btn-pin { background: var(--gold); color: #000; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 12px; font-weight: bold; }
         .btn-del { background: var(--danger); color: #fff; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 12px; }
 
-        /* --- الأيقونات العائمة المحدثة (CSS) --- */
-        .floating-social-icons {
-            position: fixed;
-            bottom: 25px;       
-            left: 25px;         
-            display: flex;
-            flex-direction: column-reverse; 
-            gap: 12px;          
-            z-index: 10000;     
-        }
-
-        .icon-link img {
-            width: 48px;        
-            height: 48px;
-            border-radius: 50%; 
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); 
-            transition: all 0.3s ease;
-            display: block;
-        }
-
-        .icon-link img:hover {
-            transform: translateY(-5px) scale(1.05);
-            filter: brightness(1.1);
-        }
-
-        .admin-icon img {
-            border: 2px solid #ff4b2b; 
-            background-color: #fff;    
-        }
-
-        .telegram-icon img {
-            border: 2px solid #24A1DE;
-        }
-
-        .group-icon img {
-            border: 2px solid #34af23;
-        }
-
         /* --- تعديل موقع أيقونة الواتساب لتكون فوق التليجرام --- */
         .whatsapp-float {
             position: fixed;
-            bottom: 150px; 
+            bottom: 150px; /* تم تغييرها من 80px لتصبح فوق التليجرام */
             right: 20px;
             background-color: #25d366;
             color: white;
@@ -226,11 +189,13 @@
             transition: 0.3s;
         }
 
+        /* إضافة تأثير نبض خفيف عشان تشد انتباه الطالب */
         .whatsapp-float:hover {
             transform: scale(1.1);
             background-color: #128c7e;
         }
 
+        /* --- التنبيه الإجباري في منتصف الشاشة --- */
         #join-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -287,20 +252,6 @@
         <i class="fab fa-whatsapp" style="margin-left: 8px; font-size: 20px;"></i>
         <span>جروب المتابعة</span>
     </a>
-
-    <div class="floating-social-icons">
-        <a href="https://chat.whatsapp.com/E5tpwhb6D5j9lDnXBFNbLM" class="icon-link group-icon" target="_blank" title="جروب المتابعة">
-            <img src="https://cdn-icons-png.flaticon.com/512/32/32441.png" alt="Group">
-        </a>
-        
-        <a href="https://t.me/K_I_M_O_8" class="icon-link telegram-icon" target="_blank" title="تيليجرام">
-            <img src="https://cdn-icons-png.flaticon.com/512/2111/2111646.png" alt="Telegram">
-        </a>
-
-        <a href="#" class="icon-link admin-icon" onclick="tab(null, 'p-admin')" title="قسم الإدارة">
-            <img src="https://cdn-icons-png.flaticon.com/512/2040/2040504.png" alt="Admin">
-        </a>
-    </div>
 
     <div id="join-overlay" style="display: none;">
         <div class="join-modal">
@@ -641,6 +592,7 @@
         }
         document.onkeydown = (e) => { if(e.keyCode == 123 || (e.ctrlKey && e.shiftKey && (e.keyCode == 73 || e.keyCode == 74 || e.keyCode == 67)) || (e.ctrlKey && e.keyCode == 85)) return false; };
 
+        /* --- منع تكرار تسجيل الدخول والتحقق من الحظر (Security Check) --- */
         window.onload = () => {
             const user = JSON.parse(localStorage.getItem('kimo_auth_v26'));
             if (user) {
@@ -670,6 +622,7 @@
             presenceRef.child(user.phone).set({ name: user.name, last: Date.now() });
             presenceRef.child(user.phone).onDisconnect().remove();
 
+            // --- منطق الواتساب المضاف ---
             const isJoined = localStorage.getItem("whatsapp_joined");
             if (!isJoined) {
                 document.getElementById("join-overlay").style.display = "flex";
@@ -767,6 +720,7 @@
             toast.classList.add('show'); setTimeout(() => toast.classList.remove('show'), 5000);
         }
 
+        /* --- تحسين مشغل اليوتيوب (YouTube Player Optimization) --- */
         function openContent(url, type, title) {
             const user = JSON.parse(localStorage.getItem('kimo_auth_v26'));
             if(user) logsRef.push({ studentPhone: user.phone, studentName: user.name, action: type, title: title, time: new Date().toLocaleString() });

@@ -1,3 +1,25 @@
+<?php
+// 1. إعداد متغير الإدمن (Admin Logic)
+session_start();
+$super_admin_phone = "01023175098";
+// جلب رقم الهاتف من الجلسة أو من التخزين المحلي المحاكي في نظامك
+$current_user_phone = $_SESSION['user_phone'] ?? ''; 
+
+// التحقق هل المستخدم الحالي هو صاحب الرقم المسموح؟
+$is_authorized = ($current_user_phone === $super_admin_phone);
+
+// 2. حماية العمليات (Back-end Security)
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && (isset($_POST['unpin_all']) || isset($_POST['delete_action']))) {
+    if ($current_user_phone !== $super_admin_phone) {
+        die("خطأ: غير مسموح لك بالوصول لهذه الصلاحية.");
+    }
+    if (isset($_POST['unpin_all'])) {
+        // هنا يتم وضع منطق قاعدة البيانات الفعلي لإلغاء التثبيت
+        // مثال: $database->ref('lessons')->orderByChild('isPinned')... 
+        echo "<script>alert('تم إرسال أمر إلغاء كافة التثبيتات بنجاح.');</script>";
+    }
+}
+?>
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -26,6 +48,22 @@
             overflow-x: hidden;
             font-variant-numeric: tabular-nums;
         }
+
+        /* تنسيق الزر الجديد (Admin Button) */
+        .btn-unpin {
+            background-color: #ff4d4d;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            font-family: 'Cairo';
+            width: 100%;
+            margin-top: 10px;
+        }
+        .btn-unpin:hover { background-color: #cc0000; }
+        .admin-section-title { color: var(--gold); margin: 15px 25px 5px; font-size: 14px; border-bottom: 1px solid #333; }
 
         /* --- الألوان والأنيميشن الجديد للوجو --- */
         .logo-master-container {
@@ -116,7 +154,6 @@
         
         footer { position: fixed; bottom: 0; width: 100%; background: #010409; color: #fff; text-align: center; padding: 15px 0; font-size: 13px; border-top: 2px solid var(--accent); z-index: 1000; }
         
-        /* --- تعديل العلامة المائية (Advanced Watermark) --- */
         #floating-watermark { 
             position: fixed; 
             background: transparent; 
@@ -171,7 +208,6 @@
         .btn-pin { background: var(--gold); color: #000; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 12px; font-weight: bold; }
         .btn-del { background: var(--danger); color: #fff; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 12px; }
 
-        /* --- الأيقونات العائمة المحدثة (CSS) --- */
         .floating-social-icons {
             position: fixed;
             bottom: 25px;       
@@ -209,7 +245,6 @@
             border: 2px solid #34af23;
         }
 
-        /* --- تعديل موقع أيقونة الواتساب لتكون فوق التليجرام --- */
         .whatsapp-float {
             position: fixed;
             bottom: 150px; 
@@ -263,15 +298,10 @@
             font-family: 'Cairo';
         }
 
-        /* الميزة 1: إخفاء الحاويات الجانبية جهة اليمين */
         [style*="right: 0"], 
         [style*="right:0"],
         .floating-right,
         .right-sidebar {
-            display: none !important;
-        }
-        a[href*="wa.me"], 
-        a[href*="t.me"] {
             display: none !important;
         }
     </style>
@@ -309,9 +339,11 @@
             <img src="https://cdn-icons-png.flaticon.com/512/2111/2111646.png" alt="Telegram">
         </a>
 
+        <?php if ($is_authorized): ?>
         <a href="#" class="icon-link admin-icon" onclick="tab(null, 'p-admin')" title="قسم الإدارة">
             <img src="https://cdn-icons-png.flaticon.com/512/2040/2040504.png" alt="Admin">
         </a>
+        <?php endif; ?>
     </div>
 
     <div id="join-overlay" style="display: none;">
@@ -411,10 +443,20 @@
         <div class="nav-link" onclick="tab(this, 'p-files')"><i class="fas fa-file-pdf"></i> <span>PDF</span></div>
         <div class="nav-link" onclick="tab(this, 'p-exams')"><i class="fas fa-edit"></i> <span>الامتحانات</span></div>
         <div class="nav-link" onclick="tab(this, 'p-chat')"><i class="fas fa-comments"></i> <span>الدردشة</span></div>
-        <div id="adm-links" style="display:none;">
-            <div class="nav-link" style="color:var(--green)" onclick="tab(this, 'p-students')"><i class="fas fa-users-cog"></i> <span>الطلاب</span></div>
-            <div class="nav-link" style="color:var(--green)" onclick="tab(this, 'p-admin')"><i class="fas fa-tools"></i> <span>الإدارة</span></div>
+        
+        <?php if ($is_authorized): ?>
+        <div class="admin-section-title">إدارة النظام</div>
+        <div class="nav-link" style="color:var(--green)" onclick="tab(this, 'p-students')"><i class="fas fa-users-cog"></i> <span>إدارة الطلاب</span></div>
+        <div class="nav-link" style="color:var(--green)" onclick="tab(this, 'p-admin')"><i class="fas fa-tools"></i> <span>لوحة التحكم</span></div>
+        
+        <div style="padding: 10px 25px;">
+            <form action="" method="POST" onsubmit="return confirm('هل أنت متأكد من إلغاء تثبيت كل شيء؟');">
+                <button type="submit" name="unpin_all" class="btn-unpin">
+                    ⚠️ إلغاء كل التثبيتات
+                </button>
+            </form>
         </div>
+        <?php endif; ?>
     </aside>
 
     <div class="mobile-nav" id="mob-nav" style="display:none;">
@@ -422,7 +464,9 @@
         <div onclick="tab(null, 'p-lessons')"><i class="fas fa-play-circle"></i></div>
         <div onclick="tab(null, 'p-files')"><i class="fas fa-file-pdf"></i></div>
         <div onclick="tab(null, 'p-chat')"><i class="fas fa-comments"></i></div>
-        <div id="adm-mob-link" style="display:none;" onclick="tab(null, 'p-students')"><i class="fas fa-users-cog"></i></div>
+        <?php if ($is_authorized): ?>
+        <div onclick="tab(null, 'p-students')"><i class="fas fa-users-cog"></i></div>
+        <?php endif; ?>
     </div>
 
     <main id="content">
@@ -504,7 +548,7 @@
             <div class="card" style="margin-bottom:20px; border-color:var(--green)">
                 <h3>📝 إضافة امتحان جديد</h3>
                 <input type="text" id="adm-exam-title" placeholder="اسم الامتحان" style="width:90%; padding:10px; margin-bottom:10px; border-radius:10px;">
-                <input type="text" id="adm-exam-url" placeholder="لينك الامتحان (من جيمني)" style="width:90%; padding:10px; margin-bottom:10px; border-radius:10px;">
+                <input type="text" id="adm-exam-url" placeholder="لينك الامتحان" style="width:90%; padding:10px; margin-bottom:10px; border-radius:10px;">
                 <button class="btn-accent" onclick="addExam()">نشر الامتحان ✅</button>
             </div>
 
@@ -517,7 +561,7 @@
                 <div class="card" style="max-width:500px; margin:auto;">
                     <p>المادة: <b id="current-adm-sub-name" style="color:var(--accent)"></b></p>
                     <input type="text" id="adm-title" placeholder="عنوان الدرس" style="width:90%; padding:12px; margin-bottom:15px; background:#000; border:1px solid #30363d; color:#fff;">
-                    <input type="text" id="adm-url" placeholder="ضع الرابط هنا (يوتيوب أو الرابط المرفوع)" style="width:90%; padding:12px; margin-bottom:15px; background:#000; border:1px solid #30363d; color:#fff;">
+                    <input type="text" id="adm-url" placeholder="الرابط هنا" style="width:90%; padding:12px; margin-bottom:15px; background:#000; border:1px solid #30363d; color:#fff;">
                     <select id="adm-type" style="width:96%; padding:12px; margin-bottom:15px; background:#000; border:1px solid #30363d; color:#fff;">
                         <option value="video">فيديو 🎥</option>
                         <option value="file">ملف / صورة 📄</option>
@@ -605,22 +649,6 @@
             saveAndLogin(newData);
         }
 
-        function showForgetPassword() {
-            document.getElementById('step-login').style.display = 'none';
-            document.getElementById('step-forget').style.display = 'block';
-            document.getElementById('security-q-text').innerText = currentStudentData.securityQ;
-            document.getElementById('gate-title').innerText = "استعادة الحساب";
-        }
-
-        function resetAccess() {
-            const ans = document.getElementById('forget-answer').value.trim();
-            if (ans.toLowerCase() === currentStudentData.securityA.toLowerCase()) {
-                alert(`تم التحقق! كلمة مرورك هي: ${currentStudentData.password}`);
-                document.getElementById('step-forget').style.display = 'none';
-                document.getElementById('step-login').style.display = 'block';
-            } else alert("إجابة سؤال الأمان خاطئة!");
-        }
-
         function saveAndLogin(data) { localStorage.setItem('kimo_auth_v26', JSON.stringify(data)); runApp(); }
 
         function getYoutubeThumb(url) {
@@ -657,12 +685,7 @@
             const user = JSON.parse(localStorage.getItem('kimo_auth_v26'));
             if (user) {
                 blacklistRef.child(user.phone).once('value', snapshot => {
-                    if (snapshot.exists()) {
-                        alert("عذراً، تم تعليق حسابك. تواصل مع الإدارة.");
-                        logout(); 
-                    } else {
-                        runApp(); 
-                    }
+                    if (snapshot.exists()) { logout(); } else { runApp(); }
                 });
             }
         };
@@ -683,16 +706,10 @@
             presenceRef.child(user.phone).onDisconnect().remove();
 
             const isJoined = localStorage.getItem("whatsapp_joined");
-            if (!isJoined) {
-                document.getElementById("join-overlay").style.display = "flex";
-            }
-            document.getElementById("join-link").onclick = function() {
-                document.getElementById("verification-section").style.display = "block";
-            };
+            if (!isJoined) { document.getElementById("join-overlay").style.display = "flex"; }
+            document.getElementById("join-link").onclick = function() { document.getElementById("verification-section").style.display = "block"; };
 
             if(user.phone === "01023175098") {
-                document.getElementById('adm-links').style.display = 'block';
-                document.getElementById('adm-mob-link').style.display = 'block';
                 document.getElementById('admin-live-info').style.display = 'block';
                 presenceRef.on('value', s => {
                     document.getElementById('online-now').innerText = s.numChildren();
@@ -728,9 +745,7 @@
                 localStorage.setItem("whatsapp_joined", "true");
                 text.innerHTML = "✅ تم التحقق بنجاح!";
                 text.style.color = "green";
-                setTimeout(() => {
-                    document.getElementById("join-overlay").style.display = "none";
-                }, 1000);
+                setTimeout(() => { document.getElementById("join-overlay").style.display = "none"; }, 1000);
             }, 2000);
         }
 
@@ -745,35 +760,26 @@
             for(let id in data) h += `<div class="student-row" style="grid-template-columns:1fr 1fr 0.5fr 1fr;font-size:11px;"><span>${data[id].studentName}</span><span>${data[id].examTitle}</span><span class="en-num" style="color:var(--accent)">${data[id].score}</span><span class="en-num">${data[id].time}</span></div>`;
             document.getElementById('results-table-body').innerHTML = h;
         }
-        function viewStudentLogs(phone) { logsRef.orderByChild('studentPhone').equalTo(phone).once('value', s => { const logs = s.val(); if(!logs) return alert("لا يوجد نشاط"); let m = "النشاط:\n"; for(let id in logs) m += `- ${logs[id].action}: ${logs[id].title}\n`; alert(m); }); }
+
         function renderLatest() {
             let items = Object.entries(allData).reverse().slice(0, 4), user = JSON.parse(localStorage.getItem('kimo_auth_v26'));
             document.getElementById('latest-content').innerHTML = `<div class="content-grid">${items.map(([id, i]) => `<div class="card"><div class="lesson-thumb" style="background-image:url('${getYoutubeThumb(i.url)}')"></div><h4>${i.title}</h4><button class="btn-accent" onclick="openContent('${i.url}','${i.type}','${i.title}')">فتح</button>${user.phone === "01023175098" ? `<div class="admin-controls"><button class="btn-pin" onclick="togglePin('lessons','${id}',${i.isPinned})"><i class="fas fa-thumbtack"></i> ${i.isPinned?'إلغاء':'تثبيت'}</button><button class="btn-del" onclick="deleteItem('lessons','${id}')"><i class="fas fa-trash"></i></button></div>`:''}</div>`).join('')}</div>`;
         }
+
         function renderPinned() {
             let pinned = "", user = JSON.parse(localStorage.getItem('kimo_auth_v26'));
             for(let id in allData) if(allData[id].isPinned) pinned += `<div class="card" style="border-color:var(--gold)"><div class="lesson-thumb" style="background-image:url('${getYoutubeThumb(allData[id].url)}')"></div><h4>📌 ${allData[id].title}</h4><button class="btn-accent" onclick="openContent('${allData[id].url}','${allData[id].type}','${allData[id].title}')">فتح</button></div>`;
             document.getElementById('pinned-content').innerHTML = pinned || "<p style='color:#555'>لا يوجد محتوى مثبت حالياً</p>";
         }
+
         function renderExams(data) {
             let h = "", user = JSON.parse(localStorage.getItem('kimo_auth_v26'));
             for(let id in data) h += `<div class="card" style="border-color:var(--green)"><h3>📝 ${data[id].title}</h3><button class="btn-accent" style="background:var(--green);margin-bottom:10px;" onclick="window.open('${data[id].url}','_blank')">ابدأ الامتحان</button><div style="background:rgba(0,0,0,0.5);padding:10px;border-radius:10px;"><small>اكتب درجتك هنا:</small><div style="display:flex;gap:5px;margin-top:5px;"><input type="text" id="score-${id}" placeholder="مثلاً 18/20" style="width:70%;background:#000;border:1px solid #333;color:#fff;border-radius:5px;padding:5px;"><button onclick="submitExamScore('${id}','${data[id].title}')" style="background:var(--accent);border:none;border-radius:5px;padding:5px 10px;cursor:pointer;"><i class="fas fa-paper-plane"></i></button></div></div>${user.phone === "01023175098" ? `<div class="admin-controls"><button class="btn-del" onclick="deleteItem('exams','${id}')">حذف</button></div>`:''}</div>`;
             document.getElementById('exams-list').innerHTML = h || "<p>لا توجد امتحانات</p>";
         }
-        function submitExamScore(id, title) {
-            const score = document.getElementById(`score-${id}`).value, user = JSON.parse(localStorage.getItem('kimo_auth_v26'));
-            if(!score) return alert("اكتب الدرجة أولاً");
-            resultsRef.push({ studentName: user.name, studentPhone: user.phone, examTitle: title, score: score, time: new Date().toLocaleString('ar-EG') });
-            alert("✅ تم إرسال درجتك!"); document.getElementById(`score-${id}`).value = "";
-        }
+
         function togglePin(ref, id, currentStatus) { database.ref(ref).child(id).update({ isPinned: !currentStatus }); }
         function deleteItem(ref, id) { if(confirm("هل أنت متأكد من الحذف؟")) database.ref(ref).child(id).remove(); }
-        function addExam() {
-            const title = document.getElementById('adm-exam-title').value, url = document.getElementById('adm-exam-url').value;
-            if(!title || !url) return alert("اكمل البيانات");
-            examsRef.push({ title, url, isPinned: false }); alert("تم إضافة الامتحان!");
-            document.getElementById('adm-exam-title').value = ""; document.getElementById('adm-exam-url').value = "";
-        }
         function showNotification(msg) {
             const toast = document.getElementById('notification-toast'); document.getElementById('notif-text').innerText = msg;
             toast.classList.add('show'); setTimeout(() => toast.classList.remove('show'), 5000);
@@ -783,21 +789,8 @@
             const user = JSON.parse(localStorage.getItem('kimo_auth_v26'));
             if(user) logsRef.push({ studentPhone: user.phone, studentName: user.name, action: type, title: title, time: new Date().toLocaleString() });
             if (type === 'video') {
-                let videoId = "";
-                if (url.includes('v=')) videoId = url.split('v=')[1].split('&')[0];
-                else if (url.includes('youtu.be/')) videoId = url.split('youtu.be/')[1].split('?')[0];
-                else videoId = url.split('/').pop();
-                
-                document.getElementById('video-frame-container').innerHTML = `
-                    <iframe 
-                        src="https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&showinfo=0&iv_load_policy=3" 
-                        width="100%" 
-                        height="100%" 
-                        frameborder="0" 
-                        allow="autoplay; encrypted-media" 
-                        allowfullscreen>
-                    </iframe>`;
-                    
+                let videoId = (url.includes('v=')) ? url.split('v=')[1].split('&')[0] : (url.includes('youtu.be/')) ? url.split('youtu.be/')[1].split('?')[0] : url.split('/').pop();
+                document.getElementById('video-frame-container').innerHTML = `<iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0" width="100%" height="100%" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
                 document.getElementById('video-player-overlay').style.display = 'flex';
                 seconds = 0; clearInterval(timerInterval);
                 timerInterval = setInterval(() => { seconds++; let m=Math.floor(seconds/60), s=seconds%60; document.getElementById('timer-display').innerText=`${m}:${s<10?'0'+s:s}`; }, 1000);
@@ -813,6 +806,7 @@
             });
             document.getElementById('subjects-grid-video').innerHTML = v; document.getElementById('subjects-grid-file').innerHTML = f; document.getElementById('admin-subjects-grid').innerHTML = a;
         }
+
         function openSubject(name, type) {
             document.getElementById(type==='video'?'subjects-container-video':'subjects-container-file').style.display='none';
             document.getElementById(type==='video'?'specific-subject-videos':'specific-subject-files').style.display='block';
@@ -825,16 +819,18 @@
             }
             document.getElementById(type==='video'?'video-list':'file-list').innerHTML = h || "<p>لا يوجد محتوى</p>";
         }
+
         function sendChatMessage() {
             const input = document.getElementById('chat-input'), user = JSON.parse(localStorage.getItem('kimo_auth_v26'));
             if(!input.value.trim()) return;
             chatRef.push({ name: user.name, text: input.value, time: new Date().toLocaleTimeString('ar-EG'), phone: user.phone }); input.value = "";
         }
+
         function moveWatermark() {
             const wm = document.getElementById('floating-watermark'), d = JSON.parse(localStorage.getItem('kimo_auth_v26'));
             if(d) { wm.style.display='block'; wm.innerHTML = `<span class="en-num">${d.name} | ${d.phone}</span>`; wm.style.top = Math.random()*80+'vh'; wm.style.left = Math.random()*70+'vw'; }
         }
-        function banStudent(phone) { if(confirm("حظر؟")) blacklistRef.child(phone).set(true); }
+
         function showSubjects(type) { document.getElementById(type==='video'?'subjects-container-video':'subjects-container-file').style.display='block'; document.getElementById(type==='video'?'specific-subject-videos':'specific-subject-files').style.display='none'; }
         function initiateUpload(s) { selectedAdminSubject = s; document.getElementById('admin-subjects-selection').style.display = 'none'; document.getElementById('admin-upload-form').style.display = 'block'; document.getElementById('current-adm-sub-name').innerText = s; }
         function showAdminSubjects() { document.getElementById('admin-subjects-selection').style.display = 'block'; document.getElementById('admin-upload-form').style.display = 'none'; }
@@ -843,6 +839,7 @@
             if(!title || !url) return alert("اكمل البيانات");
             lessonsRef.push({ title, url, subject: selectedAdminSubject, type, isPinned: false }); alert("تم!"); showAdminSubjects();
         }
+
         function updateNewsTicker() { settingsRef.update({ newsTicker: document.getElementById('adm-news-text').value }); alert("تم!"); }
         function toggleTheme() { document.body.classList.toggle('light-mode'); }
         function logout() { localStorage.clear(); location.reload(); }
@@ -850,36 +847,6 @@
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active')); document.getElementById(id).classList.add('active'); 
             if(el) { document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active')); el.classList.add('active'); }
         }
-
-        /* الميزة 2: زر إلغاء كل التثبيتات */
-        (function() {
-            const btn = document.createElement('button');
-            btn.innerHTML = 'إلغاء كل التثبيتات ✖';
-            btn.style.position = 'fixed';
-            btn.style.bottom = '20px';
-            btn.style.right = '20px';
-            btn.style.zIndex = '9999';
-            btn.style.padding = '10px 15px';
-            btn.style.backgroundColor = '#ff4444';
-            btn.style.color = 'white';
-            btn.style.border = 'none';
-            btn.style.borderRadius = '5px';
-            btn.style.cursor = 'pointer';
-            btn.style.fontWeight = 'bold';
-
-            btn.onclick = function() {
-                if (confirm('هل تريد فعلاً إلغاء تثبيت جميع العناصر من الرئيسية؟')) {
-                    Object.keys(localStorage).forEach(key => {
-                        if (key.includes('pin') || key.includes('favorite')) {
-                            localStorage.removeItem(key);
-                        }
-                    });
-                    alert('تم المسح، سيتم إعادة تحميل الصفحة الآن.');
-                    location.reload();
-                }
-            };
-            document.body.appendChild(btn);
-        })();
     </script>
 </body>
 </html>

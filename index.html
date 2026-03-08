@@ -227,6 +227,20 @@
             padding: 10px 20px; border-radius: 5px; cursor: pointer;
             font-family: 'Cairo';
         }
+
+        /* كود إظهار قسم الامتحانات على الموبايل فقط */
+        @media screen and (max-width: 767px) {
+            /* استبدل كلمة .exams-section بكلاس القسم بتاعك */
+            #p-exams, .exams-section, #exams-container { 
+                display: block !important; 
+                visibility: visible !important;
+                opacity: 1 !important;
+                width: 100% !important;
+                height: auto !important;
+                position: relative !important;
+                overflow: visible !important;
+            }
+        }
     </style>
 </head>
 <body oncontextmenu="return false;"> 

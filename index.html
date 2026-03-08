@@ -156,6 +156,56 @@
         .admin-controls { display: flex; gap: 5px; margin-top: 10px; justify-content: center; }
         .btn-pin { background: var(--gold); color: #000; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 12px; font-weight: bold; }
         .btn-del { background: var(--danger); color: #fff; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 12px; }
+
+        /* --- الأيقونة العائمة (إضافة) --- */
+        .whatsapp-float {
+            position: fixed;
+            bottom: 80px; /* تم تعديله ليتناسب مع موقع التليجرام */
+            right: 20px;
+            background-color: #25d366;
+            color: white;
+            border-radius: 50px;
+            padding: 15px;
+            z-index: 9998;
+            box-shadow: 2px 2px 10px rgba(0,0,0,0.2);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            transition: 0.3s;
+        }
+
+        /* --- التنبيه الإجباري في منتصف الشاشة (إضافة) --- */
+        #join-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 99999;
+            backdrop-filter: blur(5px);
+        }
+
+        .join-modal {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+        }
+
+        .join-modal h2 { color: #075e54; margin-bottom: 15px; }
+        .btn-join { 
+            display: block; background: #25d366; color: white; 
+            padding: 12px; border-radius: 8px; text-decoration: none; 
+            margin: 15px 0; font-weight: bold;
+        }
+        .btn-verify {
+            background: #34b7f1; color: white; border: none;
+            padding: 10px 20px; border-radius: 5px; cursor: pointer;
+            font-family: 'Cairo';
+        }
     </style>
 </head>
 <body oncontextmenu="return false;"> 
@@ -176,6 +226,28 @@
     <div id="news-bar" class="news-ticker"><div class="ticker-text" id="ticker-content">جاري تحميل الأخبار...</div></div>
 
     <a href="https://t.me/K_I_M_O_8" target="_blank" class="support-cloud" id="tg-btn" style="display: none;"><i class="fab fa-telegram-plane"></i></a>
+
+    <a href="https://chat.whatsapp.com/E5tpwhb6D5j9lDnXBFNbLM" class="whatsapp-float" target="_blank">
+        <i class="fab fa-whatsapp" style="margin-left: 8px; font-size: 20px;"></i>
+        <span>جروب المتابعة</span>
+    </a>
+
+    <div id="join-overlay" style="display: none;">
+        <div class="join-modal">
+            <h2>⚠️ خطوة أخيرة</h2>
+            <p style="color: #333;">يرجى الانضمام لجروب الواتساب الرسمي للمتابعة وتفعيل كامل ميزات المنصة.</p>
+            
+            <a href="https://chat.whatsapp.com/E5tpwhb6D5j9lDnXBFNbLM" 
+               id="join-link" target="_blank" class="btn-join">
+               اضغط هنا للانضمام للجروب
+            </a>
+
+            <div id="verification-section" style="display:none;">
+                <p id="verify-text" style="color: #666; margin-bottom: 10px;">جاري التحقق...</p>
+                <button onclick="verifyJoin()" class="btn-verify">تم الانضمام، أكمل للمنصة</button>
+            </div>
+        </div>
+    </div>
 
     <div id="video-player-overlay">
         <div style="width: 95%; max-width: 1000px; display: flex; justify-content: space-between; margin-bottom: 15px;">
@@ -412,6 +484,7 @@
             "الرياضيات": "https://images.unsplash.com/photo-1509228468518-180dd482195e?q=80&w=400"
         };
 
+        // ... دوال تسجيل الدخول والوظائف الأساسية (كما هي) ...
         async function identifyStudent() {
             const phone = document.getElementById('std-phone').value.trim();
             if (!/^01[0125][0-9]{8}$/.test(phone)) return alert("رقم الموبايل غير صحيح");
@@ -513,6 +586,17 @@
             document.getElementById('display-name').innerText = user.name.split(' ')[0];
             presenceRef.child(user.phone).set({ name: user.name, last: Date.now() });
             presenceRef.child(user.phone).onDisconnect().remove();
+
+            // --- منطق الواتساب المضاف ---
+            const isJoined = localStorage.getItem("whatsapp_joined");
+            if (!isJoined) {
+                document.getElementById("join-overlay").style.display = "flex";
+            }
+            document.getElementById("join-link").onclick = function() {
+                document.getElementById("verification-section").style.display = "block";
+            };
+            // --------------------------
+
             if(user.phone === "01023175098") {
                 document.getElementById('adm-links').style.display = 'block';
                 document.getElementById('adm-mob-link').style.display = 'block';
@@ -542,6 +626,22 @@
             });
             examsRef.on('value', s => renderExams(s.val()));
         }
+
+        // --- دوال الواتساب المضافة ---
+        function verifyJoin() {
+            let btn = document.querySelector(".btn-verify");
+            let text = document.getElementById("verify-text");
+            btn.innerHTML = "جاري الفحص...";
+            setTimeout(() => {
+                localStorage.setItem("whatsapp_joined", "true");
+                text.innerHTML = "✅ تم التحقق بنجاح!";
+                text.style.color = "green";
+                setTimeout(() => {
+                    document.getElementById("join-overlay").style.display = "none";
+                }, 1000);
+            }, 2000);
+        }
+        // --------------------------
 
         function loadData() { lessonsRef.on('value', s => { allData = s.val() || {}; renderLatest(); renderPinned(); }); }
         function loadStudentsList(data) {

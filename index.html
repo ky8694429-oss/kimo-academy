@@ -21,8 +21,7 @@
             margin: 0; background: linear-gradient(-45deg, var(--main-bg), #0a192f, var(--card-bg), var(--main-bg)); 
             background-size: 400% 400%; animation: gradientBG 15s ease infinite; color: var(--text); 
             font-family: 'Cairo', sans-serif; display: flex; min-height: 100vh; position: relative; user-select: none; 
-            overflow-x: hidden;
-            font-variant-numeric: tabular-nums;
+            overflow-x: hidden; font-variant-numeric: tabular-nums;
         }
 
         @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
@@ -34,15 +33,6 @@
             display: flex; align-items: center; gap: 10px; transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
         #notification-toast.show { top: 20px; }
-
-        .btn-circle {
-            width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            font-size: 20px; border: none; cursor: pointer; transition: 0.2s; margin: 10px auto;
-            box-shadow: 0 5px 0 rgba(0,0,0,0.3); position: relative; color: #000;
-        }
-        .btn-circle:active { transform: translateY(3px); box-shadow: 0 1px 0 rgba(0,0,0,0.3); }
-        .bg-video { background: var(--accent); }
-        .bg-pdf { background: var(--green); }
 
         .news-ticker { position: fixed; top: 60px; left: 0; right: 0; background: var(--accent); color: #000; height: 30px; z-index: 997; display: none; overflow: hidden; font-weight: bold; line-height: 30px; }
         .ticker-text { display: inline-block; white-space: nowrap; animation: ticker 25s linear infinite; padding-right: 100%; }
@@ -59,33 +49,9 @@
         .page { display: none; animation: fadeIn 0.5s ease-out; }
         .page.active { display: block; }
         
-        .support-cloud { position: fixed; right: 20px; color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px; cursor: pointer; z-index: 9999; animation: pulse 2s infinite; text-decoration: none; }
-        #tg-btn { bottom: 80px; background: var(--telegram); box-shadow: 0 6px 15px rgba(0, 136, 204, 0.4); }
-
-        .subject-card { 
-            height: 160px;
-            background-size: cover;
-            background-position: center;
-            border-radius: 20px; 
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer; 
-            transition: 0.3s; 
-            position: relative;
-            overflow: hidden;
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-        .subject-card::before {
-            content: ""; position: absolute; inset: 0; background: rgba(0,0,0,0.6); z-index: 1;
-        }
-        .subject-card h3 { position: relative; z-index: 2; color: #fff; text-shadow: 0 2px 10px #000; }
-        .subject-card:hover { transform: translateY(-5px); border-color: var(--accent); }
-
-        .card { background: rgba(13, 17, 23, 0.8); border-radius: 15px; padding: 20px; border: 1px solid #30363d; text-align: center; position: relative; transition: 0.3s; margin-bottom: 15px; }
+        .card { background: rgba(13, 17, 23, 0.8); border-radius: 15px; padding: 20px; border: 1px solid #30363d; text-align: center; position: relative; transition: 0.3s; margin-bottom: 15px; overflow: hidden; }
+        .lesson-thumb { width: 100%; height: 150px; background-size: cover; background-position: center; border-radius: 10px; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.1); background-color: #000; }
         
-        .lesson-thumb { width: 100%; height: 140px; background-size: cover; background-position: center; border-radius: 10px; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.05); }
-
         .btn-accent { background: var(--accent); color: #000; padding: 12px; border: none; border-radius: 12px; cursor: pointer; font-weight: bold; width: 100%; font-size: 16px; font-family: 'Cairo'; }
         
         #video-player-overlay { position: fixed; inset: 0; background: #000; z-index: 15000; display: none; align-items: center; justify-content: center; flex-direction: column; }
@@ -99,47 +65,34 @@
         .msg-bubble { max-width: 80%; padding: 10px 15px; border-radius: 15px; font-size: 14px; position: relative; line-height: 1.4; color: #fff; }
         .msg-student { align-self: flex-start; background: #202c33; border-bottom-left-radius: 2px; text-align: right; }
         .msg-me { align-self: flex-end; background: #005c4b; border-bottom-right-radius: 2px; text-align: right; }
-        .msg-bubble b { display: block; font-size: 11px; margin-bottom: 3px; color: var(--accent); }
-        .msg-bubble small { display: block; font-size: 10px; opacity: 0.6; margin-top: 5px; text-align: left; }
 
         .en-num { font-family: sans-serif !important; direction: ltr !important; display: inline-block; }
 
-        .student-row { 
-            display: grid; 
-            grid-template-columns: 1.2fr 1fr 1fr; 
-            align-items: center; 
-            padding: 12px 10px; 
-            border-bottom: 1px solid rgba(255,255,255,0.05); 
-            font-size: 14px;
-        }
-        .student-row:hover { background: rgba(0, 212, 255, 0.03); }
-        .student-row span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding: 0 5px; }
-        .student-row button { padding: 5px 10px; border-radius: 5px; border: none; cursor: pointer; font-family: 'Cairo'; font-size: 12px; margin: 0 2px; background: #30363d; color: #fff; }
-        .student-row button:last-child { background: var(--danger); }
+        .student-row { display: grid; grid-template-columns: 1.2fr 1fr 1fr; align-items: center; padding: 12px 10px; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 14px; }
+        .student-row button { padding: 5px 10px; border-radius: 5px; border: none; cursor: pointer; background: #30363d; color: #fff; }
 
-        .admin-stat-card { background: var(--card-bg); padding: 15px; border-radius: 15px; border: 1px solid #30363d; text-align: center; }
+        .subject-card { 
+            height: 160px; background-size: cover; background-position: center; border-radius: 20px; 
+            display: flex; align-items: center; justify-content: center; cursor: pointer; 
+            transition: 0.3s; position: relative; overflow: hidden; border: 1px solid rgba(255,255,255,0.1);
+        }
+        .subject-card::before { content: ""; position: absolute; inset: 0; background: rgba(0,0,0,0.6); z-index: 1; }
+        .subject-card h3 { position: relative; z-index: 2; color: #fff; text-shadow: 0 2px 10px #000; }
 
         @media (max-width: 768px) {
             aside { display: none !important; }
-            .mobile-nav { position: fixed; bottom: 50px; left: 0; right: 0; background: var(--sidebar-bg); display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid var(--accent); z-index: 1001; }
-            .mobile-nav div { font-size: 20px; color: #8b949e; }
+            .mobile-nav { position: fixed; bottom: 50px; left: 0; right: 0; background: var(--sidebar-bg); display: flex; justify-content: space-around; padding: 15px 0; border-top: 1px solid var(--accent); z-index: 1001; }
             main { padding: 15px; padding-top: 80px; padding-bottom: 120px; }
         }
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .content-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; }
-        
-        /* تسيق أزرار الأدمن الجديدة */
-        .admin-controls { display: flex; gap: 5px; margin-top: 10px; justify-content: center; }
-        .btn-pin { background: var(--gold); color: #000; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 12px; font-weight: bold; }
-        .btn-del { background: var(--danger); color: #fff; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 12px; }
     </style>
 </head>
-<body oncontextmenu="return false;"> 
+<body oncontextmenu="return false;">
 
     <div id="notification-toast">
-        <i class="fas fa-bell"></i>
-        <span id="notif-text">حاجة جديدة انضافت للمنصة!</span>
+        <i class="fas fa-bell"></i> <span id="notif-text">حاجة جديدة انضافت للمنصة!</span>
     </div>
 
     <div id="top-bar" class="top-tools">
@@ -150,28 +103,34 @@
         <button class="tool-btn" onclick="logout()"><i class="fas fa-sign-out-alt"></i></button>
     </div>
 
-    <div id="news-bar" class="news-ticker"><div class="ticker-text" id="ticker-content">جاري تحميل الأخبار...</div></div>
-
-    <a href="https://t.me/K_I_M_O_8" target="_blank" class="support-cloud" id="tg-btn" style="display: none;"><i class="fab fa-telegram-plane"></i></a>
-
-    <div id="video-player-overlay">
-        <div style="width: 95%; max-width: 1000px; display: flex; justify-content: space-between; margin-bottom: 15px;">
-            <div id="timer-display" class="en-num" style="background:var(--accent); color:#000; padding:8px 20px; border-radius:25px; font-weight:bold;">00:00</div>
-            <button class="btn-accent" style="width: auto; padding: 5px 20px;" onclick="closeVideo()">إغلاق ×</button>
-        </div>
-        <div class="video-container" id="video-frame-container"></div>
-    </div>
+    <div id="news-bar" class="news-ticker"><div class="ticker-text" id="ticker-content">أهلاً بك في منصة كيمو أكاديمي..</div></div>
 
     <div id="login-gate">
         <div class="gate-box" style="max-width: 400px; margin: 100px auto; padding: 30px; background: var(--card-bg); border-radius: 20px; text-align: center; border: 1px solid var(--accent);">
             <h1 style="color:var(--accent);"><i class="fas fa-graduation-cap"></i> KIMO ACADEMY</h1>
-            <input type="text" id="std-name" placeholder="الاسم الثلاثي" style="width:90%; padding:12px; margin-bottom:15px; border-radius:10px; border:1px solid #30363d; background:#000; color:#fff;">
-            <input type="tel" id="std-phone" class="en-num" placeholder="رقم الموبايل" style="width:90%; padding:12px; margin-bottom:15px; border-radius:10px; border:1px solid #30363d; background:#000; color:#fff; text-align:right;">
-            <select id="std-gov" style="width:97%; padding:12px; margin-bottom:15px; border-radius:10px; border:1px solid #30363d; background:#000; color:#fff;">
-                <option value="">اختر المحافظة</option>
-                <option value="الشرقية">الشرقية</option><option value="القاهرة">القاهرة</option><option value="الجيزة">الجيزة</option>
-            </select>
-            <button class="btn-accent" onclick="checkGate()">دخول المنصة 🚀</button>
+            <div id="initial-step">
+                <input type="tel" id="std-phone" class="en-num" placeholder="رقم الموبايل" style="width:90%; padding:12px; margin-bottom:15px; border-radius:10px; border:1px solid #30363d; background:#000; color:#fff; text-align:right;">
+                <button class="btn-accent" onclick="checkPhoneStep()">استمرار ➔</button>
+            </div>
+            
+            <div id="login-step" style="display:none;">
+                <p id="welcome-back-msg" style="margin-bottom:10px;"></p>
+                <input type="password" id="std-pass-login" placeholder="كلمة السر" style="width:90%; padding:12px; margin-bottom:15px; border-radius:10px; border:1px solid #30363d; background:#000; color:#fff;">
+                <button class="btn-accent" onclick="finalizeLogin()">دخول المنصة 🚀</button>
+                <button onclick="resetGate()" style="background:none; border:none; color:#888; margin-top:10px; cursor:pointer;">تغيير الرقم</button>
+            </div>
+
+            <div id="signup-step" style="display:none;">
+                <p id="signup-notice" style="color:var(--gold); margin-bottom:10px;">أهلاً بك طالب جديد! أنشئ حسابك:</p>
+                <input type="text" id="std-name" placeholder="الاسم الثلاثي" style="width:90%; padding:12px; margin-bottom:15px; border-radius:10px; border:1px solid #30363d; background:#000; color:#fff;">
+                <input type="password" id="std-pass-signup" placeholder="إنشاء كلمة سر" style="width:90%; padding:12px; margin-bottom:15px; border-radius:10px; border:1px solid #30363d; background:#000; color:#fff;">
+                <select id="std-gov" style="width:97%; padding:12px; margin-bottom:15px; border-radius:10px; border:1px solid #30363d; background:#000; color:#fff;">
+                    <option value="">اختر المحافظة</option>
+                    <option value="الشرقية">الشرقية</option><option value="القاهرة">القاهرة</option><option value="الجيزة">الجيزة</option>
+                </select>
+                <button class="btn-accent" onclick="finalizeSignup()">حفظ البيانات والدخول 🚀</button>
+                <button onclick="resetGate()" style="background:none; border:none; color:#888; margin-top:10px; cursor:pointer;">تغيير الرقم</button>
+            </div>
         </div>
     </div>
 
@@ -193,7 +152,6 @@
         <div onclick="tab(null, 'p-lessons')"><i class="fas fa-play-circle"></i></div>
         <div onclick="tab(null, 'p-files')"><i class="fas fa-file-pdf"></i></div>
         <div onclick="tab(null, 'p-chat')"><i class="fas fa-comments"></i></div>
-        <div id="adm-mob-link" style="display:none;" onclick="tab(null, 'p-students')"><i class="fas fa-users-cog"></i></div>
     </div>
 
     <main id="content">
@@ -201,8 +159,8 @@
             <h1>مرحباً، <span id="display-name" style="color:var(--accent)">طالبنا</span> 👋</h1>
             <h3>المحتوى المثبت:</h3>
             <div id="pinned-content" class="content-grid" style="margin-bottom: 30px;"></div>
-            <h3>آخر الدروس المضافة:</h3>
-            <div id="latest-content"></div>
+            <h3>الكورسات المتاحة:</h3>
+            <div id="home-courses-grid" class="content-grid"></div>
         </div>
         
         <div id="p-lessons" class="page">
@@ -221,7 +179,6 @@
         </div>
 
         <div id="p-chat" class="page">
-            <h2>دردشة الطلاب 💬</h2>
             <div class="card">
                 <div id="chat-messages"></div>
                 <div style="display: flex; gap: 8px;">
@@ -233,52 +190,23 @@
 
         <div id="p-students" class="page">
             <h2>إدارة الطلاب (الرادار) 🛰️</h2>
-            <div class="content-grid" style="margin-bottom: 20px;">
-                <div class="admin-stat-card"><h3>إجمالي الطلاب</h3><h2 id="stat-total-std" class="en-num" style="color:var(--accent)">0</h2></div>
-                <div class="admin-stat-card"><h3>أونلاين الآن</h3><h2 id="stat-online-std" class="en-num" style="color:var(--green)">0</h2></div>
-            </div>
-            <div class="card">
-                <input type="text" class="search-box" id="studentSearch" placeholder="ابحث باسم الطالب أو رقم الموبايل..." onkeyup="filterStudents()" style="width: 90%; padding: 10px; margin-bottom: 15px; border-radius: 10px; background: #000; border: 1px solid var(--accent); color: #fff;">
-                <div id="students-table-header" style="display:grid; grid-template-columns: 1.2fr 1fr 1fr; font-weight:bold; border-bottom:2px solid var(--accent); padding:10px;">
-                    <span>الطالب</span><span>الرقم</span><span>إجراء</span>
-                </div>
-                <div id="students-table-body"></div>
-            </div>
-            
+            <div id="students-table-body"></div>
             <h2 style="margin-top:40px;">نتائج الامتحانات 🏆</h2>
-            <div class="card">
-                <div id="results-table-header" style="display:grid; grid-template-columns: 1fr 1fr 0.5fr 1fr; font-weight:bold; border-bottom:2px solid var(--green); padding:10px; font-size:12px;">
-                    <span>الطالب</span><span>الامتحان</span><span>الدرجة</span><span>التاريخ</span>
-                </div>
-                <div id="results-table-body"></div>
-            </div>
+            <div id="results-table-body"></div>
         </div>
 
         <div id="p-admin" class="page">
             <div class="card" style="margin-bottom:20px; border-color:var(--gold)">
-                <h3>📢 التحكم في شريط الأخبار</h3>
-                <input type="text" id="adm-news-text" placeholder="اكتب الخبر هنا..." style="width:80%; padding:10px; border-radius:10px;">
+                <h3>📢 شريط الأخبار</h3>
+                <input type="text" id="adm-news-text" placeholder="اكتب الخبر..." style="width:80%; padding:10px; border-radius:10px;">
                 <button class="btn-accent" style="width:15%;" onclick="updateNewsTicker()">نشر</button>
             </div>
-
-            <div class="card" style="margin-bottom:20px; border-color:var(--accent)">
-                <h3>📤 مركز رفع الملفات والصور</h3>
-                <input type="file" id="file-uploader" style="display:none" onchange="uploadToCloud(this)">
-                <button class="btn-accent" onclick="document.getElementById('file-uploader').click()"><i class="fas fa-cloud-upload-alt"></i> اختر ملف لرفعه</button>
-                <p id="upload-status" style="margin-top:10px; font-size:12px;"></p>
-                <div id="copy-link-area" style="display:none; margin-top:10px;">
-                    <input type="text" id="generated-link" readonly style="width:70%; padding:5px; background:#000; color:var(--green); border:1px solid var(--green)">
-                    <button onclick="copyLink()" class="btn-accent" style="width:25%; padding:5px;">نسخ الرابط</button>
-                </div>
-            </div>
-
             <div class="card" style="margin-bottom:20px; border-color:var(--green)">
-                <h3>📝 إضافة امتحان جديد</h3>
+                <h3>📝 إضافة امتحان</h3>
                 <input type="text" id="adm-exam-title" placeholder="اسم الامتحان" style="width:90%; padding:10px; margin-bottom:10px; border-radius:10px;">
-                <input type="text" id="adm-exam-url" placeholder="لينك الامتحان (من جيمني)" style="width:90%; padding:10px; margin-bottom:10px; border-radius:10px;">
-                <button class="btn-accent" onclick="addExam()">نشر الامتحان ✅</button>
+                <input type="text" id="adm-exam-url" placeholder="لينك الامتحان" style="width:90%; padding:10px; margin-bottom:10px; border-radius:10px;">
+                <button class="btn-accent" onclick="addExam()">نشر</button>
             </div>
-
             <div id="admin-subjects-selection">
                 <h2>🚀 رفع محتوى جديد</h2>
                 <div class="content-grid" id="admin-subjects-grid"></div>
@@ -288,16 +216,21 @@
                 <div class="card" style="max-width:500px; margin:auto;">
                     <p>المادة: <b id="current-adm-sub-name" style="color:var(--accent)"></b></p>
                     <input type="text" id="adm-title" placeholder="عنوان الدرس" style="width:90%; padding:12px; margin-bottom:15px; background:#000; border:1px solid #30363d; color:#fff;">
-                    <input type="text" id="adm-url" placeholder="ضع الرابط هنا (يوتيوب أو الرابط المرفوع)" style="width:90%; padding:12px; margin-bottom:15px; background:#000; border:1px solid #30363d; color:#fff;">
+                    <input type="text" id="adm-url" placeholder="الرابط" style="width:90%; padding:12px; margin-bottom:15px; background:#000; border:1px solid #30363d; color:#fff;">
                     <select id="adm-type" style="width:96%; padding:12px; margin-bottom:15px; background:#000; border:1px solid #30363d; color:#fff;">
                         <option value="video">فيديو 🎥</option>
-                        <option value="file">ملف / صورة 📄</option>
+                        <option value="file">ملف 📄</option>
                     </select>
                     <button class="btn-accent" onclick="handleUpload()">نشر الآن ✅</button>
                 </div>
             </div>
         </div>
     </main>
+
+    <div id="video-player-overlay">
+        <button class="btn-accent" style="width: auto; padding: 5px 20px; margin-bottom: 10px;" onclick="closeVideo()">إغلاق ×</button>
+        <div class="video-container" id="video-frame-container"></div>
+    </div>
 
     <footer>جميع الحقوق محفوظة للمطور كيمو © <span class="en-num">2026</span></footer>
     <div id="floating-watermark"></div>
@@ -317,307 +250,169 @@
         };
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
-
         const lessonsRef = database.ref('lessons'), studentsRef = database.ref('students'), 
               settingsRef = database.ref('settings'), presenceRef = database.ref('online_students'),
               blacklistRef = database.ref('blacklist'), chatRef = database.ref('chat'), 
-              logsRef = database.ref('logs'), examsRef = database.ref('exams'), 
-              resultsRef = database.ref('results');
+              examsRef = database.ref('exams'), resultsRef = database.ref('results');
 
-        let allData = {}, allStudents = {}, seconds = 0, timerInterval, selectedAdminSubject = "";
-        let isFirstLoad = true;
-
+        let allData = {}, currentPhoneAttempt = "";
         const subjectImages = {
             "اللغة العربية": "https://images.unsplash.com/photo-1588580000645-4562a6d2c839?q=80&w=400",
             "اللغة الإنجليزية": "https://images.unsplash.com/photo-1543167664-4002964133f9?q=80&w=400",
             "الفيزياء": "https://images.unsplash.com/photo-1636466484202-cae21e06e33a?q=80&w=400",
             "الكيمياء": "https://images.unsplash.com/photo-1532187875605-1ef6c237bbba?q=80&w=400",
-            "الأحياء": "https://images.unsplash.com/photo-1530026405186-ed1f139313f8?q=80&w=400",
-            "الرياضيات": "https://images.unsplash.com/photo-1509228468518-180dd482195e?q=80&w=400"
+            "الأحياء": "https://images.unsplash.com/photo-1530026405186-ed1f139313f8?q=80&w=400"
         };
 
-        function getYoutubeThumb(url) {
-            let videoId = "";
-            if (url.includes('v=')) {
-                videoId = url.split('v=')[1].split('&')[0];
-            } else if (url.includes('youtu.be/')) {
-                videoId = url.split('youtu.be/')[1].split('?')[0];
-            } else if (url.includes('embed/')) {
-                videoId = url.split('embed/')[1].split('?')[0];
+        // --- الميزة المضافة: استخراج الـ ID والـ Thumbnail بذكاء ---
+        function getYTId(url) {
+            if (!url) return '';
+            const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
+            const match = url.match(regExp);
+            if (match && match[7].length == 11) {
+                return match[7];
+            } else if (url.includes('shorts/')) {
+                return url.split('shorts/')[1].split('?')[0];
             }
-            return videoId ? `https://img.youtube.com/vi/${videoId}/mqdefault.jpg` : 'https://via.placeholder.com/400x225/0d1117/00d4ff?text=KIMO+ACADEMY';
+            return '';
         }
 
-        async function uploadToCloud(input) {
-            const file = input.files[0]; if(!file) return;
-            const status = document.getElementById('upload-status');
-            status.innerText = "⏳ جاري الرفع...";
-            const formData = new FormData();
-            formData.append('file', file);
-            formData.append('upload_preset', 'ml_default');
-            try {
-                const response = await fetch(`https://api.cloudinary.com/v1_1/demo/auto/upload`, { method: 'POST', body: formData });
-                const data = await response.json();
-                if(data.secure_url) {
-                    status.innerHTML = "✅ تم الرفع!";
-                    document.getElementById('copy-link-area').style.display = 'block';
-                    document.getElementById('generated-link').value = data.secure_url;
+        function getYTThumb(url) {
+            const id = getYTId(url);
+            return id ? `https://img.youtube.com/vi/${id}/mqdefault.jpg` : 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=400';
+        }
+
+        async function checkPhoneStep() {
+            const phone = document.getElementById('std-phone').value.trim();
+            if (!/^01[0125][0-9]{8}$/.test(phone)) return alert("رقم موبايل غير صحيح!");
+            currentPhoneAttempt = phone;
+            const banned = await blacklistRef.child(phone).get();
+            if(banned.exists()) return alert("⚠️ محظور!");
+
+            const snapshot = await studentsRef.child(phone).get();
+            document.getElementById('initial-step').style.display = 'none';
+
+            if (snapshot.exists()) {
+                const data = snapshot.val();
+                if (!data.password) {
+                    alert("أهلاً بك يا " + data.name.split(' ')[0] + "! يرجى تعيين كلمة سر لحسابك.");
+                    document.getElementById('signup-step').style.display = 'block';
+                    document.getElementById('signup-notice').innerText = "تفعيل حساب قديم:";
+                    document.getElementById('std-name').value = data.name;
+                    document.getElementById('std-name').readOnly = true;
+                } else {
+                    document.getElementById('login-step').style.display = 'block';
+                    document.getElementById('welcome-back-msg').innerText = `أهلاً بك يا ${data.name.split(' ')[0]}`;
                 }
-            } catch (e) { status.innerText = "❌ فشل الرفع"; }
+            } else {
+                document.getElementById('signup-step').style.display = 'block';
+                document.getElementById('std-name').readOnly = false;
+                document.getElementById('std-name').value = "";
+            }
         }
 
-        function copyLink() { document.getElementById('generated-link').select(); document.execCommand('copy'); alert("تم النسخ!"); }
-
-        function filterStudents() {
-            const val = document.getElementById('studentSearch').value.toLowerCase();
-            document.querySelectorAll('.student-row').forEach(row => {
-                row.style.display = row.innerText.toLowerCase().includes(val) ? 'grid' : 'none';
-            });
-        }
-
-        document.onkeydown = (e) => { if(e.keyCode == 123 || (e.ctrlKey && e.shiftKey && (e.keyCode == 73 || e.keyCode == 74 || e.keyCode == 67)) || (e.ctrlKey && e.keyCode == 85)) return false; };
-
-        async function checkGate() {
-            const name = document.getElementById('std-name').value.trim(), phone = document.getElementById('std-phone').value.trim();
-            if (name.split(' ').length >= 3 && /^01[0125][0-9]{8}$/.test(phone)) {
-                const banned = await blacklistRef.child(phone).get();
-                if(banned.exists()){ alert("⚠️ محظور!"); return; }
-                const data = { name, phone, gov: document.getElementById('std-gov').value, loginTime: new Date().toLocaleString() };
-                studentsRef.child(phone).update(data);
-                localStorage.setItem('kimo_auth_v26', JSON.stringify(data));
+        async function finalizeLogin() {
+            const pass = document.getElementById('std-pass-login').value;
+            const snapshot = await studentsRef.child(currentPhoneAttempt).get();
+            if (snapshot.val().password === pass) {
+                localStorage.setItem('kimo_auth_v26', JSON.stringify(snapshot.val()));
                 runApp();
-            } else { alert("بيانات غلط!"); }
+            } else alert("خطأ في كلمة السر!");
+        }
+
+        async function finalizeSignup() {
+            const name = document.getElementById('std-name').value, pass = document.getElementById('std-pass-signup').value;
+            if (name.split(' ').length < 3) return alert("الاسم ثلاثي");
+            const data = { name, phone: currentPhoneAttempt, password: pass, gov: document.getElementById('std-gov').value };
+            await studentsRef.child(currentPhoneAttempt).set(data);
+            localStorage.setItem('kimo_auth_v26', JSON.stringify(data));
+            runApp();
         }
 
         function runApp() {
             const user = JSON.parse(localStorage.getItem('kimo_auth_v26'));
             if(!user) return;
-            blacklistRef.child(user.phone).on('value', s => { if(s.exists()) logout(); });
             document.getElementById('login-gate').style.display = 'none';
             document.getElementById('sidebar').style.display = 'flex';
             document.getElementById('top-bar').style.display = 'flex';
             document.getElementById('news-bar').style.display = 'block';
-            document.getElementById('mob-nav').style.display = 'flex';
             document.getElementById('content').style.display = 'block';
-            document.getElementById('tg-btn').style.display = 'flex';
+            if(window.innerWidth <= 768) document.getElementById('mob-nav').style.display = 'flex';
             document.getElementById('display-name').innerText = user.name.split(' ')[0];
-
+            
             presenceRef.child(user.phone).set({ name: user.name, last: Date.now() });
             presenceRef.child(user.phone).onDisconnect().remove();
 
             if(user.phone === "01023175098") {
                 document.getElementById('adm-links').style.display = 'block';
-                document.getElementById('adm-mob-link').style.display = 'block';
                 document.getElementById('admin-live-info').style.display = 'block';
-                presenceRef.on('value', s => {
-                    document.getElementById('online-now').innerText = s.numChildren();
-                    document.getElementById('stat-online-std').innerText = s.numChildren();
-                });
+                presenceRef.on('value', s => document.getElementById('online-now').innerText = s.numChildren());
                 studentsRef.on('value', s => {
-                    allStudents = s.val() || {};
                     document.getElementById('total-students-count').innerText = s.numChildren();
-                    document.getElementById('stat-total-std').innerText = s.numChildren();
-                    loadStudentsList(allStudents);
+                    renderAdminStudents(s.val());
                 });
-                resultsRef.on('value', s => loadResultsList(s.val()));
+                resultsRef.on('value', s => renderAdminResults(s.val()));
             }
-            settingsRef.child('newsTicker').on('value', s => document.getElementById('ticker-content').innerText = s.val() || "مرحباً بكم!");
-            loadData(); renderSubjectGrids();
-            setInterval(moveWatermark, 4000);
 
-            lessonsRef.limitToLast(1).on('child_added', s => {
-                if(isFirstLoad) return;
-                showNotification(`🔥 جديد: ${s.val().title}`);
-            });
-            setTimeout(() => isFirstLoad = false, 3000);
-
-            chatRef.limitToLast(40).on('child_added', s => {
-                const msg = s.val();
-                const currUser = JSON.parse(localStorage.getItem('kimo_auth_v26'));
-                const isMe = msg.name === currUser.name || msg.phone === "01023175098";
-                const box = document.getElementById('chat-messages');
-                box.innerHTML += `
-                    <div class="msg-bubble ${isMe ? 'msg-me' : 'msg-student'}">
-                        <b>${msg.name}</b>
-                        <div>${msg.text}</div>
-                        <small class="en-num">${msg.time}</small>
-                    </div>`;
-                box.scrollTop = box.scrollHeight;
-            });
-            
-            // استدعاء الامتحانات
+            settingsRef.child('newsTicker').on('value', s => document.getElementById('ticker-content').innerText = s.val() || "مرحباً بك");
+            lessonsRef.on('value', s => { allData = s.val() || {}; renderHome(); renderPinned(); });
             examsRef.on('value', s => renderExams(s.val()));
+            chatRef.limitToLast(30).on('child_added', s => renderChat(s.val()));
+            renderSubjectGrids();
+            setInterval(moveWatermark, 5000);
         }
 
-        function loadData() { 
-            lessonsRef.on('value', s => { 
-                allData = s.val() || {}; 
-                renderLatest(); 
-                renderPinned(); 
-            }); 
-        }
-
-        function loadStudentsList(data) {
+        function renderHome() {
             let h = "";
-            for(let phone in data) {
-                h += `<div class="student-row">
-                    <span>${data[phone].name}</span>
-                    <span class="en-num">${phone}</span>
-                    <span style="display: flex; justify-content: center;">
-                        <button onclick="viewStudentLogs('${phone}')"><i class="fas fa-history"></i></button>
-                        <button onclick="banStudent('${phone}')"><i class="fas fa-user-slash"></i></button>
-                    </span>
-                </div>`;
-            }
-            document.getElementById('students-table-body').innerHTML = h;
-        }
-
-        function loadResultsList(data) {
-            let h = "";
-            for(let id in data) {
-                h += `<div class="student-row" style="grid-template-columns: 1fr 1fr 0.5fr 1fr; font-size:11px;">
-                    <span>${data[id].studentName}</span>
-                    <span>${data[id].examTitle}</span>
-                    <span class="en-num" style="color:var(--accent)">${data[id].score}</span>
-                    <span class="en-num">${data[id].time}</span>
-                </div>`;
-            }
-            document.getElementById('results-table-body').innerHTML = h;
-        }
-
-        function viewStudentLogs(phone) {
-            logsRef.orderByChild('studentPhone').equalTo(phone).once('value', s => {
-                const logs = s.val(); if(!logs) return alert("لا يوجد نشاط");
-                let m = "النشاط:\n";
-                for(let id in logs) { m += `- ${logs[id].action}: ${logs[id].title}\n`; }
-                alert(m);
+            Object.keys(subjectImages).forEach(s => {
+                h += `<div class="card"><div class="lesson-thumb" style="background-image:url('${subjectImages[s]}')"></div><h4>${s}</h4><button class="btn-accent" onclick="tab(null,'p-lessons');openSubject('${s}','video')">دخول الكورس</button></div>`;
             });
-        }
-
-        function renderLatest() {
-            let items = Object.entries(allData).reverse().slice(0, 4);
-            const user = JSON.parse(localStorage.getItem('kimo_auth_v26'));
-            document.getElementById('latest-content').innerHTML = `<div class="content-grid">${items.map(([id, i]) => `
-                <div class="card">
-                    <div class="lesson-thumb" style="background-image: url('${getYoutubeThumb(i.url)}')"></div>
-                    <h4>${i.title}</h4>
-                    <button class="btn-accent" onclick="openContent('${i.url}','${i.type}','${i.title}')">فتح</button>
-                    ${user.phone === "01023175098" ? `
-                        <div class="admin-controls">
-                            <button class="btn-pin" onclick="togglePin('lessons','${id}',${i.isPinned})"><i class="fas fa-thumbtack"></i> ${i.isPinned?'إلغاء':'تثبيت'}</button>
-                            <button class="btn-del" onclick="deleteItem('lessons','${id}')"><i class="fas fa-trash"></i></button>
-                        </div>
-                    `:''}
-                </div>`).join('')}</div>`;
+            document.getElementById('home-courses-grid').innerHTML = h;
         }
 
         function renderPinned() {
-            let pinned = "";
-            const user = JSON.parse(localStorage.getItem('kimo_auth_v26'));
+            let h = "";
             for(let id in allData) {
                 if(allData[id].isPinned) {
-                    pinned += `<div class="card" style="border-color:var(--gold)">
-                        <div class="lesson-thumb" style="background-image: url('${getYoutubeThumb(allData[id].url)}')"></div>
-                        <h4>📌 ${allData[id].title}</h4>
-                        <button class="btn-accent" onclick="openContent('${allData[id].url}','${allData[id].type}','${allData[id].title}')">فتح</button>
-                    </div>`;
+                    let thumb = allData[id].type === 'video' ? getYTThumb(allData[id].url) : 'https://cdn-icons-png.flaticon.com/512/337/337946.png';
+                    h += `<div class="card"><div class="lesson-thumb" style="background-image:url('${thumb}')"></div><h4>📌 ${allData[id].title}</h4><button class="btn-accent" onclick="openContent('${allData[id].url}','${allData[id].type}')">عرض الآن</button></div>`;
                 }
             }
-            document.getElementById('pinned-content').innerHTML = pinned || "<p style='color:#555'>لا يوجد محتوى مثبت حالياً</p>";
+            document.getElementById('pinned-content').innerHTML = h || "لا يوجد محتوى مثبت";
         }
 
-        function renderExams(data) {
-            let h = "";
-            const user = JSON.parse(localStorage.getItem('kimo_auth_v26'));
-            for(let id in data) {
-                h += `<div class="card" style="border-color:var(--green)">
-                    <h3>📝 ${data[id].title}</h3>
-                    <button class="btn-accent" style="background:var(--green); margin-bottom:10px;" onclick="window.open('${data[id].url}','_blank')">ابدأ الامتحان</button>
-                    <div style="background:rgba(0,0,0,0.5); padding:10px; border-radius:10px;">
-                        <small>اكتب درجتك هنا بعد التصحيح:</small>
-                        <div style="display:flex; gap:5px; margin-top:5px;">
-                            <input type="text" id="score-${id}" placeholder="مثلاً 18/20" style="width:70%; background:#000; border:1px solid #333; color:#fff; border-radius:5px; padding:5px;">
-                            <button onclick="submitExamScore('${id}','${data[id].title}')" style="background:var(--accent); border:none; border-radius:5px; padding:5px 10px; cursor:pointer;"><i class="fas fa-paper-plane"></i></button>
-                        </div>
-                    </div>
-                    ${user.phone === "01023175098" ? `
-                        <div class="admin-controls">
-                            <button class="btn-del" onclick="deleteItem('exams','${id}')">حذف الامتحان</button>
-                        </div>
-                    `:''}
-                </div>`;
-            }
-            document.getElementById('exams-list').innerHTML = h || "<p>لا توجد امتحانات</p>";
-        }
-
-        function submitExamScore(id, title) {
-            const score = document.getElementById(`score-${id}`).value;
-            const user = JSON.parse(localStorage.getItem('kimo_auth_v26'));
-            if(!score) return alert("اكتب الدرجة أولاً");
-            resultsRef.push({
-                studentName: user.name,
-                studentPhone: user.phone,
-                examTitle: title,
-                score: score,
-                time: new Date().toLocaleString('ar-EG')
-            });
-            alert("✅ تم إرسال درجتك للمستر كيمو!");
-            document.getElementById(`score-${id}`).value = "";
-        }
-
-        function togglePin(ref, id, currentStatus) {
-            database.ref(ref).child(id).update({ isPinned: !currentStatus });
-        }
-
-        function deleteItem(ref, id) {
-            if(confirm("هل أنت متأكد من الحذف نهائياً؟")) {
-                database.ref(ref).child(id).remove();
-            }
-        }
-
-        function addExam() {
-            const title = document.getElementById('adm-exam-title').value;
-            const url = document.getElementById('adm-exam-url').value;
-            if(!title || !url) return alert("اكمل بيانات الامتحان");
-            examsRef.push({ title, url, isPinned: false });
-            alert("تم إضافة الامتحان!");
-            document.getElementById('adm-exam-title').value = "";
-            document.getElementById('adm-exam-url').value = "";
-        }
-
-        function showNotification(msg) {
-            const toast = document.getElementById('notification-toast');
-            document.getElementById('notif-text').innerText = msg;
-            toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), 5000);
-        }
-
-        function openContent(url, type, title) {
-            const user = JSON.parse(localStorage.getItem('kimo_auth_v26'));
-            if(user) logsRef.push({ studentPhone: user.phone, studentName: user.name, action: type, title: title, time: new Date().toLocaleString() });
-            if (type === 'video') {
-                let videoId = "";
-                if (url.includes('v=')) videoId = url.split('v=')[1].split('&')[0];
-                else if (url.includes('youtu.be/')) videoId = url.split('youtu.be/')[1].split('?')[0];
-                else videoId = url.split('/').pop();
-
-                document.getElementById('video-frame-container').innerHTML = `<iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0" width="100%" height="100%" frameborder="0" allowfullscreen></iframe>`;
+        function openContent(url, type) {
+            if(type === 'video') {
+                let id = getYTId(url);
+                document.getElementById('video-frame-container').innerHTML = `<iframe src="https://www.youtube.com/embed/${id}?autoplay=1" width="100%" height="100%" frameborder="0" allowfullscreen></iframe>`;
                 document.getElementById('video-player-overlay').style.display = 'flex';
-                seconds = 0; clearInterval(timerInterval);
-                timerInterval = setInterval(() => { seconds++; let m=Math.floor(seconds/60), s=seconds%60; document.getElementById('timer-display').innerText=`${m}:${s<10?'0'+s:s}`; }, 1000);
-            } else { window.open(url, '_blank'); }
+            } else window.open(url, '_blank');
         }
 
-        function closeVideo() { document.getElementById('video-player-overlay').style.display='none'; document.getElementById('video-frame-container').innerHTML=''; clearInterval(timerInterval); }
+        function renderChat(msg) {
+            const user = JSON.parse(localStorage.getItem('kimo_auth_v26'));
+            const isMe = msg.phone === user.phone;
+            document.getElementById('chat-messages').innerHTML += `<div class="msg-bubble ${isMe?'msg-me':'msg-student'}"><b>${msg.name}</b><br>${msg.text}</div>`;
+            document.getElementById('chat-messages').scrollTop = document.getElementById('chat-messages').scrollHeight;
+        }
+
+        function sendChatMessage() {
+            const input = document.getElementById('chat-input'), user = JSON.parse(localStorage.getItem('kimo_auth_v26'));
+            if(input.value) chatRef.push({ name: user.name, phone: user.phone, text: input.value });
+            input.value = "";
+        }
+
+        function moveWatermark() {
+            const wm = document.getElementById('floating-watermark'), d = JSON.parse(localStorage.getItem('kimo_auth_v26'));
+            if(d) { wm.style.display='block'; wm.innerText = `${d.name} | ${d.phone}`; wm.style.top = Math.random()*80+'vh'; wm.style.left = Math.random()*70+'vw'; }
+        }
 
         function renderSubjectGrids() {
-            const subs = Object.keys(subjectImages);
             let v = "", f = "", a = "";
-            subs.forEach(s => {
-                const img = subjectImages[s];
-                const card = `<div class="subject-card" style="background-image: url('${img}')" onclick="openSubject('${s}', 'TYPE')"><h3>${s}</h3></div>`;
-                v += card.replace('TYPE', 'video'); f += card.replace('TYPE', 'file'); 
-                a += `<div class="subject-card" style="background-image: url('${img}')" onclick="initiateUpload('${s}')"><h3>${s}</h3></div>`;
+            Object.keys(subjectImages).forEach(s => {
+                const card = `<div class="subject-card" style="background-image:url('${subjectImages[s]}')" onclick="openSubject('${s}','TYPE')"><h3>${s}</h3></div>`;
+                v += card.replace('TYPE','video'); f += card.replace('TYPE','file');
+                a += `<div class="subject-card" style="background-image:url('${subjectImages[s]}')" onclick="initiateUpload('${s}')"><h3>${s}</h3></div>`;
             });
             document.getElementById('subjects-grid-video').innerHTML = v;
             document.getElementById('subjects-grid-file').innerHTML = f;
@@ -628,51 +423,47 @@
             document.getElementById(type==='video'?'subjects-container-video':'subjects-container-file').style.display='none';
             document.getElementById(type==='video'?'specific-subject-videos':'specific-subject-files').style.display='block';
             let h = "";
-            const user = JSON.parse(localStorage.getItem('kimo_auth_v26'));
             for(let id in allData) {
                 if(allData[id].subject === name && allData[id].type === type) {
-                    const thumb = type==='video' ? getYoutubeThumb(allData[id].url) : 'https://cdn-icons-png.flaticon.com/512/337/337946.png';
-                    h += `<div class="card">
-                        <div class="lesson-thumb" style="background-image: url('${thumb}')"></div>
-                        <h3>${allData[id].title}</h3>
-                        <button class="btn-accent" onclick="openContent('${allData[id].url}','${allData[id].type}','${allData[id].title}')">فتح</button>
-                        ${user.phone === "01023175098" ? `
-                            <div class="admin-controls">
-                                <button class="btn-pin" onclick="togglePin('lessons','${id}',${allData[id].isPinned})">${allData[id].isPinned?'إلغاء':'تثبيت'}</button>
-                                <button class="btn-del" onclick="deleteItem('lessons','${id}')">حذف</button>
-                            </div>
-                        `:''}
-                    </div>`;
+                    let thumb = type === 'video' ? getYTThumb(allData[id].url) : 'https://cdn-icons-png.flaticon.com/512/337/337946.png';
+                    h += `<div class="card"><div class="lesson-thumb" style="background-image:url('${thumb}')"></div><h4>${allData[id].title}</h4><button class="btn-accent" onclick="openContent('${allData[id].url}','${allData[id].type}')">فتح</button></div>`;
                 }
             }
-            document.getElementById(type==='video'?'video-list':'file-list').innerHTML = h || "<p>لا يوجد محتوى</p>";
+            document.getElementById(type==='video'?'video-list':'file-list').innerHTML = h || "لا يوجد محتوى";
         }
 
-        function sendChatMessage() {
-            const input = document.getElementById('chat-input'), user = JSON.parse(localStorage.getItem('kimo_auth_v26'));
-            if(!input.value.trim()) return;
-            chatRef.push({ name: user.name, text: input.value, time: new Date().toLocaleTimeString('ar-EG'), phone: user.phone });
-            input.value = "";
+        function renderExams(data) {
+            let h = "";
+            for(let id in data) h += `<div class="card"><h3>${data[id].title}</h3><button class="btn-accent" onclick="window.open('${data[id].url}')">بدأ الامتحان</button><input type="text" id="sc-${id}" placeholder="درجتك" style="margin-top:10px; width:50%;"><button onclick="subScore('${id}','${data[id].title}')">ارسال الدرجة</button></div>`;
+            document.getElementById('exams-list').innerHTML = h;
         }
 
-        function moveWatermark() {
-            const wm = document.getElementById('floating-watermark'), d = JSON.parse(localStorage.getItem('kimo_auth_v26'));
-            if(d) { wm.style.display='block'; wm.innerHTML = `<span class="en-num">${d.name} | ${d.phone}</span>`; wm.style.top = Math.random()*80+'vh'; wm.style.left = Math.random()*70+'vw'; }
+        function subScore(id, title) {
+            const user = JSON.parse(localStorage.getItem('kimo_auth_v26'));
+            resultsRef.push({ studentName: user.name, examTitle: title, score: document.getElementById('sc-'+id).value, time: new Date().toLocaleString() });
+            alert("تم الارسال!");
         }
 
-        function banStudent(phone) { if(confirm("حظر؟")) blacklistRef.child(phone).set(true); }
+        function renderAdminStudents(data) {
+            let h = "";
+            for(let p in data) h += `<div class="student-row"><span>${data[p].name}</span><span>${p}</span><button onclick="blacklistRef.child('${p}').set(true)">حظر</button></div>`;
+            document.getElementById('students-table-body').innerHTML = h;
+        }
+
+        function renderAdminResults(data) {
+            let h = "";
+            for(let id in data) h += `<div class="student-row"><span>${data[id].studentName}</span><span>${data[id].examTitle}</span><span>${data[id].score}</span></div>`;
+            document.getElementById('results-table-body').innerHTML = h;
+        }
+
+        function resetGate() { document.getElementById('initial-step').style.display='block'; document.getElementById('login-step').style.display='none'; document.getElementById('signup-step').style.display='none'; }
         function showSubjects(type) { document.getElementById(type==='video'?'subjects-container-video':'subjects-container-file').style.display='block'; document.getElementById(type==='video'?'specific-subject-videos':'specific-subject-files').style.display='none'; }
-        function initiateUpload(s) { selectedAdminSubject = s; document.getElementById('admin-subjects-selection').style.display = 'none'; document.getElementById('admin-upload-form').style.display = 'block'; document.getElementById('current-adm-sub-name').innerText = s; }
-        function showAdminSubjects() { document.getElementById('admin-subjects-selection').style.display = 'block'; document.getElementById('admin-upload-form').style.display = 'none'; }
-        
-        function handleUpload() {
-            const title = document.getElementById('adm-title').value, url = document.getElementById('adm-url').value, type = document.getElementById('adm-type').value;
-            if(!title || !url) return alert("اكمل البيانات");
-            lessonsRef.push({ title, url, subject: selectedAdminSubject, type, isPinned: false });
-            alert("تم!"); showAdminSubjects();
-        }
-        
-        function updateNewsTicker() { settingsRef.update({ newsTicker: document.getElementById('adm-news-text').value }); alert("تم!"); }
+        let selSub = ""; function initiateUpload(s) { selSub = s; document.getElementById('admin-subjects-selection').style.display='none'; document.getElementById('admin-upload-form').style.display='block'; document.getElementById('current-adm-sub-name').innerText=s; }
+        function showAdminSubjects() { document.getElementById('admin-subjects-selection').style.display='block'; document.getElementById('admin-upload-form').style.display='none'; }
+        function handleUpload() { lessonsRef.push({ title: document.getElementById('adm-title').value, url: document.getElementById('adm-url').value, subject: selSub, type: document.getElementById('adm-type').value }); alert("تم!"); showAdminSubjects(); }
+        function updateNewsTicker() { settingsRef.update({ newsTicker: document.getElementById('adm-news-text').value }); }
+        function addExam() { examsRef.push({ title: document.getElementById('adm-exam-title').value, url: document.getElementById('adm-exam-url').value }); }
+        function closeVideo() { document.getElementById('video-player-overlay').style.display='none'; document.getElementById('video-frame-container').innerHTML=''; }
         function toggleTheme() { document.body.classList.toggle('light-mode'); }
         function logout() { localStorage.clear(); location.reload(); }
         function tab(el, id) { 

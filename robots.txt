@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://ky8694429-oss.github.io/kimo-academy/sitemap.xml

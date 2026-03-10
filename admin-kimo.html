@@ -18,34 +18,48 @@
 <div class="admin-box">
     <h2>مدير الأكاديمية 🎓</h2>
     <p style="font-size: 14px; color: #aaa;">إرسال إشعار فوري لجميع الطلاب</p>
-    <input type="text" id="notif-title" placeholder="عنوان الإشعار (مثلاً: ملزمة جديدة)">
-    <textarea id="notif-body" placeholder="نص الرسالة (مثلاً: تم رفع درس الكيمياء العضوية)"></textarea>
-    <button onclick="sendPush()">إرسال الإشعار الآن 🚀</button>
+    <input type="text" id="notif-title" placeholder="عنوان الإشعار">
+    <textarea id="notif-body" placeholder="نص الرسالة"></textarea>
+    <button id="send-btn" onclick="sendPush()">إرسال الإشعار الآن 🚀</button>
 </div>
 
 <script>
 function sendPush() {
     const title = document.getElementById('notif-title').value;
     const body = document.getElementById('notif-body').value;
+    const btn = document.getElementById('send-btn');
     
     if(!title || !body) { alert("اكتب البيانات الأول يا كيمو!"); return; }
+
+    btn.innerText = "جاري الإرسال...";
+    btn.disabled = true;
 
     fetch("https://onesignal.com/api/v1/notifications", {
         method: "POST",
         headers: {
             "Content-Type": "application/json; charset=utf-8",
-            "Authorization": "Basic zf5y6256-4c47-4c0f-93ba-7e6d2189e1b5"
+            "Authorization": "Basic NWZlYzdmNWYtNmM0Ny00YzBmLTkzYmEtN2U2ZDIxODllMWI1"
         },
         body: JSON.stringify({
             "app_id": "7e6da62d-7c47-4c0f-93ba-7e6d2189e1b5",
-            "included_segments": ["All"],
+            "included_segments": ["Total Subscriptions"],
             "headings": {"en": title},
             "contents": {"en": body},
             "url": "https://ky8694429-oss.github.io/kimo-academy/"
         })
     }).then(res => {
-        if(res.ok) alert("عاش يا بطل! الإشعار وصل للطلاب ✅");
-        else alert("في حاجة غلط في الـ Key، اتأكد منه.");
+        btn.innerText = "إرسال الإشعار الآن 🚀";
+        btn.disabled = false;
+        if(res.ok) {
+            alert("عاش يا بطل! الإشعار وصل للطلاب ✅");
+        } else {
+            res.json().then(data => {
+                alert("في مشكلة: " + JSON.stringify(data.errors));
+            });
+        }
+    }).catch(err => {
+        alert("خطأ في الاتصال: " + err);
+        btn.disabled = false;
     });
 }
 </script>

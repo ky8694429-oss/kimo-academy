@@ -3,27 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة تحكم كيمو - النسخة النهائية</title>
+    <title>لوحة تحكم كيمو</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #121212; color: white; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .admin-box { background: #1e1e1e; padding: 30px; border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.7); text-align: center; width: 90%; max-width: 450px; border: 1px solid #333; }
-        h2 { color: #ffc107; margin-bottom: 25px; font-size: 24px; }
-        input, textarea { width: 100%; padding: 14px; margin-bottom: 15px; border-radius: 10px; border: 1px solid #444; background: #2c2c2c; color: white; box-sizing: border-box; font-size: 16px; outline: none; }
-        input:focus, textarea:focus { border-color: #ffc107; }
-        button { width: 100%; padding: 14px; background: #28a745; color: white; border: none; border-radius: 10px; cursor: pointer; font-size: 18px; font-weight: bold; transition: 0.3s; }
-        button:hover { background: #218838; transform: translateY(-2px); }
-        button:disabled { background: #555; cursor: not-allowed; }
-        .footer { margin-top: 15px; font-size: 12px; color: #777; }
+        body { font-family: sans-serif; background-color: #121212; color: white; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .admin-box { background: #1e1e1e; padding: 30px; border-radius: 15px; text-align: center; width: 90%; max-width: 400px; border: 1px solid #333; }
+        input, textarea { width: 100%; padding: 12px; margin-bottom: 15px; border-radius: 8px; border: 1px solid #444; background: #2c2c2c; color: white; box-sizing: border-box; }
+        button { width: 100%; padding: 12px; background: #28a745; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; }
     </style>
 </head>
 <body>
-
 <div class="admin-box">
-    <h2>مدير أكاديمية كيمو 🎓</h2>
-    <input type="text" id="notif-title" placeholder="عنوان الإشعار (مثلاً: تنبيه هام)">
-    <textarea id="notif-body" rows="4" placeholder="اكتب رسالتك للطلاب هنا..."></textarea>
-    <button id="send-btn" onclick="sendPush()">إرسال الإشعار للكل 🚀</button>
-    <div class="footer">تأكد من تفعيل الوسيط إذا فشل الإرسال</div>
+    <h2>مدير الأكاديمية 🎓</h2>
+    <input type="text" id="notif-title" placeholder="العنوان">
+    <textarea id="notif-body" placeholder="الرسالة"></textarea>
+    <button id="send-btn" onclick="sendPush()">إرسال الإشعار 🚀</button>
 </div>
 
 <script>
@@ -31,26 +24,27 @@ async function sendPush() {
     const title = document.getElementById('notif-title').value;
     const body = document.getElementById('notif-body').value;
     const btn = document.getElementById('send-btn');
-    
-    if(!title || !body) { alert("يا كيمو اكتب العنوان والرسالة الأول!"); return; }
+    if(!title || !body) return;
 
-    btn.innerText = "جاري الإرسال الفوري...";
+    btn.innerText = "جاري المحاولة...";
     btn.disabled = true;
 
-    // المفاتيح اللي بعتها يا بطل
     const APP_ID = "7e6da62d-7c47-4c0f-93ba-7e6d2189e1b5";
-    const API_KEY = "os_v2_app_pzw2mll4i5ga7e52pzwsdcpbwxzf5yyxo64ukp4zyxh445oxqiaw5ym3fuoq4lrvmwvm2w5vbyix4moj6pnzuugy4lxudro6zbyl3oq";
+    // المفتاح الجديد
+    const NEW_KEY = "os_v2_app_pzw2mll4i5ga7e52pzwsdcpbwxzf5yyxo64ukp4zyxh445oxqiaw5ym3fuoq4lrvmwvm2w5vbyix4moj6pnzuugy4lxudro6zbyl3oq";
+    // المفتاح القديم
+    const OLD_KEY = "NWZlYzdmNWYtNmM0Ny00YzBmLTkzYmEtN2U2ZDIxODllMWI1";
 
-    // الوسيط لتخطي حماية CORS في متصفح التابلت
     const proxyUrl = "https://cors-anywhere.herokuapp.com/";
     const apiUrl = "https://onesignal.com/api/v1/notifications";
 
     try {
-        const response = await fetch(proxyUrl + apiUrl, {
+        // محاولة أولى بالمفتاح الجديد
+        let response = await fetch(proxyUrl + apiUrl, {
             method: "POST",
             headers: {
-                "Content-Type": "application/json; charset=utf-8",
-                "Authorization": "Key " + API_KEY 
+                "Content-Type": "application/json",
+                "Authorization": "Key " + NEW_KEY
             },
             body: JSON.stringify({
                 app_id: APP_ID,
@@ -60,23 +54,34 @@ async function sendPush() {
             })
         });
 
+        if (!response.ok) {
+            // لو فشل، جرب بالمفتاح القديم فوراً
+            response = await fetch(proxyUrl + apiUrl, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Basic " + OLD_KEY
+                },
+                body: JSON.stringify({
+                    app_id: APP_ID,
+                    included_segments: ["Total Subscriptions"],
+                    headings: {"en": title},
+                    contents: {"en": body}
+                })
+            });
+        }
+
         const data = await response.json();
         btn.disabled = false;
-        btn.innerText = "إرسال الإشعار للكل 🚀";
+        btn.innerText = "إرسال الإشعار 🚀";
 
         if (response.ok) {
-            alert("✅ مبروك يا كيمو! الإشعار طار للطلاب بنجاح.");
-            document.getElementById('notif-title').value = "";
-            document.getElementById('notif-body').value = "";
+            alert("✅ أخيراً اشتغلت يا كيمو! الإشعار اتبعت.");
         } else {
-            // لو في غلط في المفتاح هيظهر هنا بدقة
-            alert("❌ خطأ من OneSignal: " + (data.errors ? JSON.stringify(data.errors) : "المفتاح غير صالح"));
+            alert("❌ لسه فيه مشكلة في مفاتيح OneSignal نفسه.");
         }
     } catch (error) {
         btn.disabled = false;
-        btn.innerText = "إرسال الإشعار للكل 🚀";
-        // لو السيرفر الوسيط محتاج تفعيل هيفتحلك الصفحة دي
-        alert("لازم تفتح صفحة التفعيل وتدوس على الزرار الأبيض.");
         window.open("https://cors-anywhere.herokuapp.com/corsdemo", "_blank");
     }
 }

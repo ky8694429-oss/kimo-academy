@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة تحكم أكاديمية كيمو</title>
+    <title>لوحة تحكم كيمو - النسخة النهائية</title>
     <style>
         body { font-family: sans-serif; background-color: #121212; color: white; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
         .admin-box { background: #1e1e1e; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); text-align: center; width: 90%; max-width: 400px; border: 1px solid #333; }
         h2 { color: #ffc107; margin-bottom: 20px; }
-        input, textarea { width: 100%; padding: 12px; margin-bottom: 15px; border-radius: 8px; border: 1px solid #444; background: #2c2c2c; color: white; box-sizing: border-box; }
-        button { width: 100%; padding: 12px; background: #28a745; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold; }
+        input, textarea { width: 100%; padding: 12px; margin-bottom: 15px; border-radius: 8px; border: 1px solid #444; background: #2c2c2c; color: white; box-sizing: border-box; font-size: 16px; }
+        button { width: 100%; padding: 12px; background: #28a745; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold; transition: 0.3s; }
+        button:hover { background: #218838; }
         button:disabled { background: #555; }
     </style>
 </head>
@@ -17,8 +18,8 @@
 
 <div class="admin-box">
     <h2>مدير الأكاديمية 🎓</h2>
-    <input type="text" id="notif-title" placeholder="عنوان الإشعار">
-    <textarea id="notif-body" placeholder="نص الرسالة"></textarea>
+    <input type="text" id="notif-title" placeholder="عنوان الإشعار (مثلاً: درس جديد)">
+    <textarea id="notif-body" placeholder="اكتب رسالتك للطلاب هنا..."></textarea>
     <button id="send-btn" onclick="sendPush()">إرسال الإشعار الآن 🚀</button>
 </div>
 
@@ -28,12 +29,16 @@ async function sendPush() {
     const body = document.getElementById('notif-body').value;
     const btn = document.getElementById('send-btn');
     
-    if(!title || !body) { alert("اكتب البيانات يا كيمو!"); return; }
+    if(!title || !body) { alert("اكتب العنوان والرسالة يا كيمو!"); return; }
 
     btn.innerText = "جاري الإرسال...";
     btn.disabled = true;
 
-    // استخدمنا هنا وسيط (Proxy) عشان نهرب من حماية المتصفح
+    // المفاتيح اللي أنت بعتها يا بطل
+    const APP_ID = "7e6da62d-7c47-4c0f-93ba-7e6d2189e1b5";
+    const API_KEY = "os_v2_app_pzw2mll4i5ga7e52pzwsdcpbwxzf5yyxo64ukp4zyxh445oxqiaw5ym3fuoq4lrvmwvm2w5vbyix4moj6pnzuugy4lxudro6zbyl3oq";
+
+    // استخدام الوسيط لتخطي حماية المتصفح في التابلت
     const proxyUrl = "https://cors-anywhere.herokuapp.com/";
     const apiUrl = "https://onesignal.com/api/v1/notifications";
 
@@ -42,10 +47,10 @@ async function sendPush() {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": "Basic NWZlYzdmNWYtNmM0Ny00YzBmLTkzYmEtN2U2ZDIxODllMWI1"
+                "Authorization": "Key " + API_KEY
             },
             body: JSON.stringify({
-                app_id: "7e6da62d-7c47-4c0f-93ba-7e6d2189e1b5",
+                app_id: APP_ID,
                 included_segments: ["Total Subscriptions"],
                 headings: {"en": title},
                 contents: {"en": body}
@@ -57,14 +62,15 @@ async function sendPush() {
         btn.innerText = "إرسال الإشعار الآن 🚀";
 
         if (response.ok) {
-            alert("عاش يا كيمو! الإشعار وصل للطلاب ✅");
+            alert("عاش يا كيمو! الإشعار اتبعت لـ " + (data.recipients || 0) + " طالب ✅");
         } else {
-            alert("في مشكلة في المفاتيح: " + (data.errors ? data.errors[0] : "غلط غير معروف"));
+            alert("في مشكلة بسيطة: " + (data.errors ? data.errors[0] : "تأكد من المفاتيح"));
+            console.log(data);
         }
     } catch (error) {
         btn.disabled = false;
         btn.innerText = "إرسال الإشعار الآن 🚀";
-        alert("تنبيه: لازم تفعل الوصول للوسيط أولاً، هفتحلك صفحة التفعيل دلوقتي.");
+        alert("لازم تفعل صفحة الوسيط (CORS) الأول!");
         window.open("https://cors-anywhere.herokuapp.com/corsdemo", "_blank");
     }
 }

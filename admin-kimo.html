@@ -3,20 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة تحكم كيمو</title>
+    <title>لوحة تحكم كيمو - الإصدار الأخير</title>
     <style>
         body { font-family: sans-serif; background-color: #121212; color: white; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
         .admin-box { background: #1e1e1e; padding: 30px; border-radius: 15px; text-align: center; width: 90%; max-width: 400px; border: 1px solid #333; }
+        h2 { color: #ffc107; }
         input, textarea { width: 100%; padding: 12px; margin-bottom: 15px; border-radius: 8px; border: 1px solid #444; background: #2c2c2c; color: white; box-sizing: border-box; }
-        button { width: 100%; padding: 12px; background: #28a745; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; }
+        button { width: 100%; padding: 12px; background: #28a745; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 16px; }
+        button:disabled { background: #555; }
     </style>
 </head>
 <body>
+
 <div class="admin-box">
-    <h2>مدير الأكاديمية 🎓</h2>
-    <input type="text" id="notif-title" placeholder="العنوان">
-    <textarea id="notif-body" placeholder="الرسالة"></textarea>
-    <button id="send-btn" onclick="sendPush()">إرسال الإشعار 🚀</button>
+    <h2>أكاديمية كيمو 🎓</h2>
+    <input type="text" id="notif-title" placeholder="عنوان الإشعار">
+    <textarea id="notif-body" rows="4" placeholder="رسالة الطلاب"></textarea>
+    <button id="send-btn" onclick="sendPush()">إرسال للجميع الآن 🚀</button>
 </div>
 
 <script>
@@ -24,27 +27,25 @@ async function sendPush() {
     const title = document.getElementById('notif-title').value;
     const body = document.getElementById('notif-body').value;
     const btn = document.getElementById('send-btn');
-    if(!title || !body) return;
+    
+    if(!title || !body) { alert("اكتب العنوان والرسالة يا كيمو!"); return; }
 
-    btn.innerText = "جاري المحاولة...";
+    btn.innerText = "جاري الإرسال...";
     btn.disabled = true;
 
+    // المفتاح الجديد والـ ID بتوعك
     const APP_ID = "7e6da62d-7c47-4c0f-93ba-7e6d2189e1b5";
-    // المفتاح الجديد
-    const NEW_KEY = "os_v2_app_pzw2mll4i5ga7e52pzwsdcpbwxzf5yyxo64ukp4zyxh445oxqiaw5ym3fuoq4lrvmwvm2w5vbyix4moj6pnzuugy4lxudro6zbyl3oq";
-    // المفتاح القديم
-    const OLD_KEY = "NWZlYzdmNWYtNmM0Ny00YzBmLTkzYmEtN2U2ZDIxODllMWI1";
+    const NEW_API_KEY = "os_v2_app_pzw2mll4i5ga7e52pzwsdcpbwubglqvp2brulenthowuuxvi42idb4uohluaeydvs5aihziaqacjokpw3tldpcunvljuiv6k567p2uq";
 
     const proxyUrl = "https://cors-anywhere.herokuapp.com/";
     const apiUrl = "https://onesignal.com/api/v1/notifications";
 
     try {
-        // محاولة أولى بالمفتاح الجديد
-        let response = await fetch(proxyUrl + apiUrl, {
+        const response = await fetch(proxyUrl + apiUrl, {
             method: "POST",
             headers: {
-                "Content-Type": "application/json",
-                "Authorization": "Key " + NEW_KEY
+                "Content-Type": "application/json; charset=utf-8",
+                "Authorization": "Key " + NEW_API_KEY
             },
             body: JSON.stringify({
                 app_id: APP_ID,
@@ -54,34 +55,22 @@ async function sendPush() {
             })
         });
 
-        if (!response.ok) {
-            // لو فشل، جرب بالمفتاح القديم فوراً
-            response = await fetch(proxyUrl + apiUrl, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": "Basic " + OLD_KEY
-                },
-                body: JSON.stringify({
-                    app_id: APP_ID,
-                    included_segments: ["Total Subscriptions"],
-                    headings: {"en": title},
-                    contents: {"en": body}
-                })
-            });
-        }
-
         const data = await response.json();
         btn.disabled = false;
-        btn.innerText = "إرسال الإشعار 🚀";
+        btn.innerText = "إرسال للجميع الآن 🚀";
 
         if (response.ok) {
-            alert("✅ أخيراً اشتغلت يا كيمو! الإشعار اتبعت.");
+            alert("✅ مبروك يا كيمو! الإشعار اتبعت بنجاح.");
+            document.getElementById('notif-title').value = "";
+            document.getElementById('notif-body').value = "";
         } else {
-            alert("❌ لسه فيه مشكلة في مفاتيح OneSignal نفسه.");
+            alert("❌ رد السيرفر: " + (data.errors ? data.errors[0] : "فشل الإرسال"));
+            console.log(data);
         }
     } catch (error) {
         btn.disabled = false;
+        btn.innerText = "إرسال للجميع الآن 🚀";
+        alert("لازم تفتح صفحة الوسيط وتفعل الزرار الأبيض أولاً!");
         window.open("https://cors-anywhere.herokuapp.com/corsdemo", "_blank");
     }
 }

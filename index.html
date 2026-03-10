@@ -831,43 +831,6 @@
             if(el) { document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active')); el.classList.add('active'); }
         }
     </script>
-    <div id="admin-panel" style="background: #f4f4f4; padding: 20px; border: 2px solid #333; margin-top: 50px; text-align: center;">
-    <h3>لوحة إدارة الإشعارات 📢</h3>
-    <input type="text" id="notif-title" placeholder="عنوان الإشعار (مثلاً: ملزمة جديدة)" style="width: 80%; padding: 10px; margin-bottom: 10px;"><br>
-    <textarea id="notif-body" placeholder="نص الرسالة (مثلاً: تم رفع ملزمة كيمياء 2024)" style="width: 80%; padding: 10px; margin-bottom: 10px;"></textarea><br>
-    <button onclick="sendNotification()" style="padding: 10px 20px; background: #28a745; color: white; border: none; cursor: pointer;">إرسال الإشعار للطلاب</button>
-</div>
-
-<script>
-function sendNotification() {
-    const title = document.getElementById('notif-title').value;
-    const message = document.getElementById('notif-body').value;
-    
-    // المفتاح السري بتاعك (REST API Key)
-    const apiKey = "zf5y6256-4c47-4c0f-93ba-7e6d2189e1b5"; // تأكد إنه الكود اللي نسخته
-
-    fetch("https://onesignal.com/api/v1/notifications", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json; charset=utf-8",
-            "Authorization": "Basic " + apiKey
-        },
-        body: JSON.stringify({
-            "app_id": "7e6da62d-7c47-4c0f-93ba-7e6d2189e1b5",
-            "included_segments": ["All"],
-            "headings": {"en": title},
-            "contents": {"en": message},
-            "url": "https://ky8694429-oss.github.io/kimo-academy/"
-        })
-    }).then(response => {
-        if (response.ok) {
-            alert("تم إرسال الإشعار لجميع الطلاب بنجاح! ✅");
-        } else {
-            alert("فشل الإرسال، تأكد من الـ API Key الخاص بك.");
-        }
-    });
-}
-</script>
 
 </body>
 </html>

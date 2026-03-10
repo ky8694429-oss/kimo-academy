@@ -9,7 +9,7 @@
         .admin-box { background: #1e1e1e; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); text-align: center; width: 90%; max-width: 400px; border: 1px solid #333; }
         h2 { color: #ffc107; margin-bottom: 20px; }
         input, textarea { width: 100%; padding: 12px; margin-bottom: 15px; border-radius: 8px; border: 1px solid #444; background: #2c2c2c; color: white; box-sizing: border-box; }
-        button { width: 100%; padding: 12px; background: #28a745; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold; transition: 0.3s; }
+        button { width: 100%; padding: 12px; background: #28a745; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold; }
         button:disabled { background: #555; }
     </style>
 </head>
@@ -33,11 +33,15 @@ async function sendPush() {
     btn.innerText = "جاري الإرسال...";
     btn.disabled = true;
 
+    // استخدمنا هنا وسيط (Proxy) عشان نهرب من حماية المتصفح
+    const proxyUrl = "https://cors-anywhere.herokuapp.com/";
+    const apiUrl = "https://onesignal.com/api/v1/notifications";
+
     try {
-        const response = await fetch("https://onesignal.com/api/v1/notifications", {
+        const response = await fetch(proxyUrl + apiUrl, {
             method: "POST",
             headers: {
-                "Content-Type": "application/json; charset=utf-8",
+                "Content-Type": "application/json",
                 "Authorization": "Basic NWZlYzdmNWYtNmM0Ny00YzBmLTkzYmEtN2U2ZDIxODllMWI1"
             },
             body: JSON.stringify({
@@ -53,14 +57,15 @@ async function sendPush() {
         btn.innerText = "إرسال الإشعار الآن 🚀";
 
         if (response.ok) {
-            alert("عاش يا كيمو! الإشعار وصل لـ " + (data.recipients || 0) + " طالب ✅");
+            alert("عاش يا كيمو! الإشعار وصل للطلاب ✅");
         } else {
-            alert("OneSignal قال فيه غلط: " + (data.errors ? data.errors[0] : "غلط غير معروف"));
+            alert("في مشكلة في المفاتيح: " + (data.errors ? data.errors[0] : "غلط غير معروف"));
         }
     } catch (error) {
         btn.disabled = false;
         btn.innerText = "إرسال الإشعار الآن 🚀";
-        alert("خطأ في الاتصال.. تأكد إن النت شغال أو إن الـ API Key صح!");
+        alert("تنبيه: لازم تفعل الوصول للوسيط أولاً، هفتحلك صفحة التفعيل دلوقتي.");
+        window.open("https://cors-anywhere.herokuapp.com/corsdemo", "_blank");
     }
 }
 </script>

@@ -611,18 +611,58 @@
             document.getElementById('adm-course-lesson-url').value = "";
             alert("تمت إضافة المحاضرة للكورس");
         }
-
         function renderCourses() {
             let h = "";
+            let user = JSON.parse(localStorage.getItem('kimo_auth_v26'));
+            let isAdmin = user && user.phone === "01023175098"; // رقمك عشان يظهرلك الحذف
+
             for(let id in allCourses) {
-                h += `<div class="card" style="border-color:var(--gold)">
+                h += `
+                <div class="card" style="border-color:var(--gold)">
                     <div class="lesson-thumb" style="background-image:url('https://cdn-icons-png.flaticon.com/512/3652/3652267.png')"></div>
                     <h3>${allCourses[id].name}</h3>
                     <button class="btn-accent" onclick="checkCourseActivation('${id}')">فتح الكورس 🔒</button>
+                    ${isAdmin ? `<button class="btn-del" style="margin-top:10px; background:red; color:white; border:none; padding:8px; border-radius:10px; cursor:pointer; width:100%; font-family: 'Cairo';" onclick="deleteCourse('${id}')">حذف الكورس بالكامل 🗑️</button>` : ''}
                 </div>`;
             }
             document.getElementById('courses-grid').innerHTML = h || "<p>لا توجد كورسات مدفوعة حالياً</p>";
         }
+
+        // دالة حذف الكورس (تتحط تحتها علطول)
+                function deleteCourse(id) {
+            if(confirm("تحذير: سيتم حذف الكورس وكل المحاضرات اللي جواه! موافق؟")) {
+                coursesRef.child(id).remove();
+                alert("تم حذف الكورس بنجاح");
+            }
+        }
+
+        function renderLatest() {
+            if (!allData) return; // تأمين لو البيانات لسه متحملتش
+            let items = Object.entries(allData).reverse().slice(0, 10); 
+            let user = JSON.parse(localStorage.getItem('kimo_auth_v26'));
+            let isAdmin = user && user.phone === "01023175098";
+
+            let html = `<div class="content-grid">`;
+            items.forEach(([id, i]) => {
+                html += `
+                <div class="card">
+                    <h4>${i.title}</h4>
+                    <button class="btn-accent" onclick="openContent('${i.url}','${i.type}','${i.title}')">فتح</button>
+                    ${isAdmin ? `<button class="btn-del" style="margin-top:10px; background:red; color:white; border:none; padding:8px; border-radius:10px; cursor:pointer; width:100%; font-family: 'Cairo';" onclick="deleteLesson('${id}')">حذف الدرس 🗑️</button>` : ''}
+                </div>`;
+            });
+            html += `</div>`;
+            document.getElementById('latest-content').innerHTML = html || "<p>لا يوجد محتوى حالياً</p>";
+        }
+
+        function deleteLesson(id) {
+            if(confirm("هل أنت متأكد من حذف هذا الدرس نهائياً؟")) {
+                lessonsRef.child(id).remove()
+                    .then(() => alert("تم حذف الدرس بنجاح ✅"))
+                    .catch(err => alert("خطأ في الحذف: " + err));
+            }
+        }
+
 
         function checkCourseActivation(courseId) {
             const user = JSON.parse(localStorage.getItem('kimo_auth_v26'));

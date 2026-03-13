@@ -1,4 +1,4 @@
-
+٧
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -732,6 +732,81 @@
 
         const validCodes = ["K26-X9R2-QM7B", "K26-L5P1-V3N8", "K26-Y8T4-W2Z9", "K26-M0K7-B5S2", "K26-J3D9-F1H4", "K26-A6G2-C8V0", "K26-Q1W5-E9R3", "K26-T7Y2-U4I8", "K26-O0P6-L2K4", "K26-M8N1-B3V7"];
         window.onload = function() { const savedUser = localStorage.getItem('kimo_auth_v26'); if (savedUser) runApp(); else document.getElementById('login-gate').style.display = 'block'; };
+// 1. تفعيل خاصية "نسيت كلمة المرور"
+function showForgetPassword() {
+    const phone = document.getElementById('std-phone').value;
+    if (!phone) return alert("اكتب رقم الموبايل الأول يا بطل!");
+    
+    studentsRef.child(phone).once('value', snapshot => {
+        const user = snapshot.val();
+        if (user && user.securityQ) {
+            document.getElementById('step-login').style.display = 'none';
+            document.getElementById('step-forget').style.display = 'block';
+            document.getElementById('security-q-text').innerText = "سؤال الأمان: " + user.securityQ;
+            window.currentResetPhone = phone;
+        } else {
+            alert("الحساب ده ملوش سؤال أمان، كلم كيمو يرجعهولك يدوي.");
+        }
+    });
+}
+
+function resetAccess() {
+    const answer = document.getElementById('forget-answer').value.trim();
+    studentsRef.child(window.currentResetPhone).once('value', snapshot => {
+        const user = snapshot.val();
+        if (user.securityA === answer) {
+            alert("تم التحقق! كلمة مرورك هي: " + user.password);
+            location.reload(); // أو دخله تلقائي
+        } else {
+            alert("الإجابة غلط.. ركز وافتكر!");
+        }
+    });
+}
+
+// 2. إصلاح أزرار التنقل في الموبايل (Mobile Nav)
+document.querySelectorAll('.mobile-nav div').forEach(btn => {
+    btn.onclick = function() {
+        const pages = {
+            'fa-home': 'p-home',
+            'fa-graduation-cap': 'p-courses',
+            'fa-play-circle': 'p-lessons',
+            'fa-file-pdf': 'p-files',
+            'fa-comments': 'p-chat'
+        };
+        const iconClass = this.querySelector('i').classList[1];
+        tab(null, pages[iconClass]);
+        
+        // تغيير اللون للزر النشط في الموبايل
+        document.querySelectorAll('.mobile-nav div').forEach(d => d.style.color = '#8b949e');
+        this.style.color = 'var(--accent)';
+    };
+});
+
+// 3. تفعيل زر إرسال الرسائل في الدردشة
+function sendChatMessage() {
+    const input = document.getElementById('chat-input');
+    const text = input.value.trim();
+    const user = JSON.parse(localStorage.getItem('kimo_auth_v26'));
+    
+    if (text && user) {
+        chatRef.push({
+            name: user.name,
+            phone: user.phone,
+            text: text,
+            time: new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
+        });
+        input.value = "";
+    }
+}
+
+// 4. ربط زر "تحديث الخبر" في لوحة الإدارة
+function updateNewsTicker() {
+    const news = document.getElementById('adm-news-text').value;
+    if (news) {
+        settingsRef.update({ newsTicker: news });
+        alert("تم تحديث شريط الأخبار بنجاح 📢");
+    }
+}
 
     </script>
 </body>

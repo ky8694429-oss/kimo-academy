@@ -43,6 +43,23 @@
             font-family: 'Cairo', sans-serif; display: flex; min-height: 100vh; position: relative; user-select: none; 
             overflow-x: hidden; font-variant-numeric: tabular-nums;
         }
+        /* حماية إضافية للصور واللقطات */
+        img { pointer-events: none; }
+
+        /* بوابة تفعيل الكورس بالأكواد */
+        #course-lock-gate {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 200000;
+            display: none; align-items: center; justify-content: center; backdrop-filter: blur(10px);
+        }
+        .lock-box { background: #161b22; padding: 40px; border-radius: 20px; border: 2px solid var(--accent); text-align: center; width: 90%; max-width: 400px; }
+
+        /* البصمة المائية الحمراء والتقيلة */
+        #dynamic-watermark {
+            position: absolute; color: rgba(255, 0, 0, 0.9); font-weight: 900; font-size: 26px;
+            z-index: 2147483647 !important; pointer-events: none; user-select: none;
+            text-shadow: 2px 2px 4px #000; white-space: nowrap; display: none;
+        }
+
         .logo-master-container { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; margin: 0 auto; position: relative; animation: masterPulse 3s infinite ease-in-out; }
         .logo-main-name { color: var(--logo-text, #ffffff); font-size: 45px; font-weight: 900; position: relative; }
         .logo-crown-icon { position: absolute; top: -15px; right: -5px; font-size: 22px; color: #FFD700; animation: crownFloat 3s infinite ease-in-out; }
@@ -82,7 +99,7 @@
         
         #blackout-screen { 
             display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
-            background: black; z-index: 20001; color: white; text-align: center; padding-top: 15%; 
+            background: black; z-index: 2000001; color: white; text-align: center; padding-top: 15%; 
         }
 
         footer { position: fixed; bottom: 0; width: 100%; background: #010409; color: #fff; text-align: center; padding: 15px 0; font-size: 13px; border-top: 2px solid var(--accent); z-index: 1000; }
@@ -116,6 +133,16 @@
     </style>
 </head>
 <body oncontextmenu="return false;"> 
+
+    <div id="course-lock-gate">
+        <div class="lock-box">
+            <h2 style="color:var(--accent); margin-bottom:15px;">🔒 محتوى مدفوع</h2>
+            <p style="color:#eee; font-size:14px; margin-bottom:20px;">هذا الكورس يتطلب كود تفعيل للمشاهدة.</p>
+            <input type="text" id="course-activation-code" placeholder="أدخل الكود هنا..." style="width:85%; padding:12px; border-radius:10px; border:none; text-align:center; font-weight:bold; margin-bottom:15px;">
+            <button class="btn-accent" onclick="unlockCourseContent()">تفعيل وفتح الكورس</button>
+            <p style="margin-top:20px; font-size:11px; color:#888;">للحصول على كود، تواصل مع مستر كريم.</p>
+        </div>
+    </div>
 
     <div id="notification-toast">
         <i class="fas fa-bell"></i>
@@ -157,6 +184,7 @@
             <button class="btn-accent" style="width: auto; padding: 5px 20px;" onclick="closeVideo()">إغلاق ×</button>
         </div>
         <div class="video-container" id="video-frame-container">
+            <div id="dynamic-watermark"></div>
             <div id="blackout-screen"><h3>عذراً، تم اكتشاف محاولة تسجيل.. أغلق البرنامج للمتابعة</h3></div>
         </div>
     </div>
@@ -313,6 +341,11 @@
                     <button onclick="copyLink()" class="btn-accent" style="width:25%; padding:5px;">نسخ الرابط</button>
                 </div>
             </div>
+            <div class="card" style="margin-bottom:20px; border-color:var(--accent)">
+                <h3>🔒 إضافة كورس مدفوع (يتطلب كود)</h3>
+                <p style="font-size:12px;">المحتوى اللي هتضيفه هنا مش هيفتح غير بالأكواد الـ 20 اللي برمجناها.</p>
+                <button class="btn-accent" onclick="initiateUpload('الكورسات المدفوعة')">رفع كورس مدفوع الآن</button>
+            </div>
             <div class="card" style="margin-bottom:20px; border-color:var(--green)">
                 <h3>📝 إضافة امتحان جديد</h3>
                 <input type="text" id="adm-exam-title" placeholder="اسم الامتحان" style="width:90%; padding:10px; margin-bottom:10px; border-radius:10px;">
@@ -360,6 +393,14 @@
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
 
+        // الأكواد الـ 20 لفتح الكورسات المدفوعة
+        const premiumCodes = [
+            "KIMO-2026-X1", "KIMO-2026-X2", "KIMO-2026-X3", "KIMO-2026-X4", "KIMO-2026-X5",
+            "KIMO-2026-X6", "KIMO-2026-X7", "KIMO-2026-X8", "KIMO-2026-X9", "KIMO-2026-X10",
+            "STUDENT-PRO-11", "STUDENT-PRO-12", "STUDENT-PRO-13", "STUDENT-PRO-14", "STUDENT-PRO-15",
+            "STUDENT-PRO-16", "STUDENT-PRO-17", "STUDENT-PRO-18", "STUDENT-PRO-19", "STUDENT-PRO-20"
+        ];
+
         const lessonsRef = database.ref('lessons'), studentsRef = database.ref('students'), 
               settingsRef = database.ref('settings'), presenceRef = database.ref('online_students'),
               blacklistRef = database.ref('blacklist'), chatRef = database.ref('chat'), 
@@ -370,6 +411,7 @@
         let isFirstLoad = true;
         let currentStudentData = null;
         let plyrPlayer = null;
+        let pendingContent = null; // للمحتوى اللي مستني الكود
 
         const subjectImages = {
             "اللغة العربية": "https://images.unsplash.com/photo-1588580000645-4562a6d2c839?q=80&w=400",
@@ -377,8 +419,25 @@
             "الفيزياء": "https://images.unsplash.com/photo-1636466484202-cae21e06e33a?q=80&w=400",
             "الكيمياء": "https://images.unsplash.com/photo-1532187875605-1ef6c237bbba?q=80&w=400",
             "الأحياء": "https://images.unsplash.com/photo-1530026405186-ed1f139313f8?q=80&w=400",
-            "الرياضيات": "https://images.unsplash.com/photo-1509228468518-180dd482195e?q=80&w=400"
+            "الرياضيات": "https://images.unsplash.com/photo-1509228468518-180dd482195e?q=80&w=400",
+            "الكورسات المدفوعة": "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=400"
         };
+
+        // دالة فتح الكورس المدفوع
+        function unlockCourseContent() {
+            const codeInput = document.getElementById('course-activation-code').value.trim();
+            const adminSecret = "KIMO_ADMIN_2026"; // كلمة سر الأدمن لتخطي الأكواد
+
+            if (premiumCodes.includes(codeInput) || codeInput === adminSecret) {
+                document.getElementById('course-lock-gate').style.display = 'none';
+                sessionStorage.setItem('unlocked_premium', 'true');
+                if (pendingContent) {
+                    executeOpenContent(pendingContent.url, pendingContent.type, pendingContent.title);
+                }
+            } else {
+                alert("الكود غير صحيح! تواصل مع كيمو.");
+            }
+        }
 
         async function identifyStudent() {
             const phone = document.getElementById('std-phone').value.trim();
@@ -561,16 +620,30 @@
 
         function renderLatest() {
             let items = Object.entries(allData).reverse().slice(0, 4), user = JSON.parse(localStorage.getItem('kimo_auth_v26'));
-            document.getElementById('latest-content').innerHTML = `<div class="content-grid">${items.map(([id, i]) => `<div class="card"><div class="lesson-thumb" style="background-image:url('${getYoutubeThumb(i.url)}')"></div><h4>${i.title}</h4><button class="btn-accent" onclick="openContent('${i.url}','${i.type}','${i.title}')">فتح</button>${user.phone === "01023175098" ? `<div class="admin-controls"><button class="btn-pin" onclick="togglePin('lessons','${id}',${i.isPinned})"><i class="fas fa-thumbtack"></i> ${i.isPinned?'إلغاء':'تثبيت'}</button><button class="btn-del" onclick="deleteItem('lessons','${id}')"><i class="fas fa-trash"></i></button></div>`:''}</div>`).join('')}</div>`;
+            document.getElementById('latest-content').innerHTML = `<div class="content-grid">${items.map(([id, i]) => `<div class="card"><div class="lesson-thumb" style="background-image:url('${getYoutubeThumb(i.url)}')"></div><h4>${i.title}</h4><button class="btn-accent" onclick="openContent('${i.url}','${i.type}','${i.title}', '${i.subject}')">فتح</button>${user.phone === "01023175098" ? `<div class="admin-controls"><button class="btn-pin" onclick="togglePin('lessons','${id}',${i.isPinned})"><i class="fas fa-thumbtack"></i> ${i.isPinned?'إلغاء':'تثبيت'}</button><button class="btn-del" onclick="deleteItem('lessons','${id}')"><i class="fas fa-trash"></i></button></div>`:''}</div>`).join('')}</div>`;
         }
 
         function renderPinned() {
             let pinned = "", user = JSON.parse(localStorage.getItem('kimo_auth_v26'));
-            for(let id in allData) if(allData[id].isPinned) pinned += `<div class="card" style="border-color:var(--gold)"><div class="lesson-thumb" style="background-image:url('${getYoutubeThumb(allData[id].url)}')"></div><h4>📌 ${allData[id].title}</h4><button class="btn-accent" onclick="openContent('${allData[id].url}','${allData[id].type}','${allData[id].title}')">فتح</button></div>`;
+            for(let id in allData) if(allData[id].isPinned) pinned += `<div class="card" style="border-color:var(--gold)"><div class="lesson-thumb" style="background-image:url('${getYoutubeThumb(allData[id].url)}')"></div><h4>📌 ${allData[id].title}</h4><button class="btn-accent" onclick="openContent('${allData[id].url}','${allData[id].type}','${allData[id].title}', '${allData[id].subject}')">فتح</button></div>`;
             document.getElementById('pinned-content').innerHTML = pinned || "<p style='color:#555'>لا يوجد محتوى مثبت حالياً</p>";
         }
 
-        function openContent(url, type, title) {
+        // نظام التحقق من الأكواد قبل الفتح
+        function openContent(url, type, title, subject) {
+            const user = JSON.parse(localStorage.getItem('kimo_auth_v26'));
+            
+            // لو المادة "مدفوعة" ومفتحتش قبل كدة
+            if (subject === "الكورسات المدفوعة" && !sessionStorage.getItem('unlocked_premium') && user.phone !== "01023175098") {
+                pendingContent = { url, type, title };
+                document.getElementById('course-lock-gate').style.display = 'flex';
+                return;
+            }
+            
+            executeOpenContent(url, type, title);
+        }
+
+        function executeOpenContent(url, type, title) {
             const user = JSON.parse(localStorage.getItem('kimo_auth_v26'));
             if(user) logsRef.push({ studentPhone: user.phone, studentName: user.name, action: type, title: title, time: new Date().toLocaleString() });
             
@@ -587,23 +660,23 @@
 
                 document.getElementById('video-frame-container').innerHTML = `
                     <div id="blackout-screen"><h3>⚠️ تسجيل الشاشة ممنوع! أغلق البرنامج للمتابعة</h3></div>
-                    <div id="player-watermark" style="position:absolute; z-index:100; color:rgba(255,255,255,0.4); pointer-events:none; font-weight:bold; text-shadow:1px 1px 2px #000; white-space:nowrap;">
+                    <div id="dynamic-watermark" style="position:absolute; z-index:2147483647; color:rgba(255,0,0,0.9); pointer-events:none; font-weight:900; text-shadow:2px 2px 4px #000; font-size:24px;">
                         ${user.name} - ${user.phone}
                     </div>
                     ${videoHTML}`;
 
                 plyrPlayer = new Plyr('#player', { controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'captions', 'settings', 'pip', 'airplay', 'fullscreen'] });
                 
-                // تحريك البصمة داخل المشغل
+                // تحريك البصمة الحمراء التقيلة داخل المشغل
                 if(window.plyrWmInterval) clearInterval(window.plyrWmInterval);
                 window.plyrWmInterval = setInterval(() => {
-                    const wm = document.getElementById('player-watermark');
+                    const wm = document.getElementById('dynamic-watermark');
                     const cont = document.getElementById('video-frame-container');
                     if(wm && cont) {
-                        wm.style.top = Math.random() * (cont.clientHeight - 40) + 'px';
-                        wm.style.left = Math.random() * (cont.clientWidth - 150) + 'px';
+                        wm.style.top = Math.random() * (cont.clientHeight - 50) + 'px';
+                        wm.style.left = Math.random() * (cont.clientWidth - 200) + 'px';
                     }
-                }, 4000);
+                }, 3000);
 
             } else { window.open(url, '_blank'); }
         }
@@ -619,7 +692,7 @@
             const wm = document.getElementById('floating-watermark'), d = JSON.parse(localStorage.getItem('kimo_auth_v26'));
             if(d && wm && document.getElementById('video-player-overlay').style.display !== 'flex') { 
                 wm.style.display = 'block'; 
-                wm.innerHTML = `<span class="en-num">${d.name} | ${d.phone}</span>`;
+                wm.innerHTML = `<span class="en-num" style="color:red; font-weight:900;">${d.name} | ${d.phone}</span>`;
                 wm.style.top = Math.random() * 80 + '%'; wm.style.left = Math.random() * 70 + '%';
             } else if(wm) { wm.style.display = 'none'; }
         }
@@ -629,13 +702,13 @@
             if (e.keyCode == 123 || (e.ctrlKey && e.shiftKey && (e.keyCode == 73 || e.keyCode == 74 || e.keyCode == 67)) || (e.ctrlKey && e.keyCode == 85)) {
                 e.preventDefault(); return false;
             }
-            if (e.key === 'PrintScreen') {
+            if (e.key === 'PrintScreen' || (e.ctrlKey && e.key === 'p')) {
                 document.getElementById('blackout-screen').style.display = 'block';
                 alert("تصوير الشاشة ممنوع!");
+                e.preventDefault();
             }
         });
 
-        // بقية الدوال الأصلية دون تغيير حرف
         function renderSubjectGrids() {
             const subs = Object.keys(subjectImages); let v = "", f = "", a = "";
             subs.forEach(s => {
@@ -650,7 +723,7 @@
             document.getElementById(type==='video'?'subjects-container-video':'subjects-container-file').style.display='none';
             document.getElementById(type==='video'?'specific-subject-videos':'specific-subject-files').style.display='block';
             let h = "", user = JSON.parse(localStorage.getItem('kimo_auth_v26'));
-            for(let id in allData) { if(allData[id].subject === name && allData[id].type === type) { const thumb = type==='video' ? getYoutubeThumb(allData[id].url) : 'https://cdn-icons-png.flaticon.com/512/337/337946.png'; h += `<div class="card"><div class="lesson-thumb" style="background-image:url('${thumb}')"></div><h3>${allData[id].title}</h3><button class="btn-accent" onclick="openContent('${allData[id].url}','${allData[id].type}','${allData[id].title}')">فتح</button>${user.phone === "01023175098" ? `<div class="admin-controls"><button class="btn-pin" onclick="togglePin('lessons','${id}',${allData[id].isPinned})">${allData[id].isPinned?'إلغاء':'تثبيت'}</button><button class="btn-del" onclick="deleteItem('lessons','${id}')">حذف</button></div>`:''}</div>`; } }
+            for(let id in allData) { if(allData[id].subject === name && allData[id].type === type) { const thumb = type==='video' ? getYoutubeThumb(allData[id].url) : 'https://cdn-icons-png.flaticon.com/512/337/337946.png'; h += `<div class="card"><div class="lesson-thumb" style="background-image:url('${thumb}')"></div><h3>${allData[id].title}</h3><button class="btn-accent" onclick="openContent('${allData[id].url}','${allData[id].type}','${allData[id].title}', '${allData[id].subject}')">فتح</button>${user.phone === "01023175098" ? `<div class="admin-controls"><button class="btn-pin" onclick="togglePin('lessons','${id}',${allData[id].isPinned})">${allData[id].isPinned?'إلغاء':'تثبيت'}</button><button class="btn-del" onclick="deleteItem('lessons','${id}')">حذف</button></div>`:''}</div>`; } }
             document.getElementById(type==='video'?'video-list':'file-list').innerHTML = h || "<p>لا يوجد محتوى</p>";
         }
         function sendChatMessage() { const input = document.getElementById('chat-input'), user = JSON.parse(localStorage.getItem('kimo_auth_v26')); if(!input.value.trim()) return; chatRef.push({ name: user.name, text: input.value, time: new Date().toLocaleTimeString('ar-EG'), phone: user.phone }); input.value = ""; }

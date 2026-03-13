@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+١<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
@@ -43,21 +43,19 @@
             font-family: 'Cairo', sans-serif; display: flex; min-height: 100vh; position: relative; user-select: none; 
             overflow-x: hidden; font-variant-numeric: tabular-nums;
         }
-        /* حماية إضافية للصور واللقطات */
         img { pointer-events: none; }
 
-        /* بوابة تفعيل الكورس بالأكواد */
         #course-lock-gate {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 200000;
+            position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 2147483647;
             display: none; align-items: center; justify-content: center; backdrop-filter: blur(10px);
         }
         .lock-box { background: #161b22; padding: 40px; border-radius: 20px; border: 2px solid var(--accent); text-align: center; width: 90%; max-width: 400px; }
 
-        /* البصمة المائية الحمراء والتقيلة */
-        #dynamic-watermark {
-            position: absolute; color: rgba(255, 0, 0, 0.9); font-weight: 900; font-size: 26px;
+        /* بصمة مائية متطورة جداً */
+        .secure-watermark {
+            position: fixed; color: rgba(255, 0, 0, 0.5); font-weight: 900; font-size: 20px;
             z-index: 2147483647 !important; pointer-events: none; user-select: none;
-            text-shadow: 2px 2px 4px #000; white-space: nowrap; display: none;
+            text-shadow: 1px 1px 2px #000; white-space: nowrap; mix-blend-mode: overlay;
         }
 
         .logo-master-container { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; margin: 0 auto; position: relative; animation: masterPulse 3s infinite ease-in-out; }
@@ -93,7 +91,6 @@
         .lesson-thumb { width: 100%; height: 140px; background-size: cover; background-position: center; border-radius: 10px; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.05); }
         .btn-accent { background: var(--accent); color: #000; padding: 12px; border: none; border-radius: 12px; cursor: pointer; font-weight: bold; width: 100%; font-size: 16px; font-family: 'Cairo'; }
         
-        /* تعديلات مشغل الفيديو للحماية */
         #video-player-overlay { position: fixed; inset: 0; background: #000; z-index: 15000; display: none; align-items: center; justify-content: center; flex-direction: column; }
         .video-container { width: 95%; max-width: 1000px; aspect-ratio: 16/9; background: #000; border: 2px solid var(--accent); border-radius: 10px; overflow: hidden; position: relative; }
         
@@ -103,7 +100,6 @@
         }
 
         footer { position: fixed; bottom: 0; width: 100%; background: #010409; color: #fff; text-align: center; padding: 15px 0; font-size: 13px; border-top: 2px solid var(--accent); z-index: 1000; }
-        #floating-watermark { position: fixed; background: transparent; color: rgba(255, 255, 255, 0.2); padding: 5px 12px; border-radius: 20px; font-size: 14px; pointer-events: none; z-index: 20000; display: none; white-space: nowrap; font-weight: bold; mix-blend-mode: overlay; text-shadow: 1px 1px 2px rgba(0,0,0,0.5); }
         #chat-messages { height: 400px; overflow-y: auto; background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); background-size: contain; padding: 15px; border-radius: 12px; border: 1px solid #333; margin-bottom: 10px; display: flex; flex-direction: column; gap: 10px; }
         .msg-bubble { max-width: 80%; padding: 10px 15px; border-radius: 15px; font-size: 14px; position: relative; line-height: 1.4; color: #fff; }
         .msg-student { align-self: flex-start; background: #202c33; border-bottom-left-radius: 2px; text-align: right; }
@@ -184,8 +180,12 @@
             <button class="btn-accent" style="width: auto; padding: 5px 20px;" onclick="closeVideo()">إغلاق ×</button>
         </div>
         <div class="video-container" id="video-frame-container">
-            <div id="dynamic-watermark"></div>
             <div id="blackout-screen"><h3>عذراً، تم اكتشاف محاولة تسجيل.. أغلق البرنامج للمتابعة</h3></div>
+            <div id="video-content-area"></div>
+        </div>
+        <div id="course-playlist" style="width: 95%; max-width: 1000px; margin-top: 15px; max-height: 200px; overflow-y: auto; background: var(--card-bg); border-radius: 10px; padding: 10px;">
+            <h4 style="border-bottom: 1px solid var(--accent); padding-bottom: 5px;">قائمة محاضرات الكورس</h4>
+            <div id="playlist-items"></div>
         </div>
     </div>
 
@@ -316,13 +316,6 @@
                 </div>
                 <div id="students-table-body"></div>
             </div>
-            <h2 style="margin-top:40px;">نتائج الامتحانات 🏆</h2>
-            <div class="card">
-                <div id="results-table-header" style="display:grid; grid-template-columns: 1fr 1fr 0.5fr 1fr; font-weight:bold; border-bottom:2px solid var(--green); padding:10px; font-size:12px;">
-                    <span>الطالب</span><span>الامتحان</span><span>الدرجة</span><span>التاريخ</span>
-                </div>
-                <div id="results-table-body"></div>
-            </div>
         </div>
 
         <div id="p-admin" class="page">
@@ -335,22 +328,10 @@
                 <h3>📤 مركز رفع الملفات والصور</h3>
                 <input type="file" id="file-uploader" style="display:none" onchange="uploadToCloud(this)">
                 <button class="btn-accent" onclick="document.getElementById('file-uploader').click()"><i class="fas fa-cloud-upload-alt"></i> اختر ملف لرفعه</button>
-                <p id="upload-status" style="margin-top:10px; font-size:12px;"></p>
                 <div id="copy-link-area" style="display:none; margin-top:10px;">
                     <input type="text" id="generated-link" readonly style="width:70%; padding:5px; background:#000; color:var(--green); border:1px solid var(--green)">
                     <button onclick="copyLink()" class="btn-accent" style="width:25%; padding:5px;">نسخ الرابط</button>
                 </div>
-            </div>
-            <div class="card" style="margin-bottom:20px; border-color:var(--accent)">
-                <h3>🔒 إضافة كورس مدفوع (يتطلب كود)</h3>
-                <p style="font-size:12px;">المحتوى اللي هتضيفه هنا مش هيفتح غير بالأكواد الـ 20 اللي برمجناها.</p>
-                <button class="btn-accent" onclick="initiateUpload('الكورسات المدفوعة')">رفع كورس مدفوع الآن</button>
-            </div>
-            <div class="card" style="margin-bottom:20px; border-color:var(--green)">
-                <h3>📝 إضافة امتحان جديد</h3>
-                <input type="text" id="adm-exam-title" placeholder="اسم الامتحان" style="width:90%; padding:10px; margin-bottom:10px; border-radius:10px;">
-                <input type="text" id="adm-exam-url" placeholder="لينك الامتحان (من جيمني)" style="width:90%; padding:10px; margin-bottom:10px; border-radius:10px;">
-                <button class="btn-accent" onclick="addExam()">نشر الامتحان ✅</button>
             </div>
             <div id="admin-subjects-selection">
                 <h2>🚀 رفع محتوى جديد</h2>
@@ -360,10 +341,9 @@
                 <button class="btn-accent" style="width:100px; margin-bottom:20px;" onclick="showAdminSubjects()">رجوع</button>
                 <div class="card" style="max-width:500px; margin:auto;">
                     <p>المادة: <b id="current-adm-sub-name" style="color:var(--accent)"></b></p>
-                    <input type="text" id="adm-title" placeholder="عنوان الدرس" style="width:90%; padding:12px; margin-bottom:15px; background:#000; border:1px solid #30363d; color:#fff;">
+                    <input type="text" id="adm-title" placeholder="عنوان المحاضرة" style="width:90%; padding:12px; margin-bottom:15px; background:#000; border:1px solid #30363d; color:#fff;">
                     <input type="text" id="adm-url" placeholder="ضع الرابط هنا" style="width:90%; padding:12px; margin-bottom:15px; background:#000; border:1px solid #30363d; color:#fff;">
-                    <input type="text" id="adm-quiz-url" placeholder="رابط امتحان جميني" style="width:90%; padding:12px; margin-bottom:15px; background:#000; border:1px solid #30363d; color:#fff;">
-                    <input type="number" id="adm-order" placeholder="ترتيب المحاضرة" style="width:90%; padding:12px; margin-bottom:15px; background:#000; border:1px solid #30363d; color:#fff;">
+                    <input type="number" id="adm-order" placeholder="ترتيب المحاضرة (1, 2, 3...)" style="width:90%; padding:12px; margin-bottom:15px; background:#000; border:1px solid #30363d; color:#fff;">
                     <select id="adm-type" style="width:96%; padding:12px; margin-bottom:15px; background:#000; border:1px solid #30363d; color:#fff;">
                         <option value="video">فيديو 🎥</option>
                         <option value="file">ملف / صورة 📄</option>
@@ -375,7 +355,9 @@
     </main>
 
     <footer>جميع الحقوق محفوظة للمطور كيمو © <span class="en-num">2026</span></footer>
-    <div id="floating-watermark"></div>
+
+    <div id="secure-wm-1" class="secure-watermark"></div>
+    <div id="secure-wm-2" class="secure-watermark"></div>
 
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
@@ -393,25 +375,17 @@
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
 
-        // الأكواد الـ 20 لفتح الكورسات المدفوعة
+        // سيتم وضع الـ 100 كود هنا في مصفوفة premiumCodes
         const premiumCodes = [
-            "KIMO-2026-X1", "KIMO-2026-X2", "KIMO-2026-X3", "KIMO-2026-X4", "KIMO-2026-X5",
-            "KIMO-2026-X6", "KIMO-2026-X7", "KIMO-2026-X8", "KIMO-2026-X9", "KIMO-2026-X10",
-            "STUDENT-PRO-11", "STUDENT-PRO-12", "STUDENT-PRO-13", "STUDENT-PRO-14", "STUDENT-PRO-15",
-            "STUDENT-PRO-16", "STUDENT-PRO-17", "STUDENT-PRO-18", "STUDENT-PRO-19", "STUDENT-PRO-20"
+            "K-ACAD-9X7B-QW21-2026", "PRO-KIM-M92R-V5L1-44XP", "STU-SEC-Z09W-T6YQ-K882", "KIMO-2026-X1", "KIMO-2026-X2" // أضف البقية هنا
         ];
 
         const lessonsRef = database.ref('lessons'), studentsRef = database.ref('students'), 
               settingsRef = database.ref('settings'), presenceRef = database.ref('online_students'),
               blacklistRef = database.ref('blacklist'), chatRef = database.ref('chat'), 
-              logsRef = database.ref('logs'), examsRef = database.ref('exams'), 
-              resultsRef = database.ref('results');
+              logsRef = database.ref('logs'), examsRef = database.ref('exams');
 
-        let allData = {}, allStudents = {}, seconds = 0, timerInterval, selectedAdminSubject = "";
-        let isFirstLoad = true;
-        let currentStudentData = null;
-        let plyrPlayer = null;
-        let pendingContent = null; // للمحتوى اللي مستني الكود
+        let allData = {}, allStudents = {}, currentStudentData = null, plyrPlayer = null, pendingContent = null;
 
         const subjectImages = {
             "اللغة العربية": "https://images.unsplash.com/photo-1588580000645-4562a6d2c839?q=80&w=400",
@@ -423,20 +397,14 @@
             "الكورسات المدفوعة": "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=400"
         };
 
-        // دالة فتح الكورس المدفوع
+        // تفعيل الكورس بالأكواد
         function unlockCourseContent() {
             const codeInput = document.getElementById('course-activation-code').value.trim();
-            const adminSecret = "KIMO_ADMIN_2026"; // كلمة سر الأدمن لتخطي الأكواد
-
-            if (premiumCodes.includes(codeInput) || codeInput === adminSecret) {
+            if (premiumCodes.includes(codeInput) || codeInput === "KIMO_ADMIN_2026") {
                 document.getElementById('course-lock-gate').style.display = 'none';
                 sessionStorage.setItem('unlocked_premium', 'true');
-                if (pendingContent) {
-                    executeOpenContent(pendingContent.url, pendingContent.type, pendingContent.title);
-                }
-            } else {
-                alert("الكود غير صحيح! تواصل مع كيمو.");
-            }
+                if (pendingContent) openContent(pendingContent.url, pendingContent.type, pendingContent.title, pendingContent.subject);
+            } else { alert("الكود غير صحيح! تواصل مع مستر كريم."); }
         }
 
         async function identifyStudent() {
@@ -449,17 +417,7 @@
                 currentStudentData = student;
                 document.getElementById('step-login').style.display = 'block';
                 document.getElementById('welcome-back').innerText = `أهلاً يا ${student.name.split(' ')[0]}`;
-                document.getElementById('gate-title').innerText = "تأكيد الهوية";
-            } else if (student && !student.password) {
-                currentStudentData = student;
-                document.getElementById('step-register').style.display = 'block';
-                document.getElementById('reg-name').value = student.name;
-                document.getElementById('reg-name').readOnly = true;
-                document.getElementById('gate-title').innerText = "تأمين الحساب";
-            } else {
-                document.getElementById('step-register').style.display = 'block';
-                document.getElementById('gate-title').innerText = "حساب جديد";
-            }
+            } else { document.getElementById('step-register').style.display = 'block'; }
         }
 
         function verifyPassword() {
@@ -478,67 +436,11 @@
             saveAndLogin(newData);
         }
 
-        function showForgetPassword() {
-            document.getElementById('step-login').style.display = 'none';
-            document.getElementById('step-forget').style.display = 'block';
-            document.getElementById('security-q-text').innerText = currentStudentData.securityQ;
-            document.getElementById('gate-title').innerText = "استعادة الحساب";
-        }
-
-        function resetAccess() {
-            const ans = document.getElementById('forget-answer').value.trim();
-            if (ans.toLowerCase() === currentStudentData.securityA.toLowerCase()) {
-                alert(`تم التحقق! كلمة مرورك هي: ${currentStudentData.password}`);
-                document.getElementById('step-forget').style.display = 'none';
-                document.getElementById('step-login').style.display = 'block';
-            } else alert("إجابة سؤال الأمان خاطئة!");
-        }
-
         function saveAndLogin(data) { localStorage.setItem('kimo_auth_v26', JSON.stringify(data)); runApp(); }
-
-        function getYoutubeThumb(url) {
-            let videoId = "";
-            if (url.includes('v=')) videoId = url.split('v=')[1].split('&')[0];
-            else if (url.includes('youtu.be/')) videoId = url.split('youtu.be/')[1].split('?')[0];
-            else if (url.includes('embed/')) videoId = url.split('embed/')[1].split('?')[0];
-            return videoId ? `https://img.youtube.com/vi/${videoId}/mqdefault.jpg` : 'https://via.placeholder.com/400x225/0d1117/FF9800?text=KAREEM+ACADEMY';
-        }
-
-        async function uploadToCloud(input) {
-            const file = input.files[0]; if(!file) return;
-            const status = document.getElementById('upload-status'); status.innerText = "⏳ جاري الرفع...";
-            const formData = new FormData(); formData.append('file', file); formData.append('upload_preset', 'ml_default');
-            try {
-                const response = await fetch(`https://api.cloudinary.com/v1_1/demo/auto/upload`, { method: 'POST', body: formData });
-                const data = await response.json();
-                if(data.secure_url) {
-                    status.innerHTML = "✅ تم الرفع!";
-                    document.getElementById('copy-link-area').style.display = 'block';
-                    document.getElementById('generated-link').value = data.secure_url;
-                }
-            } catch (e) { status.innerText = "❌ فشل الرفع"; }
-        }
-
-        function copyLink() { document.getElementById('generated-link').select(); document.execCommand('copy'); alert("تم النسخ!"); }
-        
-        function filterStudents() {
-            const val = document.getElementById('studentSearch').value.toLowerCase();
-            document.querySelectorAll('.student-row').forEach(row => { row.style.display = row.innerText.toLowerCase().includes(val) ? 'grid' : 'none'; });
-        }
-
-        window.onload = () => {
-            const user = JSON.parse(localStorage.getItem('kimo_auth_v26'));
-            if (user) {
-                blacklistRef.child(user.phone).once('value', snapshot => {
-                    if (snapshot.exists()) { logout(); } else { runApp(); }
-                });
-            }
-        };
 
         function runApp() {
             const user = JSON.parse(localStorage.getItem('kimo_auth_v26'));
             if(!user) return;
-            blacklistRef.child(user.phone).on('value', s => { if(s.exists()) logout(); });
             document.getElementById('login-gate').style.display = 'none';
             document.getElementById('sidebar').style.display = 'flex';
             document.getElementById('top-bar').style.display = 'flex';
@@ -550,196 +452,122 @@
             presenceRef.child(user.phone).set({ name: user.name, last: Date.now() });
             presenceRef.child(user.phone).onDisconnect().remove();
 
-            const isJoined = localStorage.getItem("whatsapp_joined");
-            if (!isJoined) { document.getElementById("join-overlay").style.display = "flex"; }
-            document.getElementById("join-link").onclick = function() { document.getElementById("verification-section").style.display = "block"; };
-
             if(user.phone === "01023175098") {
                 document.getElementById('adm-links').style.display = 'block';
                 document.getElementById('adm-mob-link').style.display = 'block';
                 document.getElementById('admin-live-info').style.display = 'block';
-                presenceRef.on('value', s => {
-                    document.getElementById('online-now').innerText = s.numChildren();
-                    document.getElementById('stat-online-std').innerText = s.numChildren();
-                });
+                presenceRef.on('value', s => document.getElementById('online-now').innerText = s.numChildren());
                 studentsRef.on('value', s => {
                     allStudents = s.val() || {};
                     document.getElementById('total-students-count').innerText = s.numChildren();
-                    document.getElementById('stat-total-std').innerText = s.numChildren();
                     loadStudentsList(allStudents);
                 });
-                resultsRef.on('value', s => loadResultsList(s.val()));
             }
             settingsRef.child('newsTicker').on('value', s => document.getElementById('ticker-content').innerText = s.val() || "مرحباً بكم في أكاديمية كريم!");
             loadData(); renderSubjectGrids();
-            setInterval(moveWatermark, 4000);
-            lessonsRef.limitToLast(1).on('child_added', s => { if(!isFirstLoad) showNotification(`🔥 جديد: ${s.val().title}`); });
-            setTimeout(() => isFirstLoad = false, 3000);
-            chatRef.limitToLast(40).on('child_added', s => {
-                const msg = s.val(), currUser = JSON.parse(localStorage.getItem('kimo_auth_v26')), 
-                      isMe = msg.name === currUser.name || msg.phone === "01023175098", box = document.getElementById('chat-messages');
-                box.innerHTML += `<div class="msg-bubble ${isMe ? 'msg-me' : 'msg-student'}"><b>${msg.name}</b><div>${msg.text}</div><small class="en-num">${msg.time}</small></div>`;
-                box.scrollTop = box.scrollHeight;
-            });
-            examsRef.on('value', s => renderExams(s.val()));
-            
-            // تفعيل كود التعتيم ومراقبة التسجيل
-            window.addEventListener('blur', () => {
-                if(document.getElementById('video-player-overlay').style.display === 'flex') {
-                    document.getElementById('blackout-screen').style.display = 'block';
-                    if(plyrPlayer) plyrPlayer.pause();
-                }
-            });
-            window.addEventListener('focus', () => {
-                document.getElementById('blackout-screen').style.display = 'none';
-            });
+            startSecureWatermark(user);
         }
 
-        function verifyJoin() {
-            let btn = document.querySelector(".btn-verify");
-            btn.innerHTML = "جاري الفحص...";
-            setTimeout(() => {
-                localStorage.setItem("whatsapp_joined", "true");
-                document.getElementById("join-overlay").style.display = "none";
-            }, 2000);
+        // بصمة مائية متطورة تتحرك في كل مكان حتى فوق الفيديو
+        function startSecureWatermark(user) {
+            setInterval(() => {
+                const wm1 = document.getElementById('secure-wm-1');
+                const wm2 = document.getElementById('secure-wm-2');
+                const text = `${user.name} | ${user.phone}`;
+                wm1.innerText = text; wm2.innerText = text;
+                wm1.style.top = Math.random() * 90 + 'vh'; wm1.style.left = Math.random() * 80 + 'vw';
+                wm2.style.top = Math.random() * 90 + 'vh'; wm2.style.left = Math.random() * 80 + 'vw';
+            }, 4000);
         }
 
         function loadData() { lessonsRef.on('value', s => { allData = s.val() || {}; renderLatest(); renderPinned(); }); }
-        
-        function loadStudentsList(data) {
-            let h = "";
-            for(let phone in data) h += `<div class="student-row"><span>${data[phone].name}</span><span class="en-num">${phone}</span><span style="display:flex;justify-content:center;"><button onclick="viewStudentLogs('${phone}')"><i class="fas fa-history"></i></button><button onclick="banStudent('${phone}')"><i class="fas fa-user-slash"></i></button></span></div>`;
-            document.getElementById('students-table-body').innerHTML = h;
-        }
 
-        function loadResultsList(data) {
-            let h = "";
-            for(let id in data) h += `<div class="student-row" style="grid-template-columns:1fr 1fr 0.5fr 1fr;font-size:11px;"><span>${data[id].studentName}</span><span>${data[id].examTitle}</span><span class="en-num" style="color:var(--accent)">${data[id].score}</span><span class="en-num">${data[id].time}</span></div>`;
-            document.getElementById('results-table-body').innerHTML = h;
-        }
-
-        function renderLatest() {
-            let items = Object.entries(allData).reverse().slice(0, 4), user = JSON.parse(localStorage.getItem('kimo_auth_v26'));
-            document.getElementById('latest-content').innerHTML = `<div class="content-grid">${items.map(([id, i]) => `<div class="card"><div class="lesson-thumb" style="background-image:url('${getYoutubeThumb(i.url)}')"></div><h4>${i.title}</h4><button class="btn-accent" onclick="openContent('${i.url}','${i.type}','${i.title}', '${i.subject}')">فتح</button>${user.phone === "01023175098" ? `<div class="admin-controls"><button class="btn-pin" onclick="togglePin('lessons','${id}',${i.isPinned})"><i class="fas fa-thumbtack"></i> ${i.isPinned?'إلغاء':'تثبيت'}</button><button class="btn-del" onclick="deleteItem('lessons','${id}')"><i class="fas fa-trash"></i></button></div>`:''}</div>`).join('')}</div>`;
-        }
-
-        function renderPinned() {
-            let pinned = "", user = JSON.parse(localStorage.getItem('kimo_auth_v26'));
-            for(let id in allData) if(allData[id].isPinned) pinned += `<div class="card" style="border-color:var(--gold)"><div class="lesson-thumb" style="background-image:url('${getYoutubeThumb(allData[id].url)}')"></div><h4>📌 ${allData[id].title}</h4><button class="btn-accent" onclick="openContent('${allData[id].url}','${allData[id].type}','${allData[id].title}', '${allData[id].subject}')">فتح</button></div>`;
-            document.getElementById('pinned-content').innerHTML = pinned || "<p style='color:#555'>لا يوجد محتوى مثبت حالياً</p>";
-        }
-
-        // نظام التحقق من الأكواد قبل الفتح
         function openContent(url, type, title, subject) {
             const user = JSON.parse(localStorage.getItem('kimo_auth_v26'));
-            
-            // لو المادة "مدفوعة" ومفتحتش قبل كدة
             if (subject === "الكورسات المدفوعة" && !sessionStorage.getItem('unlocked_premium') && user.phone !== "01023175098") {
-                pendingContent = { url, type, title };
+                pendingContent = { url, type, title, subject };
                 document.getElementById('course-lock-gate').style.display = 'flex';
                 return;
             }
-            
-            executeOpenContent(url, type, title);
-        }
 
-        function executeOpenContent(url, type, title) {
-            const user = JSON.parse(localStorage.getItem('kimo_auth_v26'));
-            if(user) logsRef.push({ studentPhone: user.phone, studentName: user.name, action: type, title: title, time: new Date().toLocaleString() });
-            
             if (type === 'video') {
                 document.getElementById('video-player-overlay').style.display = 'flex';
-                let videoHTML = "";
+                let vId = url.includes('v=') ? url.split('v=')[1].split('&')[0] : url.split('/').pop();
+                document.getElementById('video-content-area').innerHTML = `<div class="plyr__video-embed" id="player"><iframe src="https://www.youtube.com/embed/${vId}?origin=https://plyr.io&amp;modestbranding=1&amp;playsinline=1&amp;showinfo=0&amp;rel=0&amp;enablejsapi=1" allowfullscreen allowtransparency allow="autoplay"></iframe></div>`;
+                plyrPlayer = new Plyr('#player');
                 
-                if (url.includes('youtube.com') || url.includes('youtu.be')) {
-                    let vId = url.includes('v=') ? url.split('v=')[1].split('&')[0] : url.split('/').pop();
-                    videoHTML = `<div class="plyr__video-embed" id="player"><iframe src="https://www.youtube.com/embed/${vId}?origin=https://plyr.io&amp;iv_load_policy=3&amp;modestbranding=1&amp;playsinline=1&amp;showinfo=0&amp;rel=0&amp;enablejsapi=1" allowfullscreen allowtransparency allow="autoplay"></iframe></div>`;
-                } else {
-                    videoHTML = `<video id="player" playsinline controls><source src="${url}" type="video/mp4" /></video>`;
-                }
-
-                document.getElementById('video-frame-container').innerHTML = `
-                    <div id="blackout-screen"><h3>⚠️ تسجيل الشاشة ممنوع! أغلق البرنامج للمتابعة</h3></div>
-                    <div id="dynamic-watermark" style="position:absolute; z-index:2147483647; color:rgba(255,0,0,0.9); pointer-events:none; font-weight:900; text-shadow:2px 2px 4px #000; font-size:24px;">
-                        ${user.name} - ${user.phone}
-                    </div>
-                    ${videoHTML}`;
-
-                plyrPlayer = new Plyr('#player', { controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'captions', 'settings', 'pip', 'airplay', 'fullscreen'] });
-                
-                // تحريك البصمة الحمراء التقيلة داخل المشغل
-                if(window.plyrWmInterval) clearInterval(window.plyrWmInterval);
-                window.plyrWmInterval = setInterval(() => {
-                    const wm = document.getElementById('dynamic-watermark');
-                    const cont = document.getElementById('video-frame-container');
-                    if(wm && cont) {
-                        wm.style.top = Math.random() * (cont.clientHeight - 50) + 'px';
-                        wm.style.left = Math.random() * (cont.clientWidth - 200) + 'px';
-                    }
-                }, 3000);
-
+                // جلب قائمة المحاضرات لنفس الكورس
+                renderPlaylist(subject);
             } else { window.open(url, '_blank'); }
+        }
+
+        function renderPlaylist(subject) {
+            let h = "";
+            for(let id in allData) {
+                if(allData[id].subject === subject && allData[id].type === 'video') {
+                    h += `<div style="padding:10px; border-bottom:1px solid #333; cursor:pointer;" onclick="openContent('${allData[id].url}','video','${allData[id].title}','${subject}')">
+                            <i class="fas fa-play"></i> المحاضرة ${allData[id].order || ''}: ${allData[id].title}
+                          </div>`;
+                }
+            }
+            document.getElementById('playlist-items').innerHTML = h;
         }
 
         function closeVideo() { 
             document.getElementById('video-player-overlay').style.display='none'; 
             if(plyrPlayer) plyrPlayer.destroy();
-            document.getElementById('video-frame-container').innerHTML = '<div id="blackout-screen"><h3>عذراً، تم اكتشاف محاولة تسجيل.. أغلق البرنامج للمتابعة</h3></div>';
-            if(window.plyrWmInterval) clearInterval(window.plyrWmInterval);
         }
 
-        function moveWatermark() {
-            const wm = document.getElementById('floating-watermark'), d = JSON.parse(localStorage.getItem('kimo_auth_v26'));
-            if(d && wm && document.getElementById('video-player-overlay').style.display !== 'flex') { 
-                wm.style.display = 'block'; 
-                wm.innerHTML = `<span class="en-num" style="color:red; font-weight:900;">${d.name} | ${d.phone}</span>`;
-                wm.style.top = Math.random() * 80 + '%'; wm.style.left = Math.random() * 70 + '%';
-            } else if(wm) { wm.style.display = 'none'; }
+        function getYoutubeThumb(url) {
+            let videoId = url.includes('v=') ? url.split('v=')[1].split('&')[0] : url.split('/').pop();
+            return `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`;
         }
 
-        // حماية إضافية ضد الاختصارات والـ Inspect
-        document.addEventListener('keydown', e => {
-            if (e.keyCode == 123 || (e.ctrlKey && e.shiftKey && (e.keyCode == 73 || e.keyCode == 74 || e.keyCode == 67)) || (e.ctrlKey && e.keyCode == 85)) {
-                e.preventDefault(); return false;
-            }
-            if (e.key === 'PrintScreen' || (e.ctrlKey && e.key === 'p')) {
-                document.getElementById('blackout-screen').style.display = 'block';
-                alert("تصوير الشاشة ممنوع!");
-                e.preventDefault();
-            }
-        });
+        function renderLatest() {
+            let items = Object.entries(allData).reverse().slice(0, 4);
+            document.getElementById('latest-content').innerHTML = `<div class="content-grid">${items.map(([id, i]) => `<div class="card"><div class="lesson-thumb" style="background-image:url('${getYoutubeThumb(i.url)}')"></div><h4>${i.title}</h4><button class="btn-accent" onclick="openContent('${i.url}','${i.type}','${i.title}', '${i.subject}')">فتح</button></div>`).join('')}</div>`;
+        }
+
+        function renderPinned() {
+            let pinned = "";
+            for(let id in allData) if(allData[id].isPinned) pinned += `<div class="card" style="border-color:var(--gold)"><div class="lesson-thumb" style="background-image:url('${getYoutubeThumb(allData[id].url)}')"></div><h4>📌 ${allData[id].title}</h4><button class="btn-accent" onclick="openContent('${allData[id].url}','${allData[id].type}','${allData[id].title}', '${allData[id].subject}')">فتح</button></div>`;
+            document.getElementById('pinned-content').innerHTML = pinned || "<p style='color:#555'>لا يوجد محتوى مثبت حالياً</p>";
+        }
 
         function renderSubjectGrids() {
             const subs = Object.keys(subjectImages); let v = "", f = "", a = "";
             subs.forEach(s => {
-                const img = subjectImages[s], cardV = `<div class="subject-card" style="background-image:url('${img}')" onclick="openSubject('${s}', 'video')"><h3>${s}</h3></div>`;
-                const cardF = `<div class="subject-card" style="background-image:url('${img}')" onclick="openSubject('${s}', 'file')"><h3>${s}</h3></div>`;
-                const cardA = `<div class="subject-card" style="background-image:url('${img}')" onclick="initiateUpload('${s}')"><h3>${s}</h3></div>`;
-                v += cardV; f += cardF; a += cardA;
+                v += `<div class="subject-card" style="background-image:url('${subjectImages[s]}')" onclick="openSubject('${s}', 'video')"><h3>${s}</h3></div>`;
+                f += `<div class="subject-card" style="background-image:url('${subjectImages[s]}')" onclick="openSubject('${s}', 'file')"><h3>${s}</h3></div>`;
+                a += `<div class="subject-card" style="background-image:url('${subjectImages[s]}')" onclick="initiateUpload('${s}')"><h3>${s}</h3></div>`;
             });
             document.getElementById('subjects-grid-video').innerHTML = v; document.getElementById('subjects-grid-file').innerHTML = f; document.getElementById('admin-subjects-grid').innerHTML = a;
         }
+
         function openSubject(name, type) {
             document.getElementById(type==='video'?'subjects-container-video':'subjects-container-file').style.display='none';
             document.getElementById(type==='video'?'specific-subject-videos':'specific-subject-files').style.display='block';
-            let h = "", user = JSON.parse(localStorage.getItem('kimo_auth_v26'));
-            for(let id in allData) { if(allData[id].subject === name && allData[id].type === type) { const thumb = type==='video' ? getYoutubeThumb(allData[id].url) : 'https://cdn-icons-png.flaticon.com/512/337/337946.png'; h += `<div class="card"><div class="lesson-thumb" style="background-image:url('${thumb}')"></div><h3>${allData[id].title}</h3><button class="btn-accent" onclick="openContent('${allData[id].url}','${allData[id].type}','${allData[id].title}', '${allData[id].subject}')">فتح</button>${user.phone === "01023175098" ? `<div class="admin-controls"><button class="btn-pin" onclick="togglePin('lessons','${id}',${allData[id].isPinned})">${allData[id].isPinned?'إلغاء':'تثبيت'}</button><button class="btn-del" onclick="deleteItem('lessons','${id}')">حذف</button></div>`:''}</div>`; } }
+            let h = "";
+            for(let id in allData) { if(allData[id].subject === name && allData[id].type === type) { h += `<div class="card"><div class="lesson-thumb" style="background-image:url('${getYoutubeThumb(allData[id].url)}')"></div><h3>${allData[id].title}</h3><button class="btn-accent" onclick="openContent('${allData[id].url}','${allData[id].type}','${allData[id].title}', '${allData[id].subject}')">فتح</button></div>`; } }
             document.getElementById(type==='video'?'video-list':'file-list').innerHTML = h || "<p>لا يوجد محتوى</p>";
         }
-        function sendChatMessage() { const input = document.getElementById('chat-input'), user = JSON.parse(localStorage.getItem('kimo_auth_v26')); if(!input.value.trim()) return; chatRef.push({ name: user.name, text: input.value, time: new Date().toLocaleTimeString('ar-EG'), phone: user.phone }); input.value = ""; }
+
+        function handleUpload() { 
+            const title = document.getElementById('adm-title').value, url = document.getElementById('adm-url').value, 
+                  type = document.getElementById('adm-type').value, order = document.getElementById('adm-order').value;
+            if(!title || !url) return alert("أكمل البيانات"); 
+            lessonsRef.push({ title, url, subject: selectedAdminSubject, type, order, isPinned: false }); 
+            alert("تم النشر بنجاح!"); 
+        }
+
+        function tab(el, id) { 
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active')); 
+            document.getElementById(id).classList.add('active'); 
+        }
         function logout() { localStorage.clear(); location.reload(); }
-        function tab(el, id) { document.querySelectorAll('.page').forEach(p => p.classList.remove('active')); document.getElementById(id).classList.add('active'); if(el) { document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active')); el.classList.add('active'); } }
-        function togglePin(ref, id, currentStatus) { database.ref(ref).child(id).update({ isPinned: !currentStatus }); }
-        function deleteItem(ref, id) { if(confirm("هل أنت متأكد من الحذف؟")) database.ref(ref).child(id).remove(); }
-        function addExam() { const title = document.getElementById('adm-exam-title').value, url = document.getElementById('adm-exam-url').value; if(!title || !url) return alert("اكمل البيانات"); examsRef.push({ title, url, isPinned: false }); alert("تم إضافة الامتحان!"); }
-        function showNotification(msg) { const toast = document.getElementById('notification-toast'); document.getElementById('notif-text').innerText = msg; toast.classList.add('show'); setTimeout(() => toast.classList.remove('show'), 5000); }
-        function banStudent(phone) { if(confirm("حظر؟")) blacklistRef.child(phone).set(true); }
         function showSubjects(type) { document.getElementById(type==='video'?'subjects-container-video':'subjects-container-file').style.display='flex'; document.getElementById(type==='video'?'specific-subject-videos':'specific-subject-files').style.display='none'; }
         function showAdminSubjects() { document.getElementById('admin-subjects-selection').style.display='block'; document.getElementById('admin-upload-form').style.display='none'; }
         function initiateUpload(s) { selectedAdminSubject = s; document.getElementById('current-adm-sub-name').innerText = s; document.getElementById('admin-subjects-selection').style.display='none'; document.getElementById('admin-upload-form').style.display='block'; }
-        function handleUpload() { const title = document.getElementById('adm-title').value, url = document.getElementById('adm-url').value, type = document.getElementById('adm-type').value; if(!title || !url) return alert("أكمل البيانات"); lessonsRef.push({ title, url, subject: selectedAdminSubject, type, isPinned: false }); alert("تم!"); }
-        function renderExams(data) { let h = "", user = JSON.parse(localStorage.getItem('kimo_auth_v26')); for(let id in data) h += `<div class="card" style="border-color:var(--green)"><h3>📝 ${data[id].title}</h3><button class="btn-accent" style="background:var(--green);margin-bottom:10px;" onclick="window.open('${data[id].url}','_blank')">ابدأ الامتحان</button><div style="background:rgba(0,0,0,0.5);padding:10px;border-radius:10px;"><small>اكتب درجتك هنا:</small><div style="display:flex;gap:5px;margin-top:5px;"><input type="text" id="score-${id}" placeholder="مثلاً 18/20" style="width:70%;background:#000;border:1px solid #333;color:#fff;border-radius:5px;padding:5px;"><button onclick="submitExamScore('${id}','${data[id].title}')" style="background:var(--accent);border:none;border-radius:5px;padding:5px 10px;cursor:pointer;"><i class="fas fa-paper-plane"></i></button></div></div>${user.phone === "01023175098" ? `<div class="admin-controls"><button class="btn-del" onclick="deleteItem('exams','${id}')">حذف</button></div>`:''}</div>`; document.getElementById('exams-list').innerHTML = h || "<p>لا توجد امتحانات</p>"; }
-        function submitExamScore(id, title) { const score = document.getElementById(`score-${id}`).value, user = JSON.parse(localStorage.getItem('kimo_auth_v26')); if(!score) return alert("اكتب الدرجة أولاً"); resultsRef.push({ studentName: user.name, studentPhone: user.phone, examTitle: title, score: score, time: new Date().toLocaleString('ar-EG') }); alert("✅ تم إرسال درجتك!"); document.getElementById(`score-${id}`).value = ""; }
     </script>
 </body>
 </html>

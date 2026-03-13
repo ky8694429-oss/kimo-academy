@@ -140,11 +140,10 @@
         
         footer { position: fixed; bottom: 0; width: 100%; background: #010409; color: #fff; text-align: center; padding: 15px 0; font-size: 13px; border-top: 2px solid var(--accent); z-index: 1000; }
         
-        /* --- تعديل العلامة المائية (Advanced Watermark) --- */
         #floating-watermark { 
             position: fixed; 
-            background: transparent; /* شيل الخلفية السوداء عشان الـ overlay يبان */
-            color: rgba(255, 255, 255, 0.3); /* تقليل الشفافية */
+            background: transparent;
+            color: rgba(255, 255, 255, 0.3);
             padding: 5px 12px; 
             border-radius: 20px; 
             font-size: 14px; 
@@ -153,9 +152,8 @@
             display: none; 
             white-space: nowrap; 
             font-weight: bold; 
-            /* الخاصية السحرية */
             mix-blend-mode: overlay; 
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.5); /* عشان تبان على الخلفيات الفاتحة برضه */
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
         }
 
         #chat-messages { height: 400px; overflow-y: auto; background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); background-size: contain; padding: 15px; border-radius: 12px; border: 1px solid #333; margin-bottom: 10px; display: flex; flex-direction: column; gap: 10px; }
@@ -196,10 +194,9 @@
         .btn-pin { background: var(--gold); color: #000; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 12px; font-weight: bold; }
         .btn-del { background: var(--danger); color: #fff; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 12px; }
 
-        /* --- تعديل موقع أيقونة الواتساب لتكون فوق التليجرام --- */
         .whatsapp-float {
             position: fixed;
-            bottom: 150px; /* تم تغييرها من 80px لتصبح فوق التليجرام */
+            bottom: 150px;
             right: 20px;
             background-color: #25d366;
             color: white;
@@ -212,57 +209,23 @@
             align-items: center;
             transition: 0.3s;
         }
+        .whatsapp-float:hover { transform: scale(1.1); background-color: #128c7e; }
 
-        /* إضافة تأثير نبض خفيف عشان تشد انتباه الطالب */
-        .whatsapp-float:hover {
-            transform: scale(1.1);
-            background-color: #128c7e;
-        }
-
-        /* --- التنبيه الإجباري في منتصف الشاشة --- */
         #join-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.85);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 99999;
-            backdrop-filter: blur(5px);
+            display: flex; justify-content: center; align-items: center;
+            z-index: 99999; backdrop-filter: blur(5px);
         }
-
-        .join-modal {
-            background: white;
-            padding: 30px;
-            border-radius: 15px;
-            text-align: center;
-            max-width: 400px;
-            width: 90%;
-        }
-
+        .join-modal { background: white; padding: 30px; border-radius: 15px; text-align: center; max-width: 400px; width: 90%; }
         .join-modal h2 { color: #075e54; margin-bottom: 15px; }
-        .btn-join { 
-            display: block; background: #25d366; color: white; 
-            padding: 12px; border-radius: 8px; text-decoration: none; 
-            margin: 15px 0; font-weight: bold;
-        }
-        .btn-verify {
-            background: #34b7f1; color: white; border: none;
-            padding: 10px 20px; border-radius: 5px; cursor: pointer;
-            font-family: 'Cairo';
-        }
+        .btn-join { display: block; background: #25d366; color: white; padding: 12px; border-radius: 8px; text-decoration: none; margin: 15px 0; font-weight: bold; }
+        .btn-verify { background: #34b7f1; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-family: 'Cairo'; }
 
-        /* كود إظهار قسم الامتحانات على الموبايل فقط */
         @media screen and (max-width: 767px) {
-            /* استبدل كلمة .exams-section بكلاس القسم بتاعك */
             #p-exams, .exams-section, #exams-container { 
-                display: block !important; 
-                visibility: visible !important;
-                opacity: 1 !important;
-                width: 100% !important;
-                height: auto !important;
-                position: relative !important;
-                overflow: visible !important;
+                display: block !important; visibility: visible !important; opacity: 1 !important; width: 100% !important; height: auto !important; position: relative !important; overflow: visible !important;
             }
         }
     </style>
@@ -295,12 +258,7 @@
         <div class="join-modal">
             <h2>⚠️ خطوة أخيرة</h2>
             <p style="color: #333;">يرجى الانضمام لجروب الواتساب الرسمي للمتابعة وتفعيل كامل ميزات المنصة.</p>
-            
-            <a href="https://chat.whatsapp.com/E5tpwhb6D5j9lDnXBFNbLM" 
-               id="join-link" target="_blank" class="btn-join">
-               اضغط هنا للانضمام للجروب
-            </a>
-
+            <a href="https://chat.whatsapp.com/E5tpwhb6D5j9lDnXBFNbLM" id="join-link" target="_blank" class="btn-join">اضغط هنا للانضمام للجروب</a>
             <div id="verification-section" style="display:none;">
                 <p id="verify-text" style="color: #666; margin-bottom: 10px;">جاري التحقق...</p>
                 <button onclick="verifyJoin()" class="btn-verify">تم الانضمام، أكمل للمنصة</button>
@@ -318,7 +276,6 @@
 
     <div id="login-gate">
         <div class="gate-box" style="max-width: 400px; margin: 50px auto; padding: 30px; background: var(--card-bg); border-radius: 20px; text-align: center; border: 1px solid var(--accent); box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
-            
             <div class="logo-master-container">
                 <div class="logo-icon-box" style="position: relative;">
                     <svg class="bulb-icon" viewBox="0 0 24 24" style="width:80px; filter: drop-shadow(0 0 15px #FF9800);">
@@ -331,21 +288,17 @@
                     <span style="color: #FF9800; letter-spacing: 4px; border-top: 2px solid #444;">ACADEMY 2026</span>
                 </div>
             </div>
-    
             <h3 id="gate-title" style="margin-bottom: 20px; color: var(--accent);">تسجيل الدخول</h3>
-    
             <div id="step-1">
                 <input type="tel" id="std-phone" class="en-num" placeholder="رقم الموبايل" style="width:90%; padding:12px; margin-bottom:15px; border-radius:10px; border:1px solid #30363d; background:#000; color:#fff; text-align:right;">
                 <button class="btn-accent" onclick="identifyStudent()">التالي</button>
             </div>
-    
             <div id="step-login" style="display:none;">
                 <p id="welcome-back" style="font-size: 14px; margin-bottom: 10px;"></p>
                 <input type="password" id="std-pass" placeholder="أدخل كلمة المرور" style="width:90%; padding:12px; margin-bottom:15px; border-radius:10px; border:1px solid #30363d; background:#000; color:#fff;">
                 <button class="btn-accent" onclick="verifyPassword()">دخول 🚀</button>
                 <p style="margin-top:15px; font-size:12px; color:var(--accent); cursor:pointer;" onclick="showForgetPassword()">نسيت كلمة المرور؟</p>
             </div>
-    
             <div id="step-register" style="display:none;">
                 <p style="font-size: 13px; color: var(--green); margin-bottom: 10px;">أهلاً بك لأول مرة! يرجى إعداد حسابك:</p>
                 <input type="text" id="reg-name" placeholder="الاسم الثلاثي" style="width:90%; padding:12px; margin-bottom:10px; border-radius:10px; border:1px solid #30363d; background:#000; color:#fff;">
@@ -359,7 +312,6 @@
                 <input type="text" id="reg-answer" placeholder="إجابة السؤال السري" style="width:90%; padding:12px; margin-bottom:15px; border-radius:10px; border:1px solid #30363d; background:#000; color:#fff;">
                 <button class="btn-accent" onclick="completeRegistration()">حفظ والدخول للمنصة</button>
             </div>
-    
             <div id="step-forget" style="display:none;">
                 <p id="security-q-text" style="font-size: 14px; margin-bottom: 10px; color: var(--gold);"></p>
                 <input type="text" id="forget-answer" placeholder="إجابة السؤال السري" style="width:90%; padding:12px; margin-bottom:15px; border-radius:10px; border:1px solid #30363d; background:#000; color:#fff;">
@@ -382,7 +334,6 @@
                 <span style="color: #FF9800; font-size: 10px; letter-spacing: 2px;">ACADEMY 2026</span>
             </div>
         </div>
-
         <div class="nav-link active" onclick="tab(this, 'p-home')"><i class="fas fa-home"></i> <span>الرئيسية</span></div>
         <div class="nav-link" onclick="tab(this, 'p-lessons')"><i class="fas fa-play-circle"></i> <span>المحاضرات</span></div>
         <div class="nav-link" onclick="tab(this, 'p-files')"><i class="fas fa-file-pdf"></i> <span>PDF</span></div>
@@ -450,7 +401,6 @@
                 </div>
                 <div id="students-table-body"></div>
             </div>
-            
             <h2 style="margin-top:40px;">نتائج الامتحانات 🏆</h2>
             <div class="card">
                 <div id="results-table-header" style="display:grid; grid-template-columns: 1fr 1fr 0.5fr 1fr; font-weight:bold; border-bottom:2px solid var(--green); padding:10px; font-size:12px;">
@@ -466,7 +416,6 @@
                 <input type="text" id="adm-news-text" placeholder="اكتب الخبر هنا..." style="width:80%; padding:10px; border-radius:10px;">
                 <button class="btn-accent" style="width:15%;" onclick="updateNewsTicker()">نشر</button>
             </div>
-
             <div class="card" style="margin-bottom:20px; border-color:var(--accent)">
                 <h3>📤 مركز رفع الملفات والصور</h3>
                 <input type="file" id="file-uploader" style="display:none" onchange="uploadToCloud(this)">
@@ -477,14 +426,12 @@
                     <button onclick="copyLink()" class="btn-accent" style="width:25%; padding:5px;">نسخ الرابط</button>
                 </div>
             </div>
-
             <div class="card" style="margin-bottom:20px; border-color:var(--green)">
                 <h3>📝 إضافة امتحان جديد</h3>
                 <input type="text" id="adm-exam-title" placeholder="اسم الامتحان" style="width:90%; padding:10px; margin-bottom:10px; border-radius:10px;">
                 <input type="text" id="adm-exam-url" placeholder="لينك الامتحان (من جيمني)" style="width:90%; padding:10px; margin-bottom:10px; border-radius:10px;">
                 <button class="btn-accent" onclick="addExam()">نشر الامتحان ✅</button>
             </div>
-
             <div id="admin-subjects-selection">
                 <h2>🚀 رفع محتوى جديد</h2>
                 <div class="content-grid" id="admin-subjects-grid"></div>
@@ -494,10 +441,9 @@
                 <div class="card" style="max-width:500px; margin:auto;">
                     <p>المادة: <b id="current-adm-sub-name" style="color:var(--accent)"></b></p>
                     <input type="text" id="adm-title" placeholder="عنوان الدرس" style="width:90%; padding:12px; margin-bottom:15px; background:#000; border:1px solid #30363d; color:#fff;">
-                    <input type="text" id="adm-url" placeholder="ضع الرابط هنا (يوتيوب أو الرابط المرفوع)" style="width:90%; padding:12px; margin-bottom:15px; background:#000; border:1px solid #30363d; color:#fff;">
+                    <input type="text" id="adm-url" placeholder="ضع الرابط هنا" style="width:90%; padding:12px; margin-bottom:15px; background:#000; border:1px solid #30363d; color:#fff;">
                     <input type="text" id="adm-quiz-url" placeholder="رابط امتحان جميني" style="width:90%; padding:12px; margin-bottom:15px; background:#000; border:1px solid #30363d; color:#fff;">
-<input type="number" id="adm-order" placeholder="ترتيب المحاضرة (1, 2, 3..)" style="width:90%; padding:12px; margin-bottom:15px; background:#000; border:1px solid #30363d; color:#fff;">
-
+                    <input type="number" id="adm-order" placeholder="ترتيب المحاضرة" style="width:90%; padding:12px; margin-bottom:15px; background:#000; border:1px solid #30363d; color:#fff;">
                     <select id="adm-type" style="width:96%; padding:12px; margin-bottom:15px; background:#000; border:1px solid #30363d; color:#fff;">
                         <option value="video">فيديو 🎥</option>
                         <option value="file">ملف / صورة 📄</option>
@@ -633,7 +579,6 @@
         }
         document.onkeydown = (e) => { if(e.keyCode == 123 || (e.ctrlKey && e.shiftKey && (e.keyCode == 73 || e.keyCode == 74 || e.keyCode == 67)) || (e.ctrlKey && e.keyCode == 85)) return false; };
 
-        /* --- منع تكرار تسجيل الدخول والتحقق من الحظر (Security Check) --- */
         window.onload = () => {
             const user = JSON.parse(localStorage.getItem('kimo_auth_v26'));
             if (user) {
@@ -663,7 +608,6 @@
             presenceRef.child(user.phone).set({ name: user.name, last: Date.now() });
             presenceRef.child(user.phone).onDisconnect().remove();
 
-            // --- منطق الواتساب المضاف ---
             const isJoined = localStorage.getItem("whatsapp_joined");
             if (!isJoined) {
                 document.getElementById("join-overlay").style.display = "flex";
@@ -761,59 +705,66 @@
             toast.classList.add('show'); setTimeout(() => toast.classList.remove('show'), 5000);
         }
 
-        /* --- تحسين مشغل اليوتيوب (YouTube Player Optimization) --- */
         function openContent(url, type, title) {
             const user = JSON.parse(localStorage.getItem('kimo_auth_v26'));
-            if(user) logsRef.push({ studentPhone: user.phone, studentName: user.name, action: type, title: title, time: new Date().toLocaleString() })
-                    if (type === 'video') {
-            let finalSrc = "";
-            if (url.includes('streamable.com')) {
-                let videoId = url.split('/').pop().split('?')[0];
-                finalSrc = `https://streamable.com/e/${videoId}?logo=0&info=0`;
-            } else if (url.includes('youtube.com') || url.includes('youtu.be')) {
-                let videoId = url.includes('v=') ? url.split('v=')[1].split('&')[0] : url.split('/').pop();
-                finalSrc = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&showinfo=0`;
-            } else {
-                finalSrc = url;
-            }
+            if(user) logsRef.push({ studentPhone: user.phone, studentName: user.name, action: type, title: title, time: new Date().toLocaleString() });
+            
+            if (type === 'video') {
+                let finalSrc = "";
+                if (url.includes('streamable.com')) {
+                    let videoId = url.split('/').pop().split('?')[0];
+                    finalSrc = `https://streamable.com/e/${videoId}?logo=0&info=0`;
+                } else if (url.includes('youtube.com') || url.includes('youtu.be')) {
+                    let videoId = url.includes('v=') ? url.split('v=')[1].split('&')[0] : url.split('/').pop();
+                    finalSrc = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&showinfo=0`;
+                } else { finalSrc = url; }
 
-                                    // إعداد الخلفية
-            let thumbnailUrl = "https://raw.githubusercontent.com/ky8694429-oss/kimo-academy/main/logo.png";
-            if (url.includes('youtube.com') || url.includes('youtu.be')) {
-                let yId = url.includes('v=') ? url.split('v=')[1].split('&')[0] : url.split('/').pop();
-                thumbnailUrl = `https://img.youtube.com/vi/${yId}/maxresdefault.jpg`;
-            }
-            document.getElementById('video-player-overlay').style.backgroundImage = `url(${thumbnailUrl})`;
-            document.getElementById('video-player-overlay').style.display = 'flex';
+                let thumbnailUrl = "https://raw.githubusercontent.com/ky8694429-oss/kimo-academy/main/logo.png";
+                if (url.includes('youtube.com') || url.includes('youtu.be')) {
+                    let yId = url.includes('v=') ? url.split('v=')[1].split('&')[0] : url.split('/').pop();
+                    thumbnailUrl = `https://img.youtube.com/vi/${yId}/maxresdefault.jpg`;
+                }
+                document.getElementById('video-player-overlay').style.backgroundImage = `url(${thumbnailUrl})`;
+                document.getElementById('video-player-overlay').style.display = 'flex';
 
-            // بناء المشغل مع حماية متقدمة
-            document.getElementById('video-frame-container').innerHTML = `
-           <div id="watermark" style="position:absolute; z-index:9999; color:rgba(255,255,255,0.9); font-weight:900; font-size:22px; pointer-events:none; text-shadow: 2px 2px 0px #000, -2px -2px 0px #000, 2px -2px 0px #000, -2px 2px 0px #000; transition: all 1s ease; white-space: nowrap;">
-    ${user.name} - ${user.phone}
-</div>
-بص     
+                document.getElementById('video-frame-container').innerHTML = `
+                <div style="position:relative; width:100%; height:100%;">
+                    <div id="watermark" style="position:absolute; z-index:9999; color:rgba(255,255,255,0.9); font-weight:900; font-size:22px; pointer-events:none; text-shadow: 2px 2px 0px #000, -2px -2px 0px #000, 2px -2px 0px #000, -2px 2px 0px #000; transition: all 1s ease; white-space: nowrap;">
+                        ${user.name} - ${user.phone}
+                    </div>
                     <iframe src="${finalSrc}" width="100%" height="100%" frameborder="0" allowfullscreen></iframe>
                 </div>`;
 
-            // كود تحريك البصمة المائية كل 5 ثواني لمنع التصوير
-            setInterval(() => {
-                const wm = document.getElementById('watermark');
-                if(wm) {
-                    wm.style.top = Math.random() * 80 + '%';
-                    wm.style.left = Math.random() * 70 + '%';
-                }
-            }, 5000);
+                if(window.wmInterval) clearInterval(window.wmInterval);
+                window.wmInterval = setInterval(() => {
+                    const wm = document.getElementById('watermark');
+                    if(wm) {
+                        wm.style.top = Math.random() * 80 + '%';
+                        wm.style.left = Math.random() * 70 + '%';
+                    }
+                }, 5000);
+            } else {
+                window.open(url, '_blank');
+            }
+        }
 
-
-        function closeVideo() { document.getElementById('video-player-overlay').style.display='none'; document.getElementById('video-frame-container').innerHTML=''; clearInterval(timerInterval); }
+        function closeVideo() { 
+            document.getElementById('video-player-overlay').style.display='none'; 
+            document.getElementById('video-frame-container').innerHTML=''; 
+            if(window.wmInterval) clearInterval(window.wmInterval);
+        }
+        
         function renderSubjectGrids() {
             const subs = Object.keys(subjectImages); let v = "", f = "", a = "";
             subs.forEach(s => {
-                const img = subjectImages[s], card = `<div class="subject-card" style="background-image:url('${img}')" onclick="openSubject('${s}', 'TYPE')"><h3>${s}</h3></div>`;
-                v += card.replace('TYPE', 'video'); f += card.replace('TYPE', 'file'); a += `<div class="subject-card" style="background-image:url('${img}')" onclick="initiateUpload('${s}')"><h3>${s}</h3></div>`;
+                const img = subjectImages[s], cardV = `<div class="subject-card" style="background-image:url('${img}')" onclick="openSubject('${s}', 'video')"><h3>${s}</h3></div>`;
+                const cardF = `<div class="subject-card" style="background-image:url('${img}')" onclick="openSubject('${s}', 'file')"><h3>${s}</h3></div>`;
+                const cardA = `<div class="subject-card" style="background-image:url('${img}')" onclick="initiateUpload('${s}')"><h3>${s}</h3></div>`;
+                v += cardV; f += cardF; a += cardA;
             });
             document.getElementById('subjects-grid-video').innerHTML = v; document.getElementById('subjects-grid-file').innerHTML = f; document.getElementById('admin-subjects-grid').innerHTML = a;
         }
+
         function openSubject(name, type) {
             document.getElementById(type==='video'?'subjects-container-video':'subjects-container-file').style.display='none';
             document.getElementById(type==='video'?'specific-subject-videos':'specific-subject-files').style.display='block';
@@ -826,6 +777,7 @@
             }
             document.getElementById(type==='video'?'video-list':'file-list').innerHTML = h || "<p>لا يوجد محتوى</p>";
         }
+
         function sendChatMessage() {
             const input = document.getElementById('chat-input'), user = JSON.parse(localStorage.getItem('kimo_auth_v26'));
             if(!input.value.trim()) return;
@@ -833,18 +785,15 @@
         }
         
         function moveWatermark() {
-            const wm = document.getElementById('floating-watermark'), d = JSON.parse(localStorage.getItem('kimo_auth_v2'));
+            const wm = document.getElementById('floating-watermark'), d = JSON.parse(localStorage.getItem('kimo_auth_v26'));
             if(d && wm) { 
                 wm.style.display = 'block'; 
                 wm.innerHTML = `<span class="en-num">${d.name} | ${d.phone}</span>`;
-                setInterval(() => {
-                    wm.style.top = Math.random() * 80 + '%';
-                    wm.style.left = Math.random() * 70 + '%';
-                }, 5000);
+                wm.style.top = Math.random() * 80 + '%';
+                wm.style.left = Math.random() * 70 + '%';
             }
         }
 
-        // --- نظام الحماية المتكامل ---
         document.addEventListener('contextmenu', e => e.preventDefault());
         document.addEventListener('keydown', e => {
             if (e.key === 'PrintScreen' || (e.ctrlKey && e.shiftKey && (e.key === 'S' || e.key === 's'))) {
@@ -858,13 +807,13 @@
                 document.body.innerHTML = "نعتذر، لا يمكن تشغيل المنصة مع فتح أدوات المطور.";
             }
         });
-        // --------------------------
 
         function banStudent(phone) { if(confirm("حظر؟")) blacklistRef.child(phone).set(true); }
-        function showSubjects(type) { document.getElementById(type==='video'?'subjects-container-video':'subjects-container-pdf').style.display='flex'; }
-        function initiateUpload(s) { selectedAdminSubject = s; document.getElementById('admin-subjects-selection').style.display='none'; document.getElementById('admin-upload-form').style.display='block'; }
+        function showSubjects(type) { document.getElementById(type==='video'?'subjects-container-video':'subjects-container-file').style.display='flex'; document.getElementById(type==='video'?'specific-subject-videos':'specific-subject-files').style.display='none'; }
+        function showAdminSubjects() { document.getElementById('admin-subjects-selection').style.display='block'; document.getElementById('admin-upload-form').style.display='none'; }
+        function initiateUpload(s) { selectedAdminSubject = s; document.getElementById('current-adm-sub-name').innerText = s; document.getElementById('admin-subjects-selection').style.display='none'; document.getElementById('admin-upload-form').style.display='block'; }
         function handleUpload() {
-            const title = document.getElementById('adm-title').value, url = document.getElementById('adm-url').value;
+            const title = document.getElementById('adm-title').value, url = document.getElementById('adm-url').value, type = document.getElementById('adm-type').value;
             if(!title || !url) return alert("أكمل البيانات");
             lessonsRef.push({ title, url, subject: selectedAdminSubject, type, isPinned: false }); alert("تم!");
         }
@@ -875,6 +824,5 @@
             if(el) { document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active')); el.classList.add('active'); }
         }
     </script>
-
 </body>
 </html>

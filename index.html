@@ -449,6 +449,16 @@
                 <input type="text" id="adm-exam-url" placeholder="لينك الامتحان" style="width:90%; padding:10px; margin-bottom:10px; border-radius:10px;">
                 <button class="btn-accent" onclick="addExam()">نشر الامتحان ✅</button>
             </div>
+<div class="card" style="margin-top: 20px; border: 1px solid var(--accent);">
+    <h3>➕ إضافة درس مجاني (أحدث الدروس)</h3>
+    <input type="text" id="free-lesson-title" placeholder="عنوان الدرس" style="width:90%; padding:10px; margin-bottom:10px; border-radius:10px;">
+    <input type="text" id="free-lesson-url" placeholder="رابط الفيديو أو الملف" style="width:90%; padding:10px; margin-bottom:10px; border-radius:10px;">
+    <select id="free-lesson-type" style="width: 90%; padding: 10px; margin-bottom: 10px; border-radius: 10px; background: #000; color: #fff; border: 1px solid #333;">
+        <option value="video">فيديو</option>
+        <option value="pdf">ملف PDF</option>
+    </select>
+    <button class="btn-accent" style="width: 90%;" onclick="uploadFreeLesson()">رفع الدرس الآن 🚀</button>
+</div>
             
             <div id="admin-subjects-selection">
                 <h2>🚀 رفع محتوى مجاني</h2>
@@ -662,7 +672,37 @@
                     .catch(err => alert("خطأ في الحذف: " + err));
             }
         }
+        function deleteLesson(id) {
+            if(confirm("هل أنت متأكد من حذف هذا الدرس نهائياً؟")) {
+                lessonsRef.child(id).remove()
+                    .then(() => alert("تم حذف الدرس بنجاح ✅"))
+                    .catch(err => alert("خطأ في الحذف: " + err));
+            }
+        } // <--- دي قفلة الدالة القديمة
 
+        // <--- هنا تحط الدالة الجديدة بتاعتك علطول
+        function uploadFreeLesson() {
+            const title = document.getElementById('free-lesson-title').value.trim();
+            const url = document.getElementById('free-lesson-url').value.trim();
+            const type = document.getElementById('free-lesson-type').value;
+
+            if(!title || !url) return alert("يا كيمو كمل البيانات الأول! 😅");
+
+            lessonsRef.push({
+                title: title,
+                url: url,
+                type: type,
+                date: Date.now()
+            }).then(() => {
+                alert("تم رفع الدرس المجاني بنجاح ✅");
+                document.getElementById('free-lesson-title').value = "";
+                document.getElementById('free-lesson-url').value = "";
+                if(typeof renderLatest === "function") renderLatest(); 
+            }).catch(err => alert("حصل مشكلة في الرفع: " + err));
+        }
+
+        // <--- وبعدها بتيجي دالة checkCourseActivation اللي موجودة أصلاً
+        function checkCourseActivation(courseId) {
 
         function checkCourseActivation(courseId) {
             const user = JSON.parse(localStorage.getItem('kimo_auth_v26'));

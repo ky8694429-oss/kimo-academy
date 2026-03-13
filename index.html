@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -518,7 +519,6 @@
             "الرياضيات": "https://images.unsplash.com/photo-1509228468518-180dd482195e?q=80&w=400"
         };
 
-        // دالة تعريف الطالب وتسجيل الدخول (أصلية كما هي)
         async function identifyStudent() {
             const phone = document.getElementById('std-phone').value.trim();
             if (!/^01[0125][0-9]{8}$/.test(phone)) return alert("رقم الموبايل غير صحيح");
@@ -595,8 +595,6 @@
             examsRef.on('value', s => renderExams(s.val()));
         }
 
-        // --- ميزات الكورسات المدفوعة ---
-
         function createNewCourse() {
             const name = document.getElementById('adm-course-name').value.trim();
             if(!name) return alert("اكتب اسم الكورس");
@@ -621,14 +619,13 @@
             document.getElementById('adm-course-lesson-url').value = "";
             alert("تمت إضافة المحاضرة للكورس");
         }
+
         function renderCourses() {
             let h = "";
             let user = JSON.parse(localStorage.getItem('kimo_auth_v26'));
-            let isAdmin = user && user.phone === "01023175098"; // رقمك عشان يظهرلك الحذف
-
+            let isAdmin = user && user.phone === "01023175098";
             for(let id in allCourses) {
-                h += `
-                <div class="card" style="border-color:var(--gold)">
+                h += `<div class="card" style="border-color:var(--gold)">
                     <div class="lesson-thumb" style="background-image:url('https://cdn-icons-png.flaticon.com/512/3652/3652267.png')"></div>
                     <h3>${allCourses[id].name}</h3>
                     <button class="btn-accent" onclick="checkCourseActivation('${id}')">فتح الكورس 🔒</button>
@@ -638,8 +635,7 @@
             document.getElementById('courses-grid').innerHTML = h || "<p>لا توجد كورسات مدفوعة حالياً</p>";
         }
 
-        // دالة حذف الكورس (تتحط تحتها علطول)
-                function deleteCourse(id) {
+        function deleteCourse(id) {
             if(confirm("تحذير: سيتم حذف الكورس وكل المحاضرات اللي جواه! موافق؟")) {
                 coursesRef.child(id).remove();
                 alert("تم حذف الكورس بنجاح");
@@ -647,19 +643,13 @@
         }
 
         function renderLatest() {
-            if (!allData) return; // تأمين لو البيانات لسه متحملتش
+            if (!allData) return;
             let items = Object.entries(allData).reverse().slice(0, 10); 
             let user = JSON.parse(localStorage.getItem('kimo_auth_v26'));
             let isAdmin = user && user.phone === "01023175098";
-
             let html = `<div class="content-grid">`;
             items.forEach(([id, i]) => {
-                html += `
-                <div class="card">
-                    <h4>${i.title}</h4>
-                    <button class="btn-accent" onclick="openContent('${i.url}','${i.type}','${i.title}')">فتح</button>
-                    ${isAdmin ? `<button class="btn-del" style="margin-top:10px; background:red; color:white; border:none; padding:8px; border-radius:10px; cursor:pointer; width:100%; font-family: 'Cairo';" onclick="deleteLesson('${id}')">حذف الدرس 🗑️</button>` : ''}
-                </div>`;
+                html += `<div class="card"><h4>${i.title}</h4><button class="btn-accent" onclick="openContent('${i.url}','${i.type}','${i.title}')">فتح</button>${isAdmin ? `<button class="btn-del" style="margin-top:10px; background:red; color:white; border:none; padding:8px; border-radius:10px; cursor:pointer; width:100%; font-family: 'Cairo';" onclick="deleteLesson('${id}')">حذف الدرس 🗑️</button>` : ''}</div>`;
             });
             html += `</div>`;
             document.getElementById('latest-content').innerHTML = html || "<p>لا يوجد محتوى حالياً</p>";
@@ -673,37 +663,18 @@
             }
         }
 
-        function deleteLesson(id) {
-            if(confirm("هل أنت متأكد من حذف هذا الدرس نهائياً؟")) {
-                lessonsRef.child(id).remove()
-                    .then(() => alert("تم حذف الدرس بنجاح ✅"))
-                    .catch(err => alert("خطأ في الحذف: " + err));
-            }
-        } // <--- دي قفلة الدالة القديمة
-
-        // <--- هنا تحط الدالة الجديدة بتاعتك علطول
         function uploadFreeLesson() {
             const title = document.getElementById('free-lesson-title').value.trim();
             const url = document.getElementById('free-lesson-url').value.trim();
             const type = document.getElementById('free-lesson-type').value;
-
             if(!title || !url) return alert("يا كيمو كمل البيانات الأول! 😅");
-
-            lessonsRef.push({
-                title: title,
-                url: url,
-                type: type,
-                date: Date.now()
-            }).then(() => {
+            lessonsRef.push({ title, url, type, date: Date.now() }).then(() => {
                 alert("تم رفع الدرس المجاني بنجاح ✅");
                 document.getElementById('free-lesson-title').value = "";
                 document.getElementById('free-lesson-url').value = "";
-                if(typeof renderLatest === "function") renderLatest(); 
+                renderLatest(); 
             }).catch(err => alert("حصل مشكلة في الرفع: " + err));
         }
-
-        // <--- وبعدها بتيجي دالة checkCourseActivation اللي موجودة أصلاً
-        function checkCourseActivation(courseId) {
 
         function checkCourseActivation(courseId) {
             const user = JSON.parse(localStorage.getItem('kimo_auth_v26'));
@@ -719,9 +690,7 @@
                         alert("✅ تم التفعيل بنجاح! استمتع بالكورس.");
                         document.getElementById('activation-overlay').style.display = 'none';
                         openCourse(courseId);
-                    } else {
-                        alert("❌ الكود خاطئ أو مستخدم من قبل!");
-                    }
+                    } else { alert("❌ الكود خاطئ أو مستخدم من قبل!"); }
                 };
             }
         }
@@ -733,20 +702,12 @@
             document.getElementById('current-course-title').innerText = allCourses[id].name;
             let h = "", lectures = allCourses[id].lectures;
             for(let lId in lectures) {
-                h += `<div class="card">
-                    <h4>${lectures[lId].title}</h4>
-                    <button class="btn-accent" onclick="openContent('${lectures[lId].url}','video','${lectures[lId].title}')">مشاهدة المحاضرة</button>
-                </div>`;
+                h += `<div class="card"><h4>${lectures[lId].title}</h4><button class="btn-accent" onclick="openContent('${lectures[lId].url}','video','${lectures[lId].title}')">مشاهدة المحاضرة</button></div>`;
             }
             document.getElementById('course-lessons-list').innerHTML = h || "<p>جاري إضافة المحاضرات...</p>";
         }
 
-        function showCoursesGrid() {
-            document.getElementById('courses-grid').style.display = 'grid';
-            document.getElementById('course-details').style.display = 'none';
-        }
-
-        // --- وظائف الميديا والحماية المعدلة ---
+        function showCoursesGrid() { document.getElementById('courses-grid').style.display = 'grid'; document.getElementById('course-details').style.display = 'none'; }
 
         function openContent(url, type, title) {
             const user = JSON.parse(localStorage.getItem('kimo_auth_v26'));
@@ -754,76 +715,23 @@
                 let finalSrc = "";
                 if (url.includes('youtube.com') || url.includes('youtu.be')) {
                     let videoId = url.includes('v=') ? url.split('v=')[1].split('&')[0] : url.split('/').pop();
-                    // تعديل: إزالة allowfullscreen ومنع التحكم الكامل
                     finalSrc = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&controls=1&disablekb=1&modestbranding=1`;
                 } else { finalSrc = url; }
-
                 document.getElementById('video-player-overlay').style.display = 'flex';
-                document.getElementById('video-frame-container').innerHTML = `
-                <div style="position:relative; width:100%; height:100%;">
-                    <div id="watermark" style="position:absolute; z-index:9999; color:rgba(255,255,255,0.6); font-weight:900; font-size:24px; pointer-events:none; text-shadow: 1px 1px 2px #000; transition: all 1s ease;">
-                        ${user.name} - ${user.phone}
-                    </div>
-                    <iframe src="${finalSrc}" width="100%" height="100%" frameborder="0"></iframe>
-                </div>`;
-
-                // تحريك البصمة المائية فوق الفيديو
+                document.getElementById('video-frame-container').innerHTML = `<div style="position:relative; width:100%; height:100%;"><div id="watermark" style="position:absolute; z-index:9999; color:rgba(255,255,255,0.6); font-weight:900; font-size:24px; pointer-events:none; text-shadow: 1px 1px 2px #000; transition: all 1s ease;">${user.name} - ${user.phone}</div><iframe src="${finalSrc}" width="100%" height="100%" frameborder="0"></iframe></div>`;
                 if(window.wmInterval) clearInterval(window.wmInterval);
-                window.wmInterval = setInterval(() => {
-                    const wm = document.getElementById('watermark');
-                    if(wm) {
-                        wm.style.top = Math.random() * 80 + '%';
-                        wm.style.left = Math.random() * 60 + '%';
-                    }
-                }, 4000);
-            } else {
-                window.open(url, '_blank');
-            }
+                window.wmInterval = setInterval(() => { const wm = document.getElementById('watermark'); if(wm) { wm.style.top = Math.random() * 80 + '%'; wm.style.left = Math.random() * 60 + '%'; } }, 4000);
+            } else { window.open(url, '_blank'); }
         }
 
-        function closeVideo() { 
-            document.getElementById('video-player-overlay').style.display='none'; 
-            document.getElementById('video-frame-container').innerHTML=''; 
-            if(window.wmInterval) clearInterval(window.wmInterval);
-        }
-
-        // باقي وظائف الكود (أصلية كما هي)
-        function loadData() { lessonsRef.on('value', s => { allData = s.val() || {}; renderLatest(); renderPinned(); }); }
-        function renderLatest() {
-            let items = Object.entries(allData).reverse().slice(0, 4), user = JSON.parse(localStorage.getItem('kimo_auth_v26'));
-            document.getElementById('latest-content').innerHTML = `<div class="content-grid">${items.map(([id, i]) => `<div class="card"><h4>${i.title}</h4><button class="btn-accent" onclick="openContent('${i.url}','${i.type}','${i.title}')">فتح</button></div>`).join('')}</div>`;
-        }
-        function moveWatermark() {
-            const wm = document.getElementById('floating-watermark'), d = JSON.parse(localStorage.getItem('kimo_auth_v26'));
-            if(d && wm) { 
-                wm.style.display = 'block'; 
-                wm.innerHTML = `${d.name} | ${d.phone}`;
-                wm.style.top = Math.random() * 80 + '%';
-                wm.style.left = Math.random() * 70 + '%';
-            }
-        }
+        function closeVideo() { document.getElementById('video-player-overlay').style.display='none'; document.getElementById('video-frame-container').innerHTML=''; if(window.wmInterval) clearInterval(window.wmInterval); }
+        function loadData() { lessonsRef.on('value', s => { allData = s.val() || {}; renderLatest(); }); }
+        function moveWatermark() { const wm = document.getElementById('floating-watermark'), d = JSON.parse(localStorage.getItem('kimo_auth_v26')); if(d && wm) { wm.style.display = 'block'; wm.innerHTML = `${d.name} | ${d.phone}`; wm.style.top = Math.random() * 80 + '%'; wm.style.left = Math.random() * 70 + '%'; } }
         function logout() { localStorage.clear(); location.reload(); }
-        function tab(el, id) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            if(el) { document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active')); el.classList.add('active'); }
-        }
+        function tab(el, id) { document.querySelectorAll('.page').forEach(p => p.classList.remove('active')); document.getElementById(id).classList.add('active'); if(el) { document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active')); el.classList.add('active'); } }
 
-        // قائمة الأكواد الـ 100 المدفوعة (سيتم استبدالها بالأكواد بالأسفل)
-        const validCodes = [
-            "K26-X9R2-QM7B", "K26-L5P1-V3N8", "K26-Y8T4-W2Z9", "K26-M0K7-B5S2", "K26-J3D9-F1H4",
-            "K26-A6G2-C8V0", "K26-Q1W5-E9R3", "K26-T7Y2-U4I8", "K26-O0P6-L2K4", "K26-M8N1-B3V7"
-            // سيتم إضافة الـ 100 كاملين في جزء منفصل للتنظيم
-        ];
-        // كود تشغيل المنصة تلقائياً عند الريفريش
-        window.onload = function() {
-            const savedUser = localStorage.getItem('kimo_auth_v26');
-            if (savedUser) {
-                runApp(); // لو في بيانات، ادخل علطول
-            } else {
-                document.getElementById('login-gate').style.display = 'block'; // لو مفيش، اظهر شاشة الدخول
-            }
-        };
+        const validCodes = ["K26-X9R2-QM7B", "K26-L5P1-V3N8", "K26-Y8T4-W2Z9", "K26-M0K7-B5S2", "K26-J3D9-F1H4", "K26-A6G2-C8V0", "K26-Q1W5-E9R3", "K26-T7Y2-U4I8", "K26-O0P6-L2K4", "K26-M8N1-B3V7"];
+        window.onload = function() { const savedUser = localStorage.getItem('kimo_auth_v26'); if (savedUser) runApp(); else document.getElementById('login-gate').style.display = 'block'; };
 
     </script>
 </body>

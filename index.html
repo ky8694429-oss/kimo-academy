@@ -734,6 +734,16 @@
             "K26-A6G2-C8V0", "K26-Q1W5-E9R3", "K26-T7Y2-U4I8", "K26-O0P6-L2K4", "K26-M8N1-B3V7"
             // سيتم إضافة الـ 100 كاملين في جزء منفصل للتنظيم
         ];
+        // كود تشغيل المنصة تلقائياً عند الريفريش
+        window.onload = function() {
+            const savedUser = localStorage.getItem('kimo_auth_v26');
+            if (savedUser) {
+                runApp(); // لو في بيانات، ادخل علطول
+            } else {
+                document.getElementById('login-gate').style.display = 'block'; // لو مفيش، اظهر شاشة الدخول
+            }
+        };
+
     </script>
 </body>
 </html>

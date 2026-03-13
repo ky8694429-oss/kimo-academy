@@ -672,6 +672,7 @@
                     .catch(err => alert("خطأ في الحذف: " + err));
             }
         }
+
         function deleteLesson(id) {
             if(confirm("هل أنت متأكد من حذف هذا الدرس نهائياً؟")) {
                 lessonsRef.child(id).remove()

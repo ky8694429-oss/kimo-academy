@@ -831,47 +831,49 @@
             if(!input.value.trim()) return;
             chatRef.push({ name: user.name, text: input.value, time: new Date().toLocaleTimeString('ar-EG'), phone: user.phone }); input.value = "";
         }
+        
         function moveWatermark() {
-            const wm = document.getElementById('floating-watermark'), d = JSON.parse(localStorage.getItem('kimo_auth_v26'));
-            if(d) { wm.style.display='block'; wm.innerHTML = `<span class="en-num">${d.name} | ${d.phone}</span>`; wm.style.top = Math.random()*80+'vh'; wm.style.left = Math.random()*70+'vw'; }
+            const wm = document.getElementById('floating-watermark'), d = JSON.parse(localStorage.getItem('kimo_auth_v2'));
+            if(d && wm) { 
+                wm.style.display = 'block'; 
+                wm.innerHTML = `<span class="en-num">${d.name} | ${d.phone}</span>`;
+                setInterval(() => {
+                    wm.style.top = Math.random() * 80 + '%';
+                    wm.style.left = Math.random() * 70 + '%';
+                }, 5000);
+            }
         }
+
+        // --- نظام الحماية المتكامل ---
+        document.addEventListener('contextmenu', e => e.preventDefault());
+        document.addEventListener('keydown', e => {
+            if (e.key === 'PrintScreen' || (e.ctrlKey && e.shiftKey && (e.key === 'S' || e.key === 's'))) {
+                document.body.style.visibility = 'hidden';
+                alert("تصوير الشاشة ممنوع قطعيًا لحماية حقوق المنصة!");
+                setTimeout(() => { document.body.style.visibility = 'visible'; }, 2000);
+            }
+        });
+        window.addEventListener('resize', () => {
+            if (window.outerWidth - window.innerWidth > 100 || window.outerHeight - window.innerHeight > 100) {
+                document.body.innerHTML = "نعتذر، لا يمكن تشغيل المنصة مع فتح أدوات المطور.";
+            }
+        });
+        // --------------------------
+
         function banStudent(phone) { if(confirm("حظر؟")) blacklistRef.child(phone).set(true); }
-        function showSubjects(type) { document.getElementById(type==='video'?'subjects-container-video':'subjects-container-file').style.display='block'; document.getElementById(type==='video'?'specific-subject-videos':'specific-subject-files').style.display='none'; }
-        function initiateUpload(s) { selectedAdminSubject = s; document.getElementById('admin-subjects-selection').style.display = 'none'; document.getElementById('admin-upload-form').style.display = 'block'; document.getElementById('current-adm-sub-name').innerText = s; }
-        function showAdminSubjects() { document.getElementById('admin-subjects-selection').style.display = 'block'; document.getElementById('admin-upload-form').style.display = 'none'; }
+        function showSubjects(type) { document.getElementById(type==='video'?'subjects-container-video':'subjects-container-pdf').style.display='flex'; }
+        function initiateUpload(s) { selectedAdminSubject = s; document.getElementById('admin-subjects-selection').style.display='none'; document.getElementById('admin-upload-form').style.display='block'; }
         function handleUpload() {
-            const title = document.getElementById('adm-title').value, url = document.getElementById('adm-url').value, type = document.getElementById('adm-type').value;
-            if(!title || !url) return alert("اكمل البيانات");
-            lessonsRef.push({ title, url, subject: selectedAdminSubject, type, isPinned: false }); alert("تم!"); showAdminSubjects();
+            const title = document.getElementById('adm-title').value, url = document.getElementById('adm-url').value;
+            if(!title || !url) return alert("أكمل البيانات");
+            lessonsRef.push({ title, url, subject: selectedAdminSubject, type, isPinned: false }); alert("تم!");
         }
-        function updateNewsTicker() { settingsRef.update({ newsTicker: document.getElementById('adm-news-text').value }); alert("تم!"); }
-        function toggleTheme() { document.body.classList.toggle('light-mode'); }
         function logout() { localStorage.clear(); location.reload(); }
-        function tab(el, id) { 
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active')); document.getElementById(id).classList.add('active'); 
+        function tab(el, id) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
             if(el) { document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active')); el.classList.add('active'); }
         }
-// منع كليك يمين
-document.addEventListener('contextmenu', e => e.preventDefault());
-
-// تعتيم الشاشة عند محاولة أخذ سكرين شوت أو تسجيل
-document.addEventListener('keydown', e => {
-    if (e.key === 'PrintScreen' || (e.ctrlKey && e.shiftKey && (e.key === 'S' || e.key === 's'))) {
-        document.body.style.visibility = 'hidden';
-        alert("تصوير الشاشة ممنوع قطعيًا لحماية حقوق المنصة!");
-        setTimeout(() => { document.body.style.visibility = 'visible'; }, 2000);
-    }
-});
-
-// إخفاء المحتوى لو الطالب فتح الـ DevTools (F12)
-window.addEventListener('resize', () => {
-    if (window.outerWidth - window.innerWidth > 100 || window.outerHeight - window.innerHeight > 100) {
-        document.body.innerHTML = "نعتذر، لا يمكن تشغيل المنصة مع فتح أدوات المطور.";
-    }
-});
-
-
-                 
     </script>
 
 </body>

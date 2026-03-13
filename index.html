@@ -851,14 +851,14 @@
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active')); document.getElementById(id).classList.add('active'); 
             if(el) { document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active')); el.classList.add('active'); }
         }
-       // منع كليك يمين
+// منع كليك يمين
 document.addEventListener('contextmenu', e => e.preventDefault());
 
 // تعتيم الشاشة عند محاولة أخذ سكرين شوت أو تسجيل
 document.addEventListener('keydown', e => {
     if (e.key === 'PrintScreen' || (e.ctrlKey && e.shiftKey && (e.key === 'S' || e.key === 's'))) {
         document.body.style.visibility = 'hidden';
-        alert('تصوير الشاشة ممنوع قطعيًا لحماية حقوق المنصة!');
+        alert("تصوير الشاشة ممنوع قطعيًا لحماية حقوق المنصة!");
         setTimeout(() => { document.body.style.visibility = 'visible'; }, 2000);
     }
 });
@@ -869,6 +869,8 @@ window.addEventListener('resize', () => {
         document.body.innerHTML = "نعتذر، لا يمكن تشغيل المنصة مع فتح أدوات المطور.";
     }
 });
+
+
                  
     </script>
 

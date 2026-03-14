@@ -32,7 +32,100 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
-    
+    /* --- تعديلات كيمو الجديدة لضبط الموبايل والحماية --- */
+@media (max-width: 768px) {
+    main { padding: 10px !important; padding-top: 80px !important; padding-bottom: 110px !important; }
+    .content-grid { 
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)) !important; 
+        gap: 10px !important; 
+    }
+    .card { padding: 10px !important; }
+    .card h4 { font-size: 13px; margin: 5px 0; }
+    .logo-main-name { font-size: 30px !important; }
+}
+
+/* منع تصوير الشاشة في بعض المتصفحات ومنع الطباعة */
+@media print { body { display: none !important; } }
+
+/* تعتيم الشاشة عند الخروج من التاب أثناء تشغيل الفيديو */
+body:has(#video-player-overlay[style*="display: flex"]):not(:focus-within) #video-frame-container {
+    filter: brightness(0) grayscale(1);
+}
+
+/* توضيح البصمة المائية */
+#watermark {
+    text-shadow: 2px 2px 4px #000, -1px -1px 0 #000;
+    letter-spacing: 1px;
+    opacity: 0.6 !important;
+}
+
+/* --- تحويل المنصة لـ 3D --- */
+:root {
+    /* تأثير البروز والعمق */
+    --3d-shadow: 5px 5px 15px rgba(0,0,0,0.5), -2px -2px 10px rgba(255,255,255,0.05);
+    --3d-inner: inset 2px 2px 5px rgba(255,255,255,0.1), inset -2px -2px 5px rgba(0,0,0,0.5);
+}
+
+/* جعل الكروت والصفحات تظهر ببعد ثالث عند الحركة */
+.card, .subject-card, .admin-stat-card {
+    border: none !important;
+    background: var(--card-bg) !important;
+    box-shadow: var(--3d-shadow) !important;
+    transform: perspective(1000px) rotateX(2deg);
+    transition: 0.4s ease-in-out;
+}
+
+.card:hover {
+    transform: perspective(1000px) rotateX(0deg) translateY(-10px) scale(1.02);
+    box-shadow: 10px 20px 30px rgba(0,0,0,0.6) !important;
+}
+
+/* وضع أي كلمة أو نص مهم داخل دائرة 3D */
+h1 span, h2, h3, .nav-link span, .btn-accent {
+    display: inline-block;
+    padding: 10px 20px;
+    border-radius: 50px; /* دائري */
+    background: linear-gradient(145deg, #161b22, #0d1117);
+    box-shadow: var(--3d-shadow), var(--3d-inner);
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+    margin: 10px;
+}
+
+/* الأزرار الدائرية المجسمة */
+.btn-accent {
+    background: linear-gradient(145deg, #ffae33, #d98200) !important;
+    border: none;
+    box-shadow: 4px 4px 10px rgba(0,0,0,0.4), inset 2px 2px 3px rgba(255,255,255,0.3);
+    color: #000 !important;
+    transform: translateY(-2px);
+}
+
+.btn-accent:active {
+    transform: translateY(2px);
+    box-shadow: inset 4px 4px 10px rgba(0,0,0,0.5);
+}
+
+/* تأثير الانعكاس على الصور (الدروس) */
+.lesson-thumb {
+    box-shadow: var(--3d-shadow);
+    border-radius: 15px;
+    transform: rotateY(-10deg);
+}
+
+/* تعميق الخلفية لإبراز الـ 3D */
+main {
+    perspective: 1500px;
+}
+
+.btn-accent, h1 span {
+    animation: neonPulse 2s infinite alternate;
+}
+
+@keyframes neonPulse {
+    from { box-shadow: 0 0 5px var(--accent), 0 0 10px var(--accent); }
+    to { box-shadow: 0 0 10px var(--accent), 0 0 20px var(--accent); }
+}
+
     <style>
         /* الألوان الأساسية المحدثة */
         :root { 
@@ -713,34 +806,37 @@ function openContent(url, type, title) {
     if (type === 'video') {
         let finalSrc = "";
         
-        if (url.includes('t.me/')) {
-            let cleanUrl = url.split('?')[0]; 
-            finalSrc = cleanUrl + '?embed=1';
-        } 
-        else if (url.includes('youtube.com') || url.includes('youtu.be')) {
+        // تعديل روابط يوتيوب لمنع ملء الشاشة وإخفاء اللوجو
+        if (url.includes('youtube.com') || url.includes('youtu.be')) {
             let videoId = url.includes('v=') ? url.split('v=')[1].split('&')[0] : url.split('/').pop();
-            finalSrc = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
+            // fs=0 تقفل ملء الشاشة، modestbranding=1 تخفي اللوجو
+            finalSrc = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&fs=0&controls=1&iv_load_policy=3`;
+        } else if (url.includes('t.me/')) {
+            finalSrc = url.split('?')[0] + '?embed=1';
         } else { 
             finalSrc = url; 
         }
 
         document.getElementById('video-player-overlay').style.display = 'flex';
         document.getElementById('video-frame-container').innerHTML = `
-            <div style="position:relative; width:100%; height:100%; background:#000;">
-                <div id="watermark" style="position:absolute; z-index:9999; color:rgba(255,255,255,0.3); font-weight:900; font-size:18px; pointer-events:none; white-space:nowrap; transition: all 1s ease;">
+            <div style="position:relative; width:100%; height:100%; background:#000; overflow:hidden;">
+                <div style="position:absolute; top:0; left:0; width:100%; height:55px; z-index:10; background:transparent;"></div>
+                
+                <div id="watermark" style="position:absolute; z-index:9999; color:#fff; font-weight:900; font-size:20px; pointer-events:none; white-space:nowrap; transition: all 1.5s ease-in-out;">
                     ${user.name} - ${user.phone}
                 </div>
-                <iframe src="${finalSrc}" width="100%" height="100%" frameborder="0" allowfullscreen allow="autoplay"></iframe>
+                
+                <iframe src="${finalSrc}" width="100%" height="100%" frameborder="0" allow="autoplay; encrypted-media"></iframe>
             </div>`;
             
         if(window.wmInterval) clearInterval(window.wmInterval);
         window.wmInterval = setInterval(() => { 
             const wm = document.getElementById('watermark'); 
             if(wm) { 
-                wm.style.top = Math.random() * 80 + '%'; 
-                wm.style.left = Math.random() * 50 + '%'; 
+                wm.style.top = Math.random() * 85 + '%'; 
+                wm.style.left = Math.random() * 60 + '%'; 
             } 
-        }, 4000);
+        }, 3000);
     } else { 
         window.open(url, '_blank'); 
     }
@@ -824,6 +920,9 @@ function updateNewsTicker() {
         alert("تم تحديث شريط الأخبار بنجاح 📢");
     }
 }
+
+document.getElementById('chat-input').addEventListener('keypress', (e) => { if(e.key === 'Enter') sendChatMessage(); });
+
 
     </script>
 </body>

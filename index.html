@@ -1,328 +1,831 @@
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
+    <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+<script>
+  window.OneSignalDeferred = window.OneSignalDeferred || [];
+  OneSignalDeferred.push(async function(OneSignal) {
+    await OneSignal.init({
+      appId: "7e6da62d-7c47-4c0f-93ba-7e6d2189e1b5",
+    });
+  });
+</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KAREEM ACADEMY PRO | 2026</title>
+    <title>منصة كيمو أكاديمي | مراجعات وامتحانات ثانوية عامة 2026 مجانية</title>
+<link rel="icon" href="https://raw.githubusercontent.com/ky8694429-oss/kimo-academy/main/logo.png" type="image/png">
+
+<meta property="og:image" content="https://raw.githubusercontent.com/ky8694429-oss/kimo-academy/main/logo.png">
+
     
-    <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+    <meta name="description" content="أقوى منصة تعليمية مجانية لطلاب الثانوية العامة 2026. ملخصات، امتحانات تفاعلية، ومراجعات نهائية في الفيزياء، الكيمياء، وكل المواد للنظام الجديد.">
+    <meta name="keywords" content="ثانوية عامة 2026, مراجعات مجانية, امتحانات الكترونية, ملخصات فيزياء, كيمو اكاديمي, مراجعة ليلة الامتحان">
+    
+    <meta property="og:title" content="كيمو أكاديمي - مراجعات الثانوية العامة 2026">
+    <meta property="og:description" content="كل اللي تحتاجه للثانوية العامة في مكان واحد وببلاش.">
+    <meta property="og:url" content="https://ky8694429-oss.github.io/kimo-academy/">
+    <meta property="og:type" content="website">
+    
+    <link rel="canonical" href="https://ky8694429-oss.github.io/kimo-academy/">
+
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+    
+    <style>
+        /* الألوان الأساسية المحدثة */
+        :root { 
+            --main-bg: #05070a; --card-bg: #0d1117; --accent: #FF9800; --green: #00c851; 
+            --text: #e6edf3; --telegram: #0088cc; --danger: #ff4d4d; 
+            --gold: #FFD700; --sidebar-bg: rgba(1, 4, 9, 0.95); 
+            --logo-text: #ffffff;
+        }
+        
+        body.light-mode { --main-bg: #f0f2f5; --card-bg: #ffffff; --text: #1c1e21; --sidebar-bg: #ffffff; }
+
+        body { 
+            margin: 0; background: linear-gradient(-45deg, var(--main-bg), #0a192f, var(--card-bg), var(--main-bg)); 
+            background-size: 400% 400%; animation: gradientBG 15s ease infinite; color: var(--text); 
+            font-family: 'Cairo', sans-serif; display: flex; min-height: 100vh; position: relative; user-select: none; 
+            overflow-x: hidden;
+            font-variant-numeric: tabular-nums;
+        }
+
+        /* --- الألوان والأنيميشن الجديد للوجو --- */
+        .logo-master-container {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding: 20px; margin: 0 auto; position: relative;
+            animation: masterPulse 3s infinite ease-in-out; 
+        }
+
+        .logo-main-name { 
+            color: var(--logo-text, #ffffff); 
+            font-size: 45px; font-weight: 900; position: relative; 
+        }
+
+        .logo-crown-icon {
+            position: absolute; top: -15px; right: -5px; 
+            font-size: 22px; color: #FFD700;
+            animation: crownFloat 3s infinite ease-in-out;
+        }
+
+        @keyframes masterPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+        @keyframes crownFloat { 0%, 100% { transform: translateY(0) rotate(-10deg); } 50% { transform: translateY(-5px) rotate(-10deg); } }
+
+        @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+
+        #notification-toast {
+            position: fixed; top: -100px; left: 50%; transform: translateX(-50%);
+            background: var(--accent); color: #000; padding: 15px 25px; border-radius: 50px;
+            box-shadow: 0 10px 30px rgba(255,152,0,0.4); z-index: 30000; font-weight: bold;
+            display: flex; align-items: center; gap: 10px; transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        #notification-toast.show { top: 20px; }
+
+        .btn-circle {
+            width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-size: 20px; border: none; cursor: pointer; transition: 0.2s; margin: 10px auto;
+            box-shadow: 0 5px 0 rgba(0,0,0,0.3); position: relative; color: #000;
+        }
+        .btn-circle:active { transform: translateY(3px); box-shadow: 0 1px 0 rgba(0,0,0,0.3); }
+        .bg-video { background: var(--accent); }
+        .bg-pdf { background: var(--green); }
+
+        .news-ticker { position: fixed; top: 60px; left: 0; right: 0; background: var(--accent); color: #000; height: 30px; z-index: 997; display: none; overflow: hidden; font-weight: bold; line-height: 30px; }
+        .ticker-text { display: inline-block; white-space: nowrap; animation: ticker 25s linear infinite; padding-right: 100%; }
+        @keyframes ticker { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
+
+        .top-tools { position: fixed; top: 0; left: 0; right: 0; height: 60px; display: none; align-items: center; justify-content: flex-end; padding: 0 20px; gap: 15px; z-index: 998; background: rgba(0,0,0,0.2); backdrop-filter: blur(5px); border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .tool-btn { background: var(--card-bg); border: 1px solid var(--accent); color: var(--accent); width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s; }
+        
+        aside { width: 280px; background: var(--sidebar-bg); backdrop-filter: blur(10px); border-left: 1px solid #30363d; display: none; flex-direction: column; position: sticky; top: 0; height: 100vh; z-index: 999; }
+        .nav-link { padding: 18px 25px; cursor: pointer; color: #8b949e; display: flex; align-items: center; gap: 15px; transition: 0.2s; border-right: 4px solid transparent; font-size: 18px; }
+        .nav-link:hover, .nav-link.active { color: var(--accent); background: rgba(255, 152, 0, 0.05); border-right-color: var(--accent); }
+
+        main { flex: 1; padding: 30px; display: none; padding-top: 100px; padding-bottom: 120px; overflow-y: auto; }
+        .page { display: none; animation: fadeIn 0.5s ease-out; }
+        .page.active { display: block; }
+        
+        .support-cloud { position: fixed; right: 20px; color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px; cursor: pointer; z-index: 9999; animation: pulse 2s infinite; text-decoration: none; }
+        #tg-btn { bottom: 80px; background: var(--telegram); box-shadow: 0 6px 15px rgba(0, 136, 204, 0.4); }
+
+        .subject-card { 
+            height: 160px;
+            background-size: cover;
+            background-position: center;
+            border-radius: 20px; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer; 
+            transition: 0.3s; 
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .subject-card::before {
+            content: ""; position: absolute; inset: 0; background: rgba(0,0,0,0.6); z-index: 1;
+        }
+        .subject-card h3 { position: relative; z-index: 2; color: #fff; text-shadow: 0 2px 10px #000; }
+        .subject-card:hover { transform: translateY(-5px); border-color: var(--accent); }
+
+        .card { background: rgba(13, 17, 23, 0.8); border-radius: 15px; padding: 20px; border: 1px solid #30363d; text-align: center; position: relative; transition: 0.3s; margin-bottom: 15px; }
+        
+        .lesson-thumb { width: 100%; height: 140px; background-size: cover; background-position: center; border-radius: 10px; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.05); }
+
+        .btn-accent { background: var(--accent); color: #000; padding: 12px; border: none; border-radius: 12px; cursor: pointer; font-weight: bold; width: 100%; font-size: 16px; font-family: 'Cairo'; }
+        
+        #video-player-overlay { position: fixed; inset: 0; background: #000; z-index: 15000; display: none; align-items: center; justify-content: center; flex-direction: column; }
+        .video-container { width: 100%; height: 85vh; background: #000; border: none; overflow: hidden; position: relative; }
+        
+        footer { position: fixed; bottom: 0; width: 100%; background: #010409; color: #fff; text-align: center; padding: 15px 0; font-size: 13px; border-top: 2px solid var(--accent); z-index: 1000; }
+        
+        #floating-watermark { 
+            position: fixed; 
+            background: transparent;
+            color: rgba(255, 255, 255, 0.3);
+            padding: 5px 12px; 
+            border-radius: 20px; 
+            font-size: 14px; 
+            pointer-events: none; 
+            z-index: 20000; 
+            display: none; 
+            white-space: nowrap; 
+            font-weight: bold; 
+            mix-blend-mode: overlay; 
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+
+        #chat-messages { height: 400px; overflow-y: auto; background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); background-size: contain; padding: 15px; border-radius: 12px; border: 1px solid #333; margin-bottom: 10px; display: flex; flex-direction: column; gap: 10px; }
+        .msg-bubble { max-width: 80%; padding: 10px 15px; border-radius: 15px; font-size: 14px; position: relative; line-height: 1.4; color: #fff; }
+        .msg-student { align-self: flex-start; background: #202c33; border-bottom-left-radius: 2px; text-align: right; }
+        .msg-me { align-self: flex-end; background: #005c4b; border-bottom-right-radius: 2px; text-align: right; }
+        .msg-bubble b { display: block; font-size: 11px; margin-bottom: 3px; color: var(--accent); }
+        .msg-bubble small { display: block; font-size: 10px; opacity: 0.6; margin-top: 5px; text-align: left; }
+
+        .en-num { font-family: sans-serif !important; direction: ltr !important; display: inline-block; }
+
+        .student-row { 
+            display: grid; 
+            grid-template-columns: 1.2fr 1fr 1fr; 
+            align-items: center; 
+            padding: 12px 10px; 
+            border-bottom: 1px solid rgba(255,255,255,0.05); 
+            font-size: 14px;
+        }
+        .student-row:hover { background: rgba(255, 152, 0, 0.03); }
+        .student-row span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding: 0 5px; }
+        .student-row button { padding: 5px 10px; border-radius: 5px; border: none; cursor: pointer; font-family: 'Cairo'; font-size: 12px; margin: 0 2px; background: #30363d; color: #fff; }
+        .student-row button:last-child { background: var(--danger); }
+
+        .admin-stat-card { background: var(--card-bg); padding: 15px; border-radius: 15px; border: 1px solid #30363d; text-align: center; }
+
+        @media (max-width: 768px) {
+            aside { display: none !important; }
+            .mobile-nav { position: fixed; bottom: 50px; left: 0; right: 0; background: var(--sidebar-bg); display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid var(--accent); z-index: 1001; }
+            .mobile-nav div { font-size: 20px; color: #8b949e; }
+            main { padding: 15px; padding-top: 80px; padding-bottom: 120px; }
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .content-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; }
+        
+        .admin-controls { display: flex; gap: 5px; margin-top: 10px; justify-content: center; }
+        .btn-pin { background: var(--gold); color: #000; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 12px; font-weight: bold; }
+        .btn-del { background: var(--danger); color: #fff; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 12px; }
+
+        .whatsapp-float {
+            position: fixed;
+            bottom: 150px;
+            right: 20px;
+            background-color: #25d366;
+            color: white;
+            border-radius: 50px;
+            padding: 15px;
+            z-index: 9998;
+            box-shadow: 2px 2px 10px rgba(0,0,0,0.2);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            transition: 0.3s;
+        }
+        .whatsapp-float:hover { transform: scale(1.1); background-color: #128c7e; }
+
+        #join-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            display: flex; justify-content: center; align-items: center;
+            z-index: 99999; backdrop-filter: blur(5px);
+        }
+        .join-modal { background: white; padding: 30px; border-radius: 15px; text-align: center; max-width: 400px; width: 90%; }
+        .join-modal h2 { color: #075e54; margin-bottom: 15px; }
+        .btn-join { display: block; background: #25d366; color: white; padding: 12px; border-radius: 8px; text-decoration: none; margin: 15px 0; font-weight: bold; }
+        .btn-verify { background: #34b7f1; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-family: 'Cairo'; }
+
+        @media screen and (max-width: 767px) {
+            #p-exams, .exams-section, #exams-container { 
+                display: block !important; visibility: visible !important; opacity: 1 !important; width: 100% !important; height: auto !important; position: relative !important; overflow: visible !important;
+            }
+        }
+    </style>
+</head>
+<body oncontextmenu="return false;"> 
+
+    <div id="notification-toast">
+        <i class="fas fa-bell"></i>
+        <span id="notif-text">حاجة جديدة انضافت للمنصة!</span>
+    </div>
+
+    <div id="top-bar" class="top-tools">
+        <div id="admin-live-info" style="display:none; margin-left: auto; color: var(--accent); font-weight: bold; font-size: 13px;">
+            <i class="fas fa-eye"></i> الآن: <span id="online-now" class="en-num">0</span> | <i class="fas fa-users"></i> الكل: <span id="total-students-count" class="en-num">0</span>
+        </div>
+        <button class="tool-btn" onclick="toggleTheme()"><i id="theme-icon" class="fas fa-moon"></i></button>
+        <button class="tool-btn" onclick="logout()"><i class="fas fa-sign-out-alt"></i></button>
+    </div>
+
+    <div id="news-bar" class="news-ticker"><div class="ticker-text" id="ticker-content">جاري تحميل الأخبار...</div></div>
+
+    <a href="https://t.me/K_I_M_O_8" target="_blank" class="support-cloud" id="tg-btn" style="display: none;"><i class="fab fa-telegram-plane"></i></a>
+
+    <a href="https://chat.whatsapp.com/E5tpwhb6D5j9lDnXBFNbLM" class="whatsapp-float" target="_blank">
+        <i class="fab fa-whatsapp" style="margin-left: 8px; font-size: 20px;"></i>
+        <span>جروب المتابعة</span>
+    </a>
+
+    <div id="join-overlay" style="display: none;">
+        <div class="join-modal">
+            <h2>⚠️ خطوة أخيرة</h2>
+            <p style="color: #333;">يرجى الانضمام لجروب الواتساب الرسمي للمتابعة وتفعيل كامل ميزات المنصة.</p>
+            <a href="https://chat.whatsapp.com/E5tpwhb6D5j9lDnXBFNbLM" id="join-link" target="_blank" class="btn-join">اضغط هنا للانضمام للجروب</a>
+            <div id="verification-section" style="display:none;">
+                <p id="verify-text" style="color: #666; margin-bottom: 10px;">جاري التحقق...</p>
+                <button onclick="verifyJoin()" class="btn-verify">تم الانضمام، أكمل للمنصة</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="activation-overlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:30000; align-items:center; justify-content:center;">
+        <div class="card" style="width:90%; max-width:400px; border-color:var(--accent);">
+            <h3>🔓 تفعيل المحتوى</h3>
+            <p>هذا الكورس مدفوع، يرجى إدخال كود التفعيل:</p>
+            <input type="text" id="activation-code" placeholder="أدخل الكود هنا" style="width:90%; padding:12px; margin:15px 0; border-radius:10px; background:#000; color:#fff; border:1px solid var(--accent);">
+            <button class="btn-accent" id="confirm-activation-btn">تفعيل الآن</button>
+            <button class="btn-accent" style="background:#333; color:#fff; margin-top:10px;" onclick="document.getElementById('activation-overlay').style.display='none'">إلغاء</button>
+        </div>
+    </div>
+
+    <div id="video-player-overlay">
+        <div style="width: 95%; max-width: 1000px; display: flex; justify-content: space-between; margin-bottom: 15px;">
+            <div id="timer-display" class="en-num" style="background:var(--accent); color:#000; padding:8px 20px; border-radius:25px; font-weight:bold;">KAREEM ACADEMY PROTECTED</div>
+            <button class="btn-accent" style="width: auto; padding: 5px 20px;" onclick="closeVideo()">إغلاق ×</button>
+        </div>
+        <div class="video-container" id="video-frame-container"></div>
+    </div>
+
+    <div id="login-gate">
+        <div class="gate-box" style="max-width: 400px; margin: 50px auto; padding: 30px; background: var(--card-bg); border-radius: 20px; text-align: center; border: 1px solid var(--accent); box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+            <div class="logo-master-container">
+                <div class="logo-icon-box" style="position: relative;">
+                    <svg class="bulb-icon" viewBox="0 0 24 24" style="width:80px; filter: drop-shadow(0 0 15px #FF9800);">
+                        <path d="M9 21H15M9 18H15M10 15H14M12 3C9.23858 3 7 5.23858 7 8C7 9.58581 7.73444 11.0004 8.88563 11.9248C10.1944 12.9757 11 14.192 11 15.5V16H13V15.5C13 14.192 13.8056 12.9757 15.1144 11.9248C16.2656 11.0004 17 9.58581 17 8C17 5.23858 14.7614 3 12 3Z" stroke="#FF9800" stroke-width="2"/>
+                    </svg>
+                    <span style="position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%); color: #fff; font-size: 32px; font-weight: 900;">K</span>
+                </div>
+                <div class="logo-text-box">
+                    <div class="logo-main-name">KAREEM<span class="logo-crown-icon">👑</span></div>
+                    <span style="color: #FF9800; letter-spacing: 4px; border-top: 2px solid #444;">ACADEMY 2026</span>
+                </div>
+            </div>
+            <h3 id="gate-title" style="margin-bottom: 20px; color: var(--accent);">تسجيل الدخول</h3>
+            <div id="step-1">
+                <input type="tel" id="std-phone" class="en-num" placeholder="رقم الموبايل" style="width:90%; padding:12px; margin-bottom:15px; border-radius:10px; border:1px solid #30363d; background:#000; color:#fff; text-align:right;">
+                <button class="btn-accent" onclick="identifyStudent()">التالي</button>
+            </div>
+            <div id="step-login" style="display:none;">
+                <p id="welcome-back" style="font-size: 14px; margin-bottom: 10px;"></p>
+                <input type="password" id="std-pass" placeholder="أدخل كلمة المرور" style="width:90%; padding:12px; margin-bottom:15px; border-radius:10px; border:1px solid #30363d; background:#000; color:#fff;">
+                <button class="btn-accent" onclick="verifyPassword()">دخول 🚀</button>
+                <p style="margin-top:15px; font-size:12px; color:var(--accent); cursor:pointer;" onclick="showForgetPassword()">نسيت كلمة المرور؟</p>
+            </div>
+            <div id="step-register" style="display:none;">
+                <p style="font-size: 13px; color: var(--green); margin-bottom: 10px;">أهلاً بك لأول مرة! يرجى إعداد حسابك:</p>
+                <input type="text" id="reg-name" placeholder="الاسم الثلاثي" style="width:90%; padding:12px; margin-bottom:10px; border-radius:10px; border:1px solid #30363d; background:#000; color:#fff;">
+                <input type="password" id="reg-pass" placeholder="إنشاء كلمة مرور" style="width:90%; padding:12px; margin-bottom:10px; border-radius:10px; border:1px solid #30363d; background:#000; color:#fff;">
+                <select id="reg-question" style="width:97%; padding:12px; margin-bottom:10px; border-radius:10px; border:1px solid #30363d; background:#000; color:#fff;">
+                    <option value="">اختر سؤال أمان (للطوارئ)</option>
+                    <option value="ما هو اسم أول مدرس تحبه؟">ما هو اسم أول مدرس تحبه؟</option>
+                    <option value="ما هو اسم صديقك المقرب؟">ما هو اسم صديقك المقرب؟</option>
+                    <option value="ما هي أكلتك المفضلة؟">ما هي أكلتك المفضلة؟</option>
+                </select>
+                <input type="text" id="reg-answer" placeholder="إجابة السؤال السري" style="width:90%; padding:12px; margin-bottom:15px; border-radius:10px; border:1px solid #30363d; background:#000; color:#fff;">
+                <button class="btn-accent" onclick="completeRegistration()">حفظ والدخول للمنصة</button>
+            </div>
+            <div id="step-forget" style="display:none;">
+                <p id="security-q-text" style="font-size: 14px; margin-bottom: 10px; color: var(--gold);"></p>
+                <input type="text" id="forget-answer" placeholder="إجابة السؤال السري" style="width:90%; padding:12px; margin-bottom:15px; border-radius:10px; border:1px solid #30363d; background:#000; color:#fff;">
+                <button class="btn-accent" onclick="resetAccess()">تحقق واستعادة الحساب</button>
+                <p style="margin-top:10px; font-size:12px; cursor:pointer;" onclick="location.reload()">رجوع</p>
+            </div>
+        </div>
+    </div>
+
+    <aside id="sidebar">
+        <div class="logo-master-container" style="transform: scale(0.65);">
+            <div class="logo-icon-box" style="position: relative;">
+                <svg class="bulb-icon" viewBox="0 0 24 24" style="width:60px; filter: drop-shadow(0 0 10px #FF9800);">
+                    <path d="M9 21H15M9 18H15M10 15H14M12 3C9.23858 3 7 5.23858 7 8C7 9.58581 7.73444 11.0004 8.88563 11.9248C10.1944 12.9757 11 14.192 11 15.5V16H13V15.5C13 14.192 13.8056 12.9757 15.1144 11.9248C16.2656 11.0004 17 9.58581 17 8C17 5.23858 14.7614 3 12 3Z" stroke="#FF9800" stroke-width="2"/>
+                </svg>
+                <span style="position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%); color: #fff; font-size: 24px; font-weight: 900;">K</span>
+            </div>
+            <div class="logo-text-box">
+                <div class="logo-main-name" style="font-size: 30px;">KAREEM<span class="logo-crown-icon" style="top: -10px; font-size: 18px;">👑</span></div>
+                <span style="color: #FF9800; font-size: 10px; letter-spacing: 2px;">ACADEMY 2026</span>
+            </div>
+        </div>
+        <div class="nav-link active" onclick="tab(this, 'p-home')"><i class="fas fa-home"></i> <span>الرئيسية</span></div>
+        <div class="nav-link" onclick="tab(this, 'p-courses')"><i class="fas fa-graduation-cap"></i> <span>الكورسات المدفوعة</span></div>
+        <div class="nav-link" onclick="tab(this, 'p-lessons')"><i class="fas fa-play-circle"></i> <span>المحاضرات المجانية</span></div>
+        <div class="nav-link" onclick="tab(this, 'p-files')"><i class="fas fa-file-pdf"></i> <span>PDF</span></div>
+        <div class="nav-link" onclick="tab(this, 'p-exams')"><i class="fas fa-edit"></i> <span>الامتحانات</span></div>
+        <div class="nav-link" onclick="tab(this, 'p-chat')"><i class="fas fa-comments"></i> <span>الدردشة</span></div>
+        <div id="adm-links" style="display:none;">
+            <div class="nav-link" style="color:var(--green)" onclick="tab(this, 'p-students')"><i class="fas fa-users-cog"></i> <span>الطلاب</span></div>
+            <div class="nav-link" style="color:var(--green)" onclick="tab(this, 'p-admin')"><i class="fas fa-tools"></i> <span>الإدارة</span></div>
+        </div>
+    </aside>
+
+    <div class="mobile-nav" id="mob-nav" style="display:none;">
+        <div onclick="tab(null, 'p-home')"><i class="fas fa-home"></i></div>
+        <div onclick="tab(null, 'p-courses')"><i class="fas fa-graduation-cap"></i></div>
+        <div onclick="tab(null, 'p-lessons')"><i class="fas fa-play-circle"></i></div>
+        <div onclick="tab(null, 'p-files')"><i class="fas fa-file-pdf"></i></div>
+        <div onclick="tab(null, 'p-chat')"><i class="fas fa-comments"></i></div>
+    </div>
+
+    <main id="content">
+        <div id="p-home" class="page active">
+            <h1>مرحباً، <span id="display-name" style="color:var(--accent)">طالبنا</span> 👋</h1>
+            <h3>المحتوى المثبت:</h3>
+            <div id="pinned-content" class="content-grid" style="margin-bottom: 30px;"></div>
+            <h3>آخر الدروس المضافة:</h3>
+            <div id="latest-content"></div>
+        </div>
+
+        <div id="p-courses" class="page">
+            <h2>الكورسات والاشتراكات 🎓</h2>
+            <div id="courses-grid" class="content-grid"></div>
+            <div id="course-details" style="display:none;">
+                <button class="btn-accent" style="width:100px; margin-bottom:20px;" onclick="showCoursesGrid()">رجوع</button>
+                <h3 id="current-course-title"></h3>
+                <div class="content-grid" id="course-lessons-list"></div>
+            </div>
+        </div>
+        
+        <div id="p-lessons" class="page">
+            <div id="subjects-container-video"><h2>المحاضرات المجانية 🎥</h2><div class="content-grid" id="subjects-grid-video"></div></div>
+            <div id="specific-subject-videos" style="display:none;"><button class="btn-accent" style="width:100px; margin-bottom:20px;" onclick="showSubjects('video')">رجوع</button><div class="content-grid" id="video-list"></div></div>
+        </div>
+
+        <div id="p-files" class="page">
+            <div id="subjects-container-file"><h2>ملفات PDF 📄</h2><div class="content-grid" id="subjects-grid-file"></div></div>
+            <div id="specific-subject-files" style="display:none;"><button class="btn-accent" style="width:100px; margin-bottom:20px;" onclick="showSubjects('file')">رجوع</button><div class="content-grid" id="file-list"></div></div>
+        </div>
+
+        <div id="p-exams" class="page">
+            <h2>الامتحانات الإلكترونية 📝</h2>
+            <div class="content-grid" id="exams-list"></div>
+        </div>
+
+        <div id="p-chat" class="page">
+            <h2>دردشة الطلاب 💬</h2>
+            <div class="card">
+                <div id="chat-messages"></div>
+                <div style="display: flex; gap: 8px;">
+                    <input type="text" id="chat-input" placeholder="اكتب رسالتك..." style="flex:1; padding:12px; border-radius:10px; background:#161b22; color:#fff; border:1px solid var(--accent);">
+                    <button class="btn-accent" style="width:100px;" onclick="sendChatMessage()">إرسال</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="p-students" class="page">
+            <h2>إدارة الطلاب (الرادار) 🛰️</h2>
+            <div class="content-grid" style="margin-bottom: 20px;">
+                <div class="admin-stat-card"><h3>إجمالي الطلاب</h3><h2 id="stat-total-std" class="en-num" style="color:var(--accent)">0</h2></div>
+                <div class="admin-stat-card"><h3>أونلاين الآن</h3><h2 id="stat-online-std" class="en-num" style="color:var(--green)">0</h2></div>
+            </div>
+            <div class="card">
+                <input type="text" class="search-box" id="studentSearch" placeholder="ابحث باسم الطالب أو رقم الموبايل..." onkeyup="filterStudents()" style="width: 90%; padding: 10px; margin-bottom: 15px; border-radius: 10px; background: #000; border: 1px solid var(--accent); color: #fff;">
+                <div id="students-table-header" style="display:grid; grid-template-columns: 1.2fr 1fr 1fr; font-weight:bold; border-bottom:2px solid var(--accent); padding:10px;">
+                    <span>الطالب</span><span>الرقم</span><span>إجراء</span>
+                </div>
+                <div id="students-table-body"></div>
+            </div>
+        </div>
+
+        <div id="p-admin" class="page">
+            <div class="card" style="margin-bottom:20px; border-color:var(--gold)">
+                <h3>📢 التحكم في شريط الأخبار</h3>
+                <input type="text" id="adm-news-text" placeholder="اكتب الخبر هنا..." style="width:80%; padding:10px; border-radius:10px;">
+                <button class="btn-accent" style="width:15%;" onclick="updateNewsTicker()">نشر</button>
+            </div>
+
+            <div class="card" style="margin-bottom:20px; border-color:var(--accent)">
+                <h3>🎓 إدارة الكورسات المدفوعة</h3>
+                <input type="text" id="adm-course-name" placeholder="اسم الكورس (مثلاً: مراجعة الفيزياء)" style="width:90%; padding:10px; margin-bottom:10px; border-radius:10px;">
+                <button class="btn-accent" onclick="createNewCourse()">إنشاء كورس جديد</button>
+                <hr style="margin:20px 0; border:0; border-top:1px solid #333;">
+                <h4>إضافة محاضرة لكورس موجود:</h4>
+                <select id="adm-course-select" style="width:90%; padding:10px; margin-bottom:10px; border-radius:10px; background:#000; color:#fff;"></select>
+                <input type="text" id="adm-course-lesson-title" placeholder="عنوان المحاضرة" style="width:90%; padding:10px; margin-bottom:10px; border-radius:10px;">
+                <input type="text" id="adm-course-lesson-url" placeholder="رابط الفيديو/الملف" style="width:90%; padding:10px; margin-bottom:10px; border-radius:10px;">
+                <button class="btn-accent" onclick="addLessonToCourse()">إضافة المحاضرة ✅</button>
+            </div>
+
+            <div class="card" style="margin-bottom:20px; border-color:var(--green)">
+                <h3>📝 إضافة امتحان جديد</h3>
+                <input type="text" id="adm-exam-title" placeholder="اسم الامتحان" style="width:90%; padding:10px; margin-bottom:10px; border-radius:10px;">
+                <input type="text" id="adm-exam-url" placeholder="لينك الامتحان" style="width:90%; padding:10px; margin-bottom:10px; border-radius:10px;">
+                <button class="btn-accent" onclick="addExam()">نشر الامتحان ✅</button>
+            </div>
+<div class="card" style="margin-top: 20px; border: 1px solid var(--accent);">
+    <h3>➕ إضافة درس مجاني (أحدث الدروس)</h3>
+    <input type="text" id="free-lesson-title" placeholder="عنوان الدرس" style="width:90%; padding:10px; margin-bottom:10px; border-radius:10px;">
+    <input type="text" id="free-lesson-url" placeholder="رابط الفيديو أو الملف" style="width:90%; padding:10px; margin-bottom:10px; border-radius:10px;">
+    <select id="free-lesson-type" style="width: 90%; padding: 10px; margin-bottom: 10px; border-radius: 10px; background: #000; color: #fff; border: 1px solid #333;">
+        <option value="video">فيديو</option>
+        <option value="pdf">ملف PDF</option>
+    </select>
+    <button class="btn-accent" style="width: 90%;" onclick="uploadFreeLesson()">رفع الدرس الآن 🚀</button>
+</div>
+            
+            <div id="admin-subjects-selection">
+                <h2>🚀 رفع محتوى مجاني</h2>
+                <div class="content-grid" id="admin-subjects-grid"></div>
+            </div>
+
+            <div id="admin-upload-form" style="display:none;">
+                <button class="btn-accent" style="width:100px; margin-bottom:20px;" onclick="showAdminSubjects()">رجوع</button>
+                <div class="card" style="max-width:500px; margin:auto;">
+                    <p>المادة: <b id="current-adm-sub-name" style="color:var(--accent)"></b></p>
+                    <input type="text" id="adm-title" placeholder="عنوان الدرس" style="width:90%; padding:12px; margin-bottom:15px; background:#000; border:1px solid #30363d; color:#fff;">
+                    <input type="text" id="adm-url" placeholder="ضع الرابط هنا" style="width:90%; padding:12px; margin-bottom:15px; background:#000; border:1px solid #30363d; color:#fff;">
+                    <select id="adm-type" style="width:96%; padding:12px; margin-bottom:15px; background:#000; border:1px solid #30363d; color:#fff;">
+                        <option value="video">فيديو 🎥</option>
+                        <option value="file">ملف / صورة 📄</option>
+                    </select>
+                    <button class="btn-accent" onclick="handleUpload()">نشر الآن ✅</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>جميع الحقوق محفوظة للمطور كيمو © <span class="en-num">2026</span></footer>
+    <div id="floating-watermark"></div>
+
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
-
-        /* --- الجذر والمتغيرات الشاملة (1-100) --- */
-        :root {
-            --bg-dark: #010409; --bg-card: #0d1117; --accent: #FF9800; 
-            --accent-glow: rgba(255, 152, 0, 0.4); --text-main: #e6edf3;
-            --danger: #ff4d4d; --success: #00c851; --gold: #FFD700;
-            --sidebar-width: 280px;
-        }
-
-        * { box-sizing: border-box; outline: none; }
-        body {
-            margin: 0; background: var(--bg-dark); color: var(--text-main);
-            font-family: 'Cairo', sans-serif; overflow-x: hidden;
-            user-select: none; -webkit-user-drag: none;
-        }
-
-        /* --- الحماية من التصوير والطباعة (101-200) --- */
-        @media print { body { display: none !important; } }
-        #watermark {
-            position: fixed; pointer-events: none; z-index: 99999;
-            color: rgba(255, 255, 255, 0.15); font-size: 1.2rem;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.5); white-space: nowrap;
-        }
-
-        /* --- أنيميشن تجميع اسم KAREEM (201-300) --- */
-        .kareem-intro {
-            height: 100vh; display: flex; flex-direction: column;
-            justify-content: center; align-items: center; background: #000;
-        }
-        .name-container { display: flex; gap: 10px; margin-bottom: 20px; }
-        .letter {
-            font-size: 60px; font-weight: 900; color: #fff;
-            opacity: 0; transform: scale(5) rotate(45deg);
-            filter: blur(10px); animation: assemble 0.8s forwards cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-        @keyframes assemble {
-            to { opacity: 1; transform: scale(1) rotate(0); filter: blur(0); text-shadow: 0 0 20px var(--accent); }
-        }
-        .letter:nth-child(1) { animation-delay: 0.1s; }
-        .letter:nth-child(2) { animation-delay: 0.2s; }
-        .letter:nth-child(3) { animation-delay: 0.3s; }
-        .letter:nth-child(4) { animation-delay: 0.4s; }
-        .letter:nth-child(5) { animation-delay: 0.5s; }
-        .letter:nth-child(6) { animation-delay: 0.6s; }
-
-        /* --- تصميم القائمة الجانبية المتقدم (301-400) --- */
-        aside {
-            width: var(--sidebar-width); height: 100vh; background: var(--bg-card);
-            position: fixed; right: 0; top: 0; z-index: 1000;
-            border-left: 1px solid #30363d; transition: 0.4s;
-            display: flex; flex-direction: column;
-        }
-        .nav-item {
-            padding: 18px 25px; cursor: pointer; display: flex; align-items: center;
-            gap: 15px; color: #8b949e; border-bottom: 1px solid #21262d;
-            transition: 0.3s; font-weight: bold;
-        }
-        .nav-item:hover, .nav-item.active {
-            color: var(--accent); background: #161b22;
-            border-right: 4px solid var(--accent);
-        }
-
-        /* --- نظام الكروت والـ 3D (401-500) --- */
-        .page-container { margin-right: var(--sidebar-width); padding: 40px; min-height: 100vh; }
-        .grid-layout { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px; }
-        .glass-card {
-            background: rgba(13, 17, 23, 0.8); backdrop-filter: blur(10px);
-            border-radius: 20px; padding: 25px; border: 1px solid #30363d;
-            box-shadow: 10px 10px 20px rgba(0,0,0,0.5); transition: 0.5s;
-            position: relative; overflow: hidden;
-        }
-        .glass-card:hover { transform: translateY(-10px) rotateX(5deg); border-color: var(--accent); }
-
-        /* --- نظام الامتحانات (501-600) --- */
-        .exam-box { display: none; background: #0d1117; padding: 30px; border-radius: 15px; }
-        .option-btn {
-            display: block; width: 100%; padding: 15px; margin: 10px 0;
-            background: #161b22; border: 1px solid #333; color: #fff;
-            text-align: right; border-radius: 10px; cursor: pointer;
-        }
-        .option-btn:hover { background: var(--accent); color: #000; }
-
-        /* --- لوحة الإدارة (601-700) --- */
-        .admin-panel { background: #161b22; padding: 20px; border-radius: 15px; border: 2px dashed var(--accent); }
-        input, select, textarea {
-            width: 100%; padding: 15px; margin: 10px 0; background: #0d1117;
-            border: 1px solid #30363d; color: #fff; border-radius: 10px;
-        }
-
-        /* --- استعلامات الموبايل (701-800+) --- */
-        @media (max-width: 992px) {
-            aside { transform: translateX(100%); }
-            .page-container { margin-right: 0; padding: 20px; }
-            .mobile-menu-btn { display: block; }
-        }
-
-        /* زر الأكشن */
-        .btn-main {
-            background: linear-gradient(135deg, var(--accent), #e65100);
-            color: #000; border: none; padding: 15px 30px; border-radius: 12px;
-            font-weight: 900; cursor: pointer; transition: 0.3s; width: 100%;
-        }
-        .btn-main:hover { transform: scale(1.05); box-shadow: 0 0 20px var(--accent-glow); }
-
-        /* شريط الإشعارات */
-        .marquee-news {
-            position: fixed; top: 0; left: 0; width: 100%; background: var(--accent);
-            color: #000; font-weight: bold; z-index: 2000; padding: 5px 0;
-        }
-    </style>
-
-    <div id="watermark"></div>
-
-    <div id="auth-gate" class="kareem-intro">
-        <div class="name-container">
-            <span class="letter">K</span><span class="letter">A</span><span class="letter">R</span>
-            <span class="letter">E</span><span class="letter">E</span><span class="letter">M</span>
-        </div>
-        <div id="login-form" class="glass-card" style="width: 350px;">
-            <input type="tel" id="user-phone" placeholder="رقم الموبايل">
-            <div id="pass-area" style="display:none;">
-                <input type="password" id="user-pass" placeholder="كلمة السر">
-            </div>
-            <button class="btn-main" onclick="handleAuth()">دخول للمنصة 🚀</button>
-        </div>
-    </div>
-
-    <div id="app" style="display:none;">
-        <div class="marquee-news">
-            <marquee id="news-ticker">جاري تحميل أحدث الأخبار والدروس...</marquee>
-        </div>
-
-        <aside id="main-sidebar">
-            <div style="padding: 30px; text-align: center;">
-                <div style="font-size: 24px; font-weight: 900; color: var(--accent);">KAREEM ACADEMY</div>
-            </div>
-            <div class="nav-item active" onclick="nav('home')"><i class="fas fa-th-large"></i> لوحة التحكم</div>
-            <div class="nav-item" onclick="nav('lessons')"><i class="fas fa-video"></i> المحاضرات</div>
-            <div class="nav-item" onclick="nav('exams')"><i class="fas fa-file-signature"></i> بنك الامتحانات</div>
-            <div class="nav-item" onclick="nav('store')"><i class="fas fa-shopping-cart"></i> المتجر</div>
-            <div class="nav-item" onclick="nav('chat')"><i class="fas fa-comments"></i> مجتمع الطلاب</div>
-            <div id="admin-only" style="display:none;">
-                <div class="nav-item" onclick="nav('admin')" style="color: var(--success);"><i class="fas fa-user-crown"></i> الإدارة العليا</div>
-            </div>
-            <div class="nav-item" onclick="logout()" style="margin-top: auto; color: var(--danger);"><i class="fas fa-sign-out-alt"></i> خروج</div>
-        </aside>
-
-        <main class="page-container">
-            <div id="page-home" class="tab-page">
-                <h2>أهلاً بك يا <span id="student-name" style="color: var(--accent);">بطل</span></h2>
-                <div class="grid-layout">
-                    <div class="glass-card">
-                        <h3><i class="fas fa-star" style="color: gold;"></i> نقاطك</h3>
-                        <p id="student-points" style="font-size: 2rem; font-weight: 900;">0</p>
-                    </div>
-                    <div class="glass-card">
-                        <h3><i class="fas fa-clock"></i> حصص اليوم</h3>
-                        <p>لا يوجد حصص اليوم</p>
-                    </div>
-                </div>
-            </div>
-
-            <div id="page-lessons" class="tab-page" style="display:none;">
-                <h2>المحاضرات المرفوعة</h2>
-                <div id="lessons-grid" class="grid-layout"></div>
-            </div>
-
-            <div id="page-admin" class="tab-page" style="display:none;">
-                <h2>لوحة تحكم كيمو</h2>
-                <div class="admin-panel">
-                    <h3>رفع درس جديد</h3>
-                    <input type="text" id="new-title" placeholder="اسم المحاضرة">
-                    <input type="text" id="new-url" placeholder="رابط المحاضرة">
-                    <button class="btn-main" onclick="uploadLesson()">نشر المحاضرة</button>
-                </div>
-            </div>
-        </main>
-    </div>
-
-    <div id="video-overlay" style="display:none; position:fixed; inset:0; background:#000; z-index:10000;">
-        <button onclick="closePlayer()" style="position:absolute; top:20px; left:20px; color:#fff; background:red; border:none; padding:10px 20px; border-radius:5px; z-index:11000;">إغلاق X</button>
-        <div id="player-target" style="width:100%; height:100%;"></div>
-    </div>
-
     <script>
-        // --- تهيئة الفايربيز (801-900+) ---
-        const config = {
+        const firebaseConfig = {
             apiKey: "AIzaSyCzddbE_g5qsqTh7lQRDqh0Gmo28Seyr08",
+            authDomain: "kimo-academy-48541.firebaseapp.com",
             databaseURL: "https://kimo-academy-48541-default-rtdb.firebaseio.com",
             projectId: "kimo-academy-48541",
+            storageBucket: "kimo-academy-48541.appspot.com",
+            messagingSenderId: "385013785557",
             appId: "1:385013785557:web:a2e54aa4a1e1b8d187135c"
         };
-        firebase.initializeApp(config);
+        firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
 
-        let myData = null;
+        const lessonsRef = database.ref('lessons'), studentsRef = database.ref('students'), 
+              settingsRef = database.ref('settings'), presenceRef = database.ref('online_students'),
+              blacklistRef = database.ref('blacklist'), chatRef = database.ref('chat'), 
+              logsRef = database.ref('logs'), examsRef = database.ref('exams'), 
+              resultsRef = database.ref('results'), coursesRef = database.ref('courses');
 
-        // --- نظام المصادقة الذكي ---
-        async function handleAuth() {
-            const phone = document.getElementById('user-phone').value;
-            if(!phone) return alert("اكتب الرقم!");
+        let allData = {}, allStudents = {}, allCourses = {}, currentStudentData = null;
+        let isFirstLoad = true;
 
-            const snap = await database.ref('students/' + phone).once('value');
-            if(snap.exists()) {
-                document.getElementById('pass-area').style.display = 'block';
-                const pass = document.getElementById('user-pass').value;
-                if(pass) {
-                    if(pass === snap.val().password) setupSession(snap.val());
-                    else alert("كلمة السر خطأ!");
-                }
+        const subjectImages = {
+            "اللغة العربية": "https://images.unsplash.com/photo-1588580000645-4562a6d2c839?q=80&w=400",
+            "اللغة الإنجليزية": "https://images.unsplash.com/photo-1543167664-4002964133f9?q=80&w=400",
+            "الفيزياء": "https://images.unsplash.com/photo-1636466484202-cae21e06e33a?q=80&w=400",
+            "الكيمياء": "https://images.unsplash.com/photo-1532187875605-1ef6c237bbba?q=80&w=400",
+            "الأحياء": "https://images.unsplash.com/photo-1530026405186-ed1f139313f8?q=80&w=400",
+            "الرياضيات": "https://images.unsplash.com/photo-1509228468518-180dd482195e?q=80&w=400"
+        };
+
+        async function identifyStudent() {
+            const phone = document.getElementById('std-phone').value.trim();
+            if (!/^01[0125][0-9]{8}$/.test(phone)) return alert("رقم الموبايل غير صحيح");
+            const snapshot = await studentsRef.child(phone).once('value');
+            const student = snapshot.val();
+            document.getElementById('step-1').style.display = 'none';
+            if (student && student.password) {
+                currentStudentData = student;
+                document.getElementById('step-login').style.display = 'block';
+                document.getElementById('welcome-back').innerText = `أهلاً يا ${student.name.split(' ')[0]}`;
+                document.getElementById('gate-title').innerText = "تأكيد الهوية";
             } else {
-                // تسجيل جديد تلقائي
-                const name = prompt("أهلاً بك! اكتب اسمك الثلاثي للتسجيل:");
-                const password = prompt("اختر كلمة سر قوية:");
-                if(name && password) {
-                    const newUser = { name, phone, password, points: 50, role: 'student' };
-                    await database.ref('students/' + phone).set(newUser);
-                    setupSession(newUser);
-                }
+                document.getElementById('step-register').style.display = 'block';
+                document.getElementById('gate-title').innerText = "حساب جديد";
             }
         }
 
-        function setupSession(user) {
-            localStorage.setItem('kimo_session', JSON.stringify(user));
-            location.reload();
+        function verifyPassword() {
+            const pass = document.getElementById('std-pass').value;
+            if (pass === currentStudentData.password) saveAndLogin(currentStudentData);
+            else alert("كلمة المرور خطأ!");
         }
 
-        window.onload = () => {
-            const session = localStorage.getItem('kimo_session');
-            if(session) {
-                myData = JSON.parse(session);
-                document.getElementById('auth-gate').style.display = 'none';
-                document.getElementById('app').style.display = 'block';
-                document.getElementById('student-name').innerText = myData.name;
-                document.getElementById('student-points').innerText = myData.points || 0;
-                
-                if(myData.phone === "01023175098") document.getElementById('admin-only').style.display = 'block';
-                
-                loadData();
-                startWatermark();
-            }
-        };
+        function completeRegistration() {
+            const phone = document.getElementById('std-phone').value, name = document.getElementById('reg-name').value.trim(),
+                  pass = document.getElementById('reg-pass').value, q = document.getElementById('reg-question').value,
+                  a = document.getElementById('reg-answer').value.trim();
+            if (name.length < 5 || pass.length < 4 || !q || !a) return alert("برجاء إكمال كافة البيانات");
+            const newData = { name, phone, password: pass, securityQ: q, securityA: a, loginTime: new Date().toLocaleString() };
+            studentsRef.child(phone).update(newData);
+            saveAndLogin(newData);
+        }
 
-        // --- إدارة البيانات المحترفة ---
-        function loadData() {
-            database.ref('lessons').on('value', snap => {
-                let html = '';
-                snap.forEach(c => {
-                    const l = c.val();
-                    html += `
-                        <div class="glass-card">
-                            <div style="height:150px; background:#161b22; border-radius:10px; display:flex; align-items:center; justify-content:center;">
-                                <i class="fas fa-play-circle" style="font-size:3rem; color:var(--accent);"></i>
-                            </div>
-                            <h3>${l.title}</h3>
-                            <button class="btn-main" onclick="viewLesson('${l.url}')">بدء المشاهدة</button>
-                        </div>
-                    `;
+        function saveAndLogin(data) { localStorage.setItem('kimo_auth_v26', JSON.stringify(data)); runApp(); }
+
+        function runApp() {
+            const user = JSON.parse(localStorage.getItem('kimo_auth_v26'));
+            if(!user) return;
+            document.getElementById('login-gate').style.display = 'none';
+            document.getElementById('sidebar').style.display = 'flex';
+            document.getElementById('top-bar').style.display = 'flex';
+            document.getElementById('news-bar').style.display = 'block';
+            document.getElementById('content').style.display = 'block';
+            document.getElementById('display-name').innerText = user.name.split(' ')[0];
+            
+            presenceRef.child(user.phone).set({ name: user.name, last: Date.now() });
+            
+            if(user.phone === "01023175098") {
+                document.getElementById('adm-links').style.display = 'block';
+                document.getElementById('admin-live-info').style.display = 'block';
+                presenceRef.on('value', s => document.getElementById('online-now').innerText = s.numChildren());
+                studentsRef.on('value', s => {
+                    allStudents = s.val() || {};
+                    document.getElementById('total-students-count').innerText = s.numChildren();
+                    loadStudentsList(allStudents);
                 });
-                document.getElementById('lessons-grid').innerHTML = html;
+                coursesRef.on('value', s => {
+                    allCourses = s.val() || {};
+                    updateAdminCourseSelect();
+                });
+            }
+
+            coursesRef.on('value', s => { allCourses = s.val() || {}; renderCourses(); });
+            settingsRef.child('newsTicker').on('value', s => document.getElementById('ticker-content').innerText = s.val() || "مرحباً بكم في أكاديمية كريم!");
+            loadData(); renderSubjectGrids();
+            setInterval(moveWatermark, 4000);
+            
+            chatRef.limitToLast(40).on('child_added', s => {
+                const msg = s.val(), currUser = JSON.parse(localStorage.getItem('kimo_auth_v26')), 
+                      isMe = msg.name === currUser.name || msg.phone === "01023175098", box = document.getElementById('chat-messages');
+                box.innerHTML += `<div class="msg-bubble ${isMe ? 'msg-me' : 'msg-student'}"><b>${msg.name}</b><div>${msg.text}</div><small class="en-num">${msg.time}</small></div>`;
+                box.scrollTop = box.scrollHeight;
             });
-
-            database.ref('news').on('value', s => {
-                document.getElementById('news-ticker').innerText = s.val() || "مرحباً بك في كيمو أكاديمي 2026";
-            });
+            examsRef.on('value', s => renderExams(s.val()));
         }
 
-        function viewLesson(url) {
-            document.getElementById('video-overlay').style.display = 'flex';
-            document.getElementById('player-target').innerHTML = `<iframe src="${url}" width="100%" height="100%" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+        function createNewCourse() {
+            const name = document.getElementById('adm-course-name').value.trim();
+            if(!name) return alert("اكتب اسم الكورس");
+            coursesRef.push({ name: name, lectures: [] });
+            document.getElementById('adm-course-name').value = "";
+            alert("تم إنشاء الكورس بنجاح");
         }
 
-        function closePlayer() {
-            document.getElementById('video-overlay').style.display = 'none';
-            document.getElementById('player-target').innerHTML = '';
+        function updateAdminCourseSelect() {
+            let h = "<option value=''>اختر كورس لإضافة محاضرة</option>";
+            for(let id in allCourses) h += `<option value="${id}">${allCourses[id].name}</option>`;
+            document.getElementById('adm-course-select').innerHTML = h;
         }
 
-        // --- نظام الحماية المتقدم ---
-        function startWatermark() {
-            const wm = document.getElementById('watermark');
-            wm.innerText = `${myData.name} | ${myData.phone}`;
-            setInterval(() => {
-                wm.style.top = Math.random() * 90 + "vh";
-                wm.style.left = Math.random() * 80 + "vw";
-                wm.style.opacity = Math.random() * 0.3;
-            }, 3000);
+        function addLessonToCourse() {
+            const courseId = document.getElementById('adm-course-select').value;
+            const title = document.getElementById('adm-course-lesson-title').value.trim();
+            const url = document.getElementById('adm-course-lesson-url').value.trim();
+            if(!courseId || !title || !url) return alert("أكمل بيانات المحاضرة");
+            coursesRef.child(courseId).child('lectures').push({ title, url });
+            document.getElementById('adm-course-lesson-title').value = "";
+            document.getElementById('adm-course-lesson-url').value = "";
+            alert("تمت إضافة المحاضرة للكورس");
         }
 
-        function nav(page) {
-            document.querySelectorAll('.tab-page').forEach(p => p.style.display = 'none');
-            document.getElementById('page-' + page).style.display = 'block';
-            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-            event.currentTarget.classList.add('active');
+        function renderCourses() {
+            let h = "";
+            let user = JSON.parse(localStorage.getItem('kimo_auth_v26'));
+            let isAdmin = user && user.phone === "01023175098";
+            for(let id in allCourses) {
+                h += `<div class="card" style="border-color:var(--gold)">
+                    <div class="lesson-thumb" style="background-image:url('https://cdn-icons-png.flaticon.com/512/3652/3652267.png')"></div>
+                    <h3>${allCourses[id].name}</h3>
+                    <button class="btn-accent" onclick="checkCourseActivation('${id}')">فتح الكورس 🔒</button>
+                    ${isAdmin ? `<button class="btn-del" style="margin-top:10px; background:red; color:white; border:none; padding:8px; border-radius:10px; cursor:pointer; width:100%; font-family: 'Cairo';" onclick="deleteCourse('${id}')">حذف الكورس بالكامل 🗑️</button>` : ''}
+                </div>`;
+            }
+            document.getElementById('courses-grid').innerHTML = h || "<p>لا توجد كورسات مدفوعة حالياً</p>";
         }
 
-        function uploadLesson() {
-            const title = document.getElementById('new-title').value;
-            const url = document.getElementById('new-url').value;
-            if(title && url) {
-                database.ref('lessons').push({ title, url });
-                alert("تم الرفع بنجاح يا مستر كيمو!");
+        function deleteCourse(id) {
+            if(confirm("تحذير: سيتم حذف الكورس وكل المحاضرات اللي جواه! موافق؟")) {
+                coursesRef.child(id).remove();
+                alert("تم حذف الكورس بنجاح");
             }
         }
 
-        function logout() { localStorage.clear(); location.reload(); }
+        function renderLatest() {
+            if (!allData) return;
+            let items = Object.entries(allData).reverse().slice(0, 10); 
+            let user = JSON.parse(localStorage.getItem('kimo_auth_v26'));
+            let isAdmin = user && user.phone === "01023175098";
+            let html = `<div class="content-grid">`;
+            items.forEach(([id, i]) => {
+                html += `<div class="card"><h4>${i.title}</h4><button class="btn-accent" onclick="openContent('${i.url}','${i.type}','${i.title}')">فتح</button>${isAdmin ? `<button class="btn-del" style="margin-top:10px; background:red; color:white; border:none; padding:8px; border-radius:10px; cursor:pointer; width:100%; font-family: 'Cairo';" onclick="deleteLesson('${id}')">حذف الدرس 🗑️</button>` : ''}</div>`;
+            });
+            html += `</div>`;
+            document.getElementById('latest-content').innerHTML = html || "<p>لا يوجد محتوى حالياً</p>";
+        }
 
-        // تعطيل الاختصارات المشبوهة
-        document.onkeydown = (e) => {
-            if(e.ctrlKey && (e.key === 'u' || e.key === 's' || e.key === 'i')) return false;
-            if(e.key === 'F12') return false;
+        function deleteLesson(id) {
+            if(confirm("هل أنت متأكد من حذف هذا الدرس نهائياً؟")) {
+                lessonsRef.child(id).remove()
+                    .then(() => alert("تم حذف الدرس بنجاح ✅"))
+                    .catch(err => alert("خطأ في الحذف: " + err));
+            }
+        }
+
+        function uploadFreeLesson() {
+            const title = document.getElementById('free-lesson-title').value.trim();
+            const url = document.getElementById('free-lesson-url').value.trim();
+            const type = document.getElementById('free-lesson-type').value;
+            if(!title || !url) return alert("يا كيمو كمل البيانات الأول! 😅");
+            lessonsRef.push({ title, url, type, date: Date.now() }).then(() => {
+                alert("تم رفع الدرس المجاني بنجاح ✅");
+                document.getElementById('free-lesson-title').value = "";
+                document.getElementById('free-lesson-url').value = "";
+                renderLatest(); 
+            }).catch(err => alert("حصل مشكلة في الرفع: " + err));
+        }
+
+        function checkCourseActivation(courseId) {
+            const user = JSON.parse(localStorage.getItem('kimo_auth_v26'));
+            const key = `active_${user.phone}_${courseId}`;
+            if(localStorage.getItem(key) === "true" || user.phone === "01023175098") {
+                openCourse(courseId);
+            } else {
+                document.getElementById('activation-overlay').style.display = 'flex';
+                document.getElementById('confirm-activation-btn').onclick = () => {
+                    const code = document.getElementById('activation-code').value.trim();
+                    if(validCodes.includes(code)) {
+                        localStorage.setItem(key, "true");
+                        alert("✅ تم التفعيل بنجاح! استمتع بالكورس.");
+                        document.getElementById('activation-overlay').style.display = 'none';
+                        openCourse(courseId);
+                    } else { alert("❌ الكود خاطئ أو مستخدم من قبل!"); }
+                };
+            }
+        }
+
+        function openCourse(id) {
+            tab(null, 'p-courses');
+            document.getElementById('courses-grid').style.display = 'none';
+            document.getElementById('course-details').style.display = 'block';
+            document.getElementById('current-course-title').innerText = allCourses[id].name;
+            let h = "", lectures = allCourses[id].lectures;
+            for(let lId in lectures) {
+                h += `<div class="card"><h4>${lectures[lId].title}</h4><button class="btn-accent" onclick="openContent('${lectures[lId].url}','video','${lectures[lId].title}')">مشاهدة المحاضرة</button></div>`;
+            }
+            document.getElementById('course-lessons-list').innerHTML = h || "<p>جاري إضافة المحاضرات...</p>";
+        }
+
+        function showCoursesGrid() { document.getElementById('courses-grid').style.display = 'grid'; document.getElementById('course-details').style.display = 'none'; }
+function openContent(url, type, title) {
+    const user = JSON.parse(localStorage.getItem('kimo_auth_v26'));
+    if (type === 'video') {
+        let finalSrc = "";
+        
+        if (url.includes('t.me/')) {
+            let cleanUrl = url.split('?')[0]; 
+            finalSrc = cleanUrl + '?embed=1';
+        } 
+        else if (url.includes('youtube.com') || url.includes('youtu.be')) {
+            let videoId = url.includes('v=') ? url.split('v=')[1].split('&')[0] : url.split('/').pop();
+            finalSrc = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
+        } else { 
+            finalSrc = url; 
+        }
+
+        document.getElementById('video-player-overlay').style.display = 'flex';
+        document.getElementById('video-frame-container').innerHTML = `
+            <div style="position:relative; width:100%; height:100%; background:#000;">
+                <div id="watermark" style="position:absolute; z-index:9999; color:rgba(255,255,255,0.3); font-weight:900; font-size:18px; pointer-events:none; white-space:nowrap; transition: all 1s ease;">
+                    ${user.name} - ${user.phone}
+                </div>
+                <iframe src="${finalSrc}" width="100%" height="100%" frameborder="0" allowfullscreen allow="autoplay"></iframe>
+            </div>`;
+            
+        if(window.wmInterval) clearInterval(window.wmInterval);
+        window.wmInterval = setInterval(() => { 
+            const wm = document.getElementById('watermark'); 
+            if(wm) { 
+                wm.style.top = Math.random() * 80 + '%'; 
+                wm.style.left = Math.random() * 50 + '%'; 
+            } 
+        }, 4000);
+    } else { 
+        window.open(url, '_blank'); 
+    }
+}
+
+        function closeVideo() { document.getElementById('video-player-overlay').style.display='none'; document.getElementById('video-frame-container').innerHTML=''; if(window.wmInterval) clearInterval(window.wmInterval); }
+        function loadData() { lessonsRef.on('value', s => { allData = s.val() || {}; renderLatest(); }); }
+        function moveWatermark() { const wm = document.getElementById('floating-watermark'), d = JSON.parse(localStorage.getItem('kimo_auth_v26')); if(d && wm) { wm.style.display = 'block'; wm.innerHTML = `${d.name} | ${d.phone}`; wm.style.top = Math.random() * 80 + '%'; wm.style.left = Math.random() * 70 + '%'; } }
+        function logout() { localStorage.clear(); location.reload(); }
+        function tab(el, id) { document.querySelectorAll('.page').forEach(p => p.classList.remove('active')); document.getElementById(id).classList.add('active'); if(el) { document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active')); el.classList.add('active'); } }
+
+        const validCodes = ["K26-X9R2-QM7B", "K26-L5P1-V3N8", "K26-Y8T4-W2Z9", "K26-M0K7-B5S2", "K26-J3D9-F1H4", "K26-A6G2-C8V0", "K26-Q1W5-E9R3", "K26-T7Y2-U4I8", "K26-O0P6-L2K4", "K26-M8N1-B3V7"];
+        window.onload = function() { const savedUser = localStorage.getItem('kimo_auth_v26'); if (savedUser) runApp(); else document.getElementById('login-gate').style.display = 'block'; };
+
+function showForgetPassword() {
+    const phone = document.getElementById('std-phone').value;
+    if (!phone) return alert("اكتب رقم الموبايل الأول يا بطل!");
+    
+    studentsRef.child(phone).once('value', snapshot => {
+        const user = snapshot.val();
+        if (user && user.securityQ) {
+            document.getElementById('step-login').style.display = 'none';
+            document.getElementById('step-forget').style.display = 'block';
+            document.getElementById('security-q-text').innerText = "سؤال الأمان: " + user.securityQ;
+            window.currentResetPhone = phone;
+        } else {
+            alert("الحساب ده ملوش سؤال أمان، كلم كيمو يرجعهولك يدوي.");
+        }
+    });
+}
+
+function resetAccess() {
+    const answer = document.getElementById('forget-answer').value.trim();
+    studentsRef.child(window.currentResetPhone).once('value', snapshot => {
+        const user = snapshot.val();
+        if (user.securityA === answer) {
+            alert("تم التحقق! كلمة مرورك هي: " + user.password);
+            location.reload(); 
+        } else {
+            alert("الإجابة غلط.. ركز وافتكر!");
+        }
+    });
+}
+
+document.querySelectorAll('.mobile-nav div').forEach(btn => {
+    btn.onclick = function() {
+        const pages = {
+            'fa-home': 'p-home',
+            'fa-graduation-cap': 'p-courses',
+            'fa-play-circle': 'p-lessons',
+            'fa-file-pdf': 'p-files',
+            'fa-comments': 'p-chat'
         };
+        const iconClass = this.querySelector('i').classList[1];
+        tab(null, pages[iconClass]);
+        document.querySelectorAll('.mobile-nav div').forEach(d => d.style.color = '#8b949e');
+        this.style.color = 'var(--accent)';
+    };
+});
+
+function sendChatMessage() {
+    const input = document.getElementById('chat-input');
+    const text = input.value.trim();
+    const user = JSON.parse(localStorage.getItem('kimo_auth_v26'));
+    
+    if (text && user) {
+        chatRef.push({
+            name: user.name,
+            phone: user.phone,
+            text: text,
+            time: new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
+        });
+        input.value = "";
+    }
+}
+
+function updateNewsTicker() {
+    const news = document.getElementById('adm-news-text').value;
+    if (news) {
+        settingsRef.update({ newsTicker: news });
+        alert("تم تحديث شريط الأخبار بنجاح 📢");
+    }
+}
+
     </script>
 </body>
-</html>
+</html
 

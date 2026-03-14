@@ -41,6 +41,31 @@
             --text: #e6edf3; --telegram: #0088cc; --danger: #ff4d4d; 
             --gold: #FFD700; --sidebar-bg: rgba(1, 4, 9, 0.95); 
             --logo-text: #ffffff;
+<style>
+#intro-overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background-color: #0a0a0a;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    overflow: hidden;
+}
+#bulb { font-size: 50px; display: inline-block; }
+#kimo-logo {
+    position: absolute;
+    font-family: 'Arial Black', sans-serif;
+    font-size: 5rem;
+    color: #fff;
+    opacity: 0;
+    text-transform: uppercase;
+    letter-spacing: 10px;
+    text-shadow: 0 0 10px #fff, 0 0 20px #f1c40f, 0 0 40px #f1c40f;
+}
+</style>
+
         }
 
         body.light-mode { --main-bg: #f0f2f5; --card-bg: #ffffff; --text: #1c1e21; --sidebar-bg: #ffffff; }
@@ -753,6 +778,34 @@
             const news = document.getElementById('adm-news-text').value;
             if (news) { settingsRef.update({ newsTicker: news }); alert("تم النشر 📢"); }
         }
+    const tl = gsap.timeline();
+    const breakSound = document.getElementById('break-audio');
+
+    tl.fromTo("#bulb", 
+        { y: -500, rotation: 0 }, 
+        { y: 0, rotation: 15, duration: 0.6, ease: "power2.in" }
+    )
+    .add(() => {
+        breakSound.play();
+        document.getElementById('bulb').style.opacity = '0';
+    })
+    .to("#kimo-logo", {
+        opacity: 1,
+        scale: 1.2,
+        duration: 0.4,
+        ease: "expo.out"
+    })
+    .to("#intro-overlay", {
+        opacity: 0,
+        duration: 1,
+        delay: 1.5,
+        onComplete: () => {
+            document.getElementById('intro-overlay').style.display = 'none';
+        }
+    });
+
     </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+
 </body>
 </html>

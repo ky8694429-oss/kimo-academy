@@ -747,7 +747,6 @@ function openContent(url, type, title) {
         window.open(url, '_blank'); 
     }
 }
-
         else if (url.includes('youtube.com') || url.includes('youtu.be')) {
             let videoId = url.includes('v=') ? url.split('v=')[1].split('&')[0] : url.split('/').pop();
             finalSrc = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;

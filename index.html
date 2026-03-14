@@ -583,8 +583,7 @@
             lessonsRef.on('value', s => { allData = s.val() || {}; renderLatest(); });
         }
 
- // 1. وظيفة فتح المحتوى بالحماية القصوى
-function openContent(url, type, title) {
+ function openContent(url, type, title) {
     const user = JSON.parse(localStorage.getItem('kimo_auth_v26')) || {name: 'طالب', phone: '010xxxx'};
     if (type === 'video') {
         let finalSrc = "";
@@ -600,20 +599,22 @@ function openContent(url, type, title) {
         document.getElementById('video-player-overlay').style.display = 'flex';
         document.getElementById('video-frame-container').innerHTML = `
             <div id="video-wrapper" style="position:relative; width:100%; height:100%; background:#000; overflow:hidden;">
-                <div style="position:absolute; top:0; left:0; width:100%; height:100%; z-index:100; background:transparent; pointer-events:auto;"></div>
+                
+                <div style="position:absolute; top:0; left:0; width:100%; height:calc(100% - 60px); z-index:100; background:transparent; pointer-events:auto;"></div>
+                
                 <div id="watermark" style="position:absolute; z-index:1000; pointer-events:none; color:rgba(255,255,255,0.5); font-weight:bold; white-space:nowrap;">
                     ${user.name} - ${user.phone}
                 </div>
+
                 <iframe src="${finalSrc}" width="100%" height="100%" frameborder="0" allow="autoplay" style="position:relative; z-index:1;"></iframe>
             </div>`;
-        
+
         if (typeof startWatermark === "function") { startWatermark(); }
     } else {
         window.open(url, '_blank');
     }
 }
 
-// 2. وظيفة الووتر مارك
 function startWatermark() {
     if(window.wmInterval) clearInterval(window.wmInterval);
     window.wmInterval = setInterval(() => {
@@ -626,14 +627,12 @@ function startWatermark() {
     }, 4000);
 }
 
-// 3. وظيفة إغلاق الفيديو
 function closeVideo() {
     document.getElementById('video-player-overlay').style.display = 'none';
     document.getElementById('video-frame-container').innerHTML = '';
     if(window.wmInterval) clearInterval(window.wmInterval);
 }
 
-// 4. وظيفة إنشاء كورس جديد
 function createNewCourse() {
     const name = document.getElementById('adm-course-name').value.trim();
     if(!name) return alert("اكتب اسم الكورس");
@@ -642,33 +641,17 @@ function createNewCourse() {
     alert("تم إنشاء الكورس بنجاح");
 }
 
-        function startWatermark() {
-            if(window.wmInterval) clearInterval(window.wmInterval);
-            window.wmInterval = setInterval(() => { 
-                const wm = document.getElementById('watermark'); 
-                if(wm) { 
-                    // حركة عشوائية مع ترك مسافة أمان عن الحواف
-                    wm.style.top = Math.floor(Math.random() * 80) + 5 + '%'; 
-                    wm.style.left = Math.floor(Math.random() * 60) + 5 + '%';
-                    // تغميز بسيط في الشفافية
-                    wm.style.opacity = Math.random() * (0.9 - 0.6) + 0.6;
-                } 
-            }, 4000);
-        }
+function deleteCourse(courseId) {
+    if (confirm('حذف الكورس نهائياً؟')) {
+        coursesRef.child(courseId).remove().then(() => alert('تم الحذف ✅'));
+    }
+}
 
-        function closeVideo() { 
-            document.getElementById('video-player-overlay').style.display='none'; 
-            document.getElementById('video-frame-container').innerHTML=''; 
-            if(window.wmInterval) clearInterval(window.wmInterval); 
-        }
-
-        function createNewCourse() {
-            const name = document.getElementById('adm-course-name').value.trim();
-            if(!name) return alert("اكتب اسم الكورس");
-            coursesRef.push({ name: name, lectures: [] });
-            document.getElementById('adm-course-name').value = "";
-            alert("تم إنشاء الكورس بنجاح");
-        }
+function deleteLesson(lessonId) {
+    if (confirm('حذف المحاضرة؟')) {
+        lessonsRef.child(lessonId).remove().then(() => alert('تم الحذف ✅'));
+    }
+}
 
         function updateAdminCourseSelect() {
             let h = "<option value=''>اختر كورس لإضافة محاضرة</option>";

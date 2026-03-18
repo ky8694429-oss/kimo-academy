@@ -2,144 +2,268 @@
 <html lang="ar" dir="rtl">
 <head>
     <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
-<script>
-  window.OneSignalDeferred = window.OneSignalDeferred || [];
-  OneSignalDeferred.push(async function(OneSignal) {
-    await OneSignal.init({
-      appId: "7e6da62d-7c47-4c0f-93ba-7e6d2189e1b5",
-    });
-  });
-  window.onerror = function() { return true; };
-</script>
+    <script>
+      window.OneSignalDeferred = window.OneSignalDeferred || [];
+      OneSignalDeferred.push(async function(OneSignal) {
+        await OneSignal.init({
+          appId: "7e6da62d-7c47-4c0f-93ba-7e6d2189e1b5",
+        });
+      });
+      window.onerror = function() { return true; };
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>منصة كيمو أكاديمي | 2026</title>
     
     <link rel="stylesheet" href="سي اس اس.css">
-
+    
     <link rel="icon" href="https://raw.githubusercontent.com/ky8694429-oss/kimo-academy/main/logo.png" type="image/png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
 
     <style>
-        /* ستايلات الـ Layout الأساسية عشان المنصة متضربش */
-        body { margin: 0; font-family: 'Cairo', sans-serif; display: flex; min-height: 100vh; overflow-x: hidden; }
-        aside { width: 280px; position: sticky; top: 0; height: 100vh; z-index: 999; display: none; flex-direction: column; }
-        main { flex: 1; padding: 20px; padding-top: 100px; display: none; }
-        .page { display: none; }
+        /* التنسيقات الهيكلية الأساسية لضمان عمل الـ Sidebar والصفحات */
+        body { margin: 0; font-family: 'Cairo', sans-serif; display: flex; min-height: 100vh; overflow-x: hidden; background-color: #0f172a; color: #f1f5f9; }
+        aside { width: 280px; position: sticky; top: 0; height: 100vh; z-index: 999; display: none; flex-direction: column; background: #020617; border-left: 1px solid #1e293b; transition: all 0.3s; }
+        main { flex: 1; padding: 20px; padding-top: 80px; display: none; position: relative; }
+        .page { display: none; animation: fadeIn 0.4s ease; }
         .page.active { display: block; }
-        #watermark { position: absolute; z-index: 2147483647; color: rgba(255,255,255,0.3); font-weight: 900; pointer-events: none; }
-        .video-container { width: 100%; height: 85vh; background: #000; }
-        @media (max-width: 768px) { aside { display: none !important; } .mobile-nav { display: flex !important; } }
-        /* استايلات الشات والطلاب عشان تفضل شغالة */
-        #chat-messages { height: 400px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; padding: 15px; }
-        .student-row { display: grid; grid-template-columns: 1.2fr 1fr 1fr; padding: 10px; border-bottom: 1px solid #333; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* تنسيق مشغل الفيديو والوترمارك */
+        .video-container { width: 100%; height: 85vh; background: #000; position: relative; border-radius: 20px; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
+        #watermark { position: absolute; z-index: 999999; color: rgba(255,255,255,0.2); font-weight: 900; font-size: 1.5rem; pointer-events: none; white-space: nowrap; text-shadow: 1px 1px 2px rgba(0,0,0,0.5); }
+        
+        /* تنسيق الجداول والقوائم الأصلية */
+        .student-row { display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; padding: 15px; border-bottom: 1px solid #1e293b; align-items: center; }
+        .nav-link { transition: all 0.2s; border-radius: 12px; margin: 4px 12px; }
+        .nav-link.active { background: #2563eb; color: white; box-shadow: 0 4px 15px rgba(37,99,235,0.3); }
+        
+        /* الموبايل */
+        @media (max-width: 768px) {
+            aside { position: fixed; right: -280px; height: 100%; }
+            aside.open { right: 0; display: flex; }
+            main { padding: 15px; padding-top: 90px; }
+        }
     </style>
 </head>
 
-<body class="bg-slate-900 text-slate-100 selection:bg-blue-500/30" oncontextmenu="return false;"> 
+<body oncontextmenu="return false;">
 
-    <div id="notification-toast" class="fixed -top-20 left-1/2 -translate-x-1/2 bg-blue-600 p-4 rounded-full z-[50000] transition-all duration-500">
-        <i class="fas fa-bell"></i> <span id="notif-text">تنبيه من كيمو!</span>
+    <div id="notification-toast" class="fixed -top-20 left-1/2 -translate-x-1/2 bg-blue-600 text-white px-6 py-3 rounded-full z-[100000] transition-all duration-500 shadow-2xl flex items-center gap-3">
+        <div class="w-2 h-2 bg-white rounded-full animate-ping"></div>
+        <span id="notif-text">تم تحديث البيانات بنجاح</span>
     </div>
 
-    <div id="top-bar" class="fixed top-0 inset-x-0 h-16 bg-slate-900/80 backdrop-blur-md border-b border-slate-800 z-[998] hidden items-center justify-end px-6 gap-4">
-        <div id="admin-live-info" style="display:none;" class="text-blue-400 font-bold">
-            <i class="fas fa-eye"></i> <span id="online-now" class="en-num">0</span>
+    <div id="top-bar" class="fixed top-0 inset-x-0 h-16 bg-slate-900/90 backdrop-blur-xl border-b border-slate-800 z-[998] hidden items-center justify-between px-6">
+        <button class="md:hidden text-2xl" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+        <div class="flex items-center gap-4 mr-auto">
+            <div id="admin-live-info" style="display:none;" class="bg-blue-500/10 px-4 py-1 rounded-full border border-blue-500/20 text-blue-400 font-bold text-sm">
+                <i class="fas fa-circle text-[8px] animate-pulse ml-2"></i> متواجد الآن: <span id="online-now" class="en-num">0</span>
+            </div>
+            <button class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-red-500/20 hover:text-red-500 transition-colors" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i>
+            </button>
         </div>
-        <button class="bg-slate-800 p-2 rounded-lg" onclick="logout()"><i class="fas fa-sign-out-alt"></i></button>
     </div>
 
-    <aside id="sidebar" class="bg-slate-950 border-l border-slate-800">
-        <div class="p-6 text-center">
-            <h2 class="text-2xl font-black text-white">KAREEM<span class="text-blue-500">👑</span></h2>
+    <aside id="sidebar">
+        <div class="p-8 text-center">
+            <div class="w-16 h-16 bg-blue-600 rounded-2xl rotate-3 mx-auto mb-4 flex items-center justify-center shadow-lg shadow-blue-600/20">
+                <span class="text-3xl font-black text-white -rotate-3">K</span>
+            </div>
+            <h2 class="text-xl font-black tracking-tight">KIMO <span class="text-blue-500">ACADEMY</span></h2>
+            <p class="text-[10px] text-slate-500 mt-1 uppercase tracking-widest">Premium Learning Experience</p>
         </div>
-        <div class="nav-link p-4 cursor-pointer hover:bg-blue-600/10 active" onclick="tab(this, 'p-home')"><i class="fas fa-home ml-3"></i>الرئيسية</div>
-        <div class="nav-link p-4 cursor-pointer hover:bg-blue-600/10" onclick="tab(this, 'p-courses')"><i class="fas fa-graduation-cap ml-3"></i>الكورسات</div>
-        <div class="nav-link p-4 cursor-pointer hover:bg-blue-600/10" onclick="tab(this, 'p-lessons')"><i class="fas fa-play-circle ml-3"></i>المحاضرات</div>
-        <div class="nav-link p-4 cursor-pointer hover:bg-blue-600/10" onclick="tab(this, 'p-files')"><i class="fas fa-file-pdf ml-3"></i>PDF</div>
-        <div class="nav-link p-4 cursor-pointer hover:bg-blue-600/10" onclick="tab(this, 'p-chat')"><i class="fas fa-comments ml-3"></i>الدردشة</div>
-        <div id="adm-links" style="display:none;" class="border-t border-slate-800 mt-4">
-            <div class="p-4 text-green-500 cursor-pointer" onclick="tab(this, 'p-students')"><i class="fas fa-users-cog ml-3"></i>الطلاب</div>
-            <div class="p-4 text-green-500 cursor-pointer" onclick="tab(this, 'p-admin')"><i class="fas fa-tools ml-3"></i>الإدارة</div>
+
+        <nav class="flex-1 overflow-y-auto py-4">
+            <div class="nav-link p-4 cursor-pointer active" onclick="tab(this, 'p-home')"><i class="fas fa-th-large ml-3 w-5"></i>الرئيسية</div>
+            <div class="nav-link p-4 cursor-pointer" onclick="tab(this, 'p-courses')"><i class="fas fa-graduation-cap ml-3 w-5"></i>الكورسات</div>
+            <div class="nav-link p-4 cursor-pointer" onclick="tab(this, 'p-lessons')"><i class="fas fa-play-circle ml-3 w-5"></i>المحاضرات</div>
+            <div class="nav-link p-4 cursor-pointer" onclick="tab(this, 'p-files')"><i class="fas fa-file-pdf ml-3 w-5"></i>المذكرات</div>
+            <div class="nav-link p-4 cursor-pointer" onclick="tab(this, 'p-chat')"><i class="fas fa-comments ml-3 w-5"></i>الدردشة العامة</div>
+            
+            <div id="adm-links" style="display:none;" class="mt-6 pt-6 border-t border-slate-800">
+                <p class="px-8 text-[10px] text-slate-500 mb-2 font-bold">لوحة الإدارة</p>
+                <div class="nav-link p-4 cursor-pointer text-emerald-400 hover:bg-emerald-500/10" onclick="tab(this, 'p-students')"><i class="fas fa-users-cog ml-3 w-5"></i>إدارة الطلاب</div>
+                <div class="nav-link p-4 cursor-pointer text-emerald-400 hover:bg-emerald-500/10" onclick="tab(this, 'p-admin')"><i class="fas fa-magic ml-3 w-5"></i>رفع المحتوى</div>
+            </div>
+        </nav>
+        
+        <div class="p-6">
+            <div class="bg-slate-900 rounded-2xl p-4 border border-slate-800">
+                <p class="text-[10px] text-slate-400">الإصدار 2026.1</p>
+                <p class="text-[9px] text-slate-500">تطوير مستر كريم صبري</p>
+            </div>
         </div>
     </aside>
 
     <main id="content">
         <div id="p-home" class="page active">
-            <div class="bg-blue-600 p-8 rounded-3xl mb-8">
-                <h1 class="text-2xl font-bold">مرحباً، <span id="display-name" class="text-yellow-400">طالبنا</span> 👋</h1>
+            <div class="relative overflow-hidden bg-gradient-to-br from-blue-600 to-indigo-700 p-8 rounded-[2.5rem] mb-8 shadow-xl shadow-blue-900/20">
+                <div class="relative z-10">
+                    <h1 class="text-3xl font-black mb-2">يا هلا، <span id="display-name" class="text-yellow-300">طالبنا</span> 👋</h1>
+                    <p class="text-blue-100 opacity-80">جاهز تكمل رحلة التفوق النهاردة؟</p>
+                </div>
+                <i class="fas fa-rocket absolute -bottom-4 -left-4 text-9xl text-white/10 -rotate-12"></i>
             </div>
-            <h3>آخر الدروس المضافة:</h3>
-            <div id="latest-content"></div>
+            
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-xl font-bold">آخر ما تم إضافته</h3>
+                <span class="text-xs bg-slate-800 px-3 py-1 rounded-full border border-slate-700">تحديث تلقائي</span>
+            </div>
+            <div id="latest-content" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"></div>
         </div>
 
         <div id="p-courses" class="page">
-            <h2 class="text-xl font-bold mb-4">الكورسات المدفوعة 🎓</h2>
+            <h2 class="text-2xl font-black mb-6">الكورسات الأكاديمية 📚</h2>
             <div id="courses-grid" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
-            <div id="course-details" style="display:none;">
-                <button class="bg-slate-800 p-2 rounded mb-4" onclick="showCoursesGrid()">رجوع</button>
-                <h3 id="current-course-title"></h3>
+            
+            <div id="course-details" style="display:none;" class="bg-slate-900/50 p-6 rounded-3xl border border-slate-800">
+                <div class="flex items-center gap-4 mb-8">
+                    <button class="w-12 h-12 bg-slate-800 rounded-2xl hover:bg-slate-700 transition-all" onclick="showCoursesGrid()"><i class="fas fa-arrow-right"></i></button>
+                    <div>
+                        <h3 id="current-course-title" class="text-2xl font-bold"></h3>
+                        <p class="text-sm text-slate-400">محتوى الكورس التعليمي</p>
+                    </div>
+                </div>
                 <div id="course-lessons-list" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
             </div>
         </div>
 
-        <div id="p-lessons" class="page"><h2>المحاضرات 🎥</h2><div id="subjects-grid-video" class="grid grid-cols-1 md:grid-cols-3 gap-4"></div></div>
+        <div id="p-lessons" class="page">
+            <div class="flex items-center gap-4 mb-8">
+                <div class="w-12 h-12 bg-red-600/20 text-red-500 rounded-2xl flex items-center justify-center text-xl">
+                    <i class="fas fa-play"></i>
+                </div>
+                <h2 class="text-2xl font-black">المحاضرات المصورة</h2>
+            </div>
+            <div id="subjects-grid-video" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
+        </div>
+
+        <div id="p-files" class="page">
+            <h2 class="text-2xl font-black mb-6">المذكرات والملخصات 📄</h2>
+            <div id="subjects-grid-pdf" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
+        </div>
+
         <div id="p-chat" class="page">
-            <div class="bg-slate-800 p-4 rounded-2xl">
-                <div id="chat-messages"></div>
-                <div class="flex gap-2 mt-4">
-                    <input type="text" id="chat-input" class="flex-1 bg-slate-900 p-3 rounded-xl border border-slate-700">
-                    <button class="bg-blue-600 px-6 rounded-xl font-bold" onclick="sendChatMessage()">إرسال</button>
+            <div class="max-w-4xl mx-auto h-[75vh] flex flex-col bg-slate-900 rounded-[2.5rem] border border-slate-800 overflow-hidden shadow-2xl">
+                <div class="p-6 bg-slate-800/50 border-b border-slate-700 flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+                        <h3 class="font-bold">غرفة الدردشة المباشرة</h3>
+                    </div>
+                </div>
+                <div id="chat-messages" class="flex-1 overflow-y-auto p-6 space-y-4"></div>
+                <div class="p-6 bg-slate-950/50">
+                    <div class="relative flex gap-3">
+                        <input type="text" id="chat-input" placeholder="اكتب رسالتك هنا..." class="flex-1 bg-slate-900 border border-slate-700 p-4 rounded-2xl focus:border-blue-500 outline-none transition-all">
+                        <button class="bg-blue-600 px-8 rounded-2xl font-bold hover:bg-blue-500 transition-all active:scale-95 shadow-lg shadow-blue-600/20" onclick="sendChatMessage()">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
-        
-        <div id="p-admin" class="page">
-            <div class="bg-slate-800 p-6 rounded-2xl border border-blue-500/50 mb-6">
-                <h3 class="mb-4">➕ إضافة درس سريع</h3>
-                <input type="text" id="free-lesson-title" placeholder="العنوان" class="w-full bg-slate-950 p-3 rounded-xl mb-2">
-                <input type="text" id="free-lesson-url" placeholder="الرابط" class="w-full bg-slate-950 p-3 rounded-xl mb-4">
-                <button class="w-full bg-blue-600 py-3 rounded-xl font-bold" onclick="uploadFreeLesson()">نشر الآن 🚀</button>
+
+        <div id="p-students" class="page">
+            <div class="flex items-center justify-between mb-8">
+                <h2 class="text-2xl font-black">قاعدة بيانات الطلاب 🛰️</h2>
+                <div class="relative w-64">
+                    <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-500"></i>
+                    <input type="text" id="search-std" oninput="filterStudents()" placeholder="ابحث بالاسم أو الرقم..." class="w-full bg-slate-900 border border-slate-800 pl-4 pr-12 py-2 rounded-xl text-sm outline-none focus:border-blue-500">
+                </div>
+            </div>
+            <div class="bg-slate-900 rounded-3xl border border-slate-800 overflow-hidden">
+                <div class="student-row bg-slate-800/50 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                    <div>الطالب</div>
+                    <div>كلمة المرور</div>
+                    <div>آخر ظهور</div>
+                    <div>الإجراءات</div>
+                </div>
+                <div id="students-table-body"></div>
             </div>
         </div>
-        
-        <div id="p-students" class="page">
-            <h2>إدارة الطلاب 🛰️</h2>
-            <div id="students-table-body" class="bg-slate-800 rounded-2xl p-4"></div>
+
+        <div id="p-admin" class="page">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="bg-slate-900 p-8 rounded-[2.5rem] border border-slate-800 shadow-xl">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div class="w-12 h-12 bg-blue-600/20 text-blue-500 rounded-2xl flex items-center justify-center"><i class="fas fa-plus"></i></div>
+                        <h3 class="text-xl font-bold">نشر درس سريع</h3>
+                    </div>
+                    <div class="space-y-4">
+                        <input type="text" id="free-lesson-title" placeholder="عنوان الدرس (مثال: البلاغة - حصة 1)" class="w-full bg-slate-950 p-4 rounded-2xl border border-slate-800 focus:border-blue-500 outline-none">
+                        <input type="text" id="free-lesson-url" placeholder="رابط المحتوى (يوتيوب أو تليجرام)" class="w-full bg-slate-950 p-4 rounded-2xl border border-slate-800 focus:border-blue-500 outline-none">
+                        <select id="free-lesson-subject" class="w-full bg-slate-950 p-4 rounded-2xl border border-slate-800 focus:border-blue-500 outline-none">
+                            <option value="اللغة العربية">اللغة العربية</option>
+                            <option value="الفيزياء">الفيزياء</option>
+                            <option value="الكيمياء">الكيمياء</option>
+                        </select>
+                        <button class="w-full bg-blue-600 py-5 rounded-2xl font-black text-lg hover:bg-blue-500 transition-all shadow-xl shadow-blue-600/10" onclick="uploadFreeLesson()">نشر فوراً 🚀</button>
+                    </div>
+                </div>
+                <div class="bg-slate-900 p-8 rounded-[2.5rem] border border-slate-800">
+                    <h3 class="text-xl font-bold mb-6">إنشاء كورس مدفوع</h3>
+                    <input type="text" id="course-name" placeholder="اسم الكورس" class="w-full bg-slate-950 p-4 rounded-2xl mb-4 border border-slate-800">
+                    <button class="w-full bg-emerald-600 py-5 rounded-2xl font-black text-lg hover:bg-emerald-500" onclick="createCourse()">تجهيز الكورس ✅</button>
+                </div>
+            </div>
         </div>
     </main>
 
-    <div id="login-gate" class="fixed inset-0 bg-slate-950 z-[10000] flex items-center justify-center p-4">
-        <div class="bg-slate-900 p-8 rounded-[2rem] border border-slate-800 w-full max-w-[400px] text-center">
-            <h2 class="text-xl font-bold mb-6">تسجيل الدخول - كيمو أكاديمي</h2>
-            <div id="step-1">
-                <input type="tel" id="std-phone" placeholder="رقم الموبايل" class="w-full bg-slate-950 p-4 rounded-xl mb-4 text-center">
-                <button class="w-full bg-blue-600 py-4 rounded-xl font-bold" onclick="identifyStudent()">دخول</button>
+    <div id="login-gate" class="fixed inset-0 bg-slate-950 z-[10000] flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-slate-900 p-8 rounded-[3rem] border border-slate-800 w-full max-w-[450px] shadow-2xl relative">
+            <div class="absolute -top-12 left-1/2 -translate-x-1/2 w-24 h-24 bg-blue-600 rounded-[2rem] flex items-center justify-center shadow-2xl border-4 border-slate-950">
+                <i class="fas fa-shield-alt text-3xl text-white"></i>
             </div>
-            <div id="step-login" style="display:none;">
-                <p id="welcome-back" class="mb-4 text-blue-400"></p>
-                <input type="password" id="std-pass" placeholder="كلمة المرور" class="w-full bg-slate-950 p-4 rounded-xl mb-4 text-center">
-                <button class="w-full bg-blue-600 py-4 rounded-xl font-bold" onclick="verifyPassword()">تأكيد</button>
+            <div class="mt-8 text-center mb-8">
+                <h2 class="text-2xl font-black">أهلاً بك في أكاديميتنا</h2>
+                <p class="text-slate-500 text-sm mt-2">برجاء إثبات هويتك للوصول للمحتوى</p>
             </div>
-            <div id="step-register" style="display:none;">
-                <input type="text" id="reg-name" placeholder="الاسم الثلاثي" class="w-full bg-slate-950 p-4 rounded-xl mb-2">
-                <input type="password" id="reg-pass" placeholder="كلمة مرور جديدة" class="w-full bg-slate-950 p-4 rounded-xl mb-4">
-                <button class="w-full bg-blue-600 py-4 rounded-xl font-bold" onclick="completeRegistration()">إنشاء حساب</button>
+            
+            <div id="step-1" class="space-y-4">
+                <div class="relative">
+                    <i class="fas fa-phone absolute right-4 top-1/2 -translate-y-1/2 text-slate-500"></i>
+                    <input type="tel" id="std-phone" placeholder="رقم الموبايل المسجل" class="w-full bg-slate-950 p-5 rounded-2xl text-center font-bold tracking-[3px] border border-slate-800 focus:border-blue-500 outline-none transition-all">
+                </div>
+                <button class="w-full bg-blue-600 py-5 rounded-2xl font-black text-lg hover:bg-blue-500 transition-all active:scale-95" onclick="identifyStudent()">تـابـع <i class="fas fa-arrow-left mr-2"></i></button>
+            </div>
+
+            <div id="step-login" style="display:none;" class="space-y-4">
+                <div class="bg-blue-500/10 p-4 rounded-2xl border border-blue-500/20 mb-4">
+                    <p id="welcome-back" class="text-blue-400 font-bold"></p>
+                </div>
+                <input type="password" id="std-pass" placeholder="كلمة المرور" class="w-full bg-slate-950 p-5 rounded-2xl text-center font-bold border border-slate-800 focus:border-blue-500 outline-none">
+                <button class="w-full bg-blue-600 py-5 rounded-2xl font-black text-lg" onclick="verifyPassword()">دخول المنصة</button>
+            </div>
+
+            <div id="step-register" style="display:none;" class="space-y-3">
+                <p class="text-amber-500 text-xs font-bold mb-4">أنت طالب جديد! سجل بياناتك الآن:</p>
+                <input type="text" id="reg-name" placeholder="الاسم الثلاثي باللغة العربية" class="w-full bg-slate-950 p-4 rounded-2xl border border-slate-800">
+                <input type="password" id="reg-pass" placeholder="اختر كلمة مرور قوية" class="w-full bg-slate-950 p-4 rounded-2xl border border-slate-800">
+                <button class="w-full bg-emerald-600 py-5 rounded-2xl font-black text-lg" onclick="completeRegistration()">إنشاء حسابي</button>
             </div>
         </div>
     </div>
 
-    <div id="video-player-overlay" class="fixed inset-0 bg-black z-[60000] hidden flex-col items-center justify-center">
-        <button class="absolute top-4 right-4 bg-red-600 px-4 py-2 rounded-lg font-bold" onclick="closeVideo()">إغلاق ×</button>
-        <div class="video-container" id="video-frame-container"></div>
+    <div id="video-player-overlay" class="fixed inset-0 bg-black/95 backdrop-blur-3xl z-[60000] hidden flex-col items-center justify-center p-4">
+        <div class="w-full max-w-6xl relative animate-zoomIn">
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center gap-3">
+                    <img src="https://raw.githubusercontent.com/ky8694429-oss/kimo-academy/main/logo.png" class="h-8 w-8">
+                    <h4 class="font-bold text-white/50" id="video-title-display">مشاهدة آمنة</h4>
+                </div>
+                <button class="bg-white/10 hover:bg-red-500 text-white w-10 h-10 rounded-full transition-all" onclick="closeVideo()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="video-container" id="video-frame-container"></div>
+        </div>
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
 
     <script>
-        // هنا رجعت لك كل الـ Firebase Logic بتاعك بالحرف
         const firebaseConfig = {
             apiKey: "AIzaSyCzddbE_g5qsqTh7lQRDqh0Gmo28Seyr08",
             authDomain: "kimo-academy-48541.firebaseapp.com",
@@ -151,94 +275,223 @@
         };
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
-        const lessonsRef = database.ref('lessons'), studentsRef = database.ref('students'), 
-              presenceRef = database.ref('online_students'), chatRef = database.ref('chat'), 
+        
+        // المراجع (References)
+        const lessonsRef = database.ref('lessons'),
+              studentsRef = database.ref('students'),
+              presenceRef = database.ref('online_students'),
+              chatRef = database.ref('chat'),
               coursesRef = database.ref('courses');
 
         let allData = {}, allCourses = {}, currentStudentData = null;
 
-        // وظائف الدخول
+        // نظام تسجيل الدخول (كامل)
         async function identifyStudent() {
             const phone = document.getElementById('std-phone').value.trim();
+            if(!phone || phone.length < 10) return showToast("برجاء إدخال رقم هاتف صحيح");
+            
+            showToast("جاري التحقق...");
             const snapshot = await studentsRef.child(phone).once('value');
             const student = snapshot.val();
+            
             document.getElementById('step-1').style.display = 'none';
             if (student && student.password) {
                 currentStudentData = student;
                 document.getElementById('step-login').style.display = 'block';
-                document.getElementById('welcome-back').innerText = `أهلاً يا ${student.name}`;
+                document.getElementById('welcome-back').innerText = `أهلاً يا مستر/ ${student.name.split(' ')[0]}`;
             } else {
                 document.getElementById('step-register').style.display = 'block';
             }
         }
 
         function verifyPassword() {
-            if (document.getElementById('std-pass').value === currentStudentData.password) saveAndLogin(currentStudentData);
-            else alert("خطأ!");
+            const pass = document.getElementById('std-pass').value;
+            if (pass === currentStudentData.password) {
+                saveAndLogin(currentStudentData);
+            } else {
+                showToast("❌ كلمة المرور غير صحيحة!");
+            }
         }
 
         function completeRegistration() {
-            const phone = document.getElementById('std-phone').value, name = document.getElementById('reg-name').value, pass = document.getElementById('reg-pass').value;
-            const newData = { name, phone, password: pass };
+            const phone = document.getElementById('std-phone').value,
+                  name = document.getElementById('reg-name').value,
+                  pass = document.getElementById('reg-pass').value;
+            
+            if(name.length < 5) return showToast("الاسم قصير جداً");
+            if(pass.length < 4) return showToast("كلمة المرور ضعيفة");
+
+            const newData = { name, phone, password: pass, role: 'student', joinDate: Date.now() };
             studentsRef.child(phone).update(newData);
             saveAndLogin(newData);
         }
 
-        function saveAndLogin(data) { localStorage.setItem('kimo_auth_v26', JSON.stringify(data)); runApp(); }
+        function saveAndLogin(data) {
+            localStorage.setItem('kimo_auth_v26', JSON.stringify(data));
+            showToast("✅ تم الدخول بنجاح");
+            setTimeout(() => runApp(), 1000);
+        }
 
+        // تشغيل التطبيق (كامل)
         function runApp() {
             const user = JSON.parse(localStorage.getItem('kimo_auth_v26'));
+            if(!user) return;
+
             document.getElementById('login-gate').style.display = 'none';
             document.getElementById('sidebar').style.display = 'flex';
             document.getElementById('top-bar').style.display = 'flex';
             document.getElementById('content').style.display = 'block';
             document.getElementById('display-name').innerText = user.name;
-            presenceRef.child(user.phone).set({ name: user.name, last: Date.now() });
 
+            // نظام الحضور
+            const myStatus = presenceRef.child(user.phone);
+            myStatus.set({ name: user.name, last: Date.now(), device: navigator.userAgent.slice(0,20) });
+            myStatus.onDisconnect().remove();
+
+            // لو كان أدمن (رقمك)
             if(user.phone === "01023175098") {
                 document.getElementById('adm-links').style.display = 'block';
                 document.getElementById('admin-live-info').style.display = 'block';
                 presenceRef.on('value', s => document.getElementById('online-now').innerText = s.numChildren());
+                loadAdminStudents();
             }
-            lessonsRef.on('value', s => { allData = s.val() || {}; renderLatest(); });
+
+            // جلب البيانات
+            lessonsRef.on('value', s => { allData = s.val() || {}; renderLatest(); renderSubjects('video'); renderSubjects('pdf'); });
             coursesRef.on('value', s => { allCourses = s.val() || {}; renderCourses(); });
-            chatRef.limitToLast(20).on('child_added', s => {
-                const msg = s.val(), box = document.getElementById('chat-messages');
-                box.innerHTML += `<div class="p-3 bg-slate-700 rounded-xl"><b>${msg.name}:</b> ${msg.text}</div>`;
+            
+            // الدردشة (مزامنة فورية)
+            chatRef.limitToLast(30).on('child_added', s => {
+                const msg = s.val();
+                const box = document.getElementById('chat-messages');
+                const isMe = msg.phone === user.phone;
+                box.innerHTML += `
+                    <div class="flex ${isMe ? 'justify-start' : 'justify-end'}">
+                        <div class="${isMe ? 'bg-blue-600' : 'bg-slate-800'} p-4 rounded-2xl max-w-[80%] shadow-lg">
+                            <p class="text-[9px] opacity-50 mb-1">${msg.name}</p>
+                            <p class="text-sm">${msg.text}</p>
+                        </div>
+                    </div>`;
                 box.scrollTop = box.scrollHeight;
             });
         }
 
+        // عرض المحتوى (الأصلي)
         function renderLatest() {
-            let h = `<div class="grid grid-cols-1 md:grid-cols-2 gap-4">`;
+            let h = '';
             Object.entries(allData).reverse().slice(0, 8).forEach(([id, i]) => {
-                h += `<div class="bg-slate-800 p-4 rounded-2xl border border-slate-700">
-                    <h4 class="mb-4 font-bold text-center">${i.title}</h4>
-                    <button class="w-full bg-blue-600 py-2 rounded-xl" onclick="openContent('${i.url}','video')">فتح الدرس</button>
+                h += `
+                <div class="bg-slate-900 p-5 rounded-3xl border border-slate-800 hover:border-blue-500 transition-all group">
+                    <div class="w-full aspect-video bg-slate-950 rounded-2xl mb-4 flex items-center justify-center overflow-hidden">
+                         <i class="fas fa-play text-3xl opacity-20 group-hover:opacity-100 group-hover:scale-125 transition-all"></i>
+                    </div>
+                    <h4 class="font-bold text-sm mb-4 line-clamp-1">${i.title}</h4>
+                    <button class="w-full bg-slate-800 py-3 rounded-xl font-bold text-xs hover:bg-blue-600 transition-all" onclick="openContent('${i.url}','video','${i.title}')">بدء المشاهدة</button>
                 </div>`;
             });
-            document.getElementById('latest-content').innerHTML = h + `</div>`;
+            document.getElementById('latest-content').innerHTML = h;
         }
 
-        function openContent(url, type) {
+        function renderSubjects(type) {
+            const container = document.getElementById(type === 'video' ? 'subjects-grid-video' : 'subjects-grid-pdf');
+            const subjects = [...new Set(Object.values(allData).filter(x => x.type === type).map(x => x.subject))];
+            let h = '';
+            subjects.forEach(sub => {
+                h += `
+                <div class="bg-slate-900 p-8 rounded-[2rem] border border-slate-800 text-center hover:scale-105 transition-all cursor-pointer" onclick="filterBySubject('${sub}','${type}')">
+                    <div class="w-16 h-16 mx-auto bg-blue-600/10 text-blue-500 rounded-2xl flex items-center justify-center text-2xl mb-4"><i class="fas fa-folder-open"></i></div>
+                    <h3 class="font-black">${sub}</h3>
+                </div>`;
+            });
+            container.innerHTML = h;
+        }
+
+        // مشغل الفيديو والوترمارك المتحرك
+        function openContent(url, type, title) {
             const user = JSON.parse(localStorage.getItem('kimo_auth_v26'));
             if (type === 'video') {
                 document.getElementById('video-player-overlay').style.display = 'flex';
-                document.getElementById('video-frame-container').innerHTML = `
-                    <div id="watermark" style="top:30%; left:30%;">${user.name} - ${user.phone}</div>
-                    <iframe src="${url.includes('t.me') ? url+'?embed=1' : url}" width="100%" height="100%" frameborder="0"></iframe>`;
-            } else { window.open(url, '_blank'); }
+                document.getElementById('video-title-display').innerText = title;
+                const container = document.getElementById('video-frame-container');
+                container.innerHTML = `<div id="watermark">${user.name} - ${user.phone}</div><iframe src="${url}" width="100%" height="100%" frameborder="0" allowfullscreen></iframe>`;
+                
+                // تحريك الووترمارك
+                setInterval(() => {
+                    const w = document.getElementById('watermark');
+                    if(w) {
+                        w.style.top = Math.random() * 80 + '%';
+                        w.style.left = Math.random() * 70 + '%';
+                    }
+                }, 4000);
+            } else {
+                window.open(url, '_blank');
+            }
         }
 
-        function closeVideo() { document.getElementById('video-player-overlay').style.display = 'none'; }
-        function tab(el, id) { document.querySelectorAll('.page').forEach(p => p.classList.remove('active')); document.getElementById(id).classList.add('active'); }
+        // الوظائف المساعدة (Helpful Functions)
+        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
+        function showToast(txt) { 
+            const t = document.getElementById('notification-toast');
+            document.getElementById('notif-text').innerText = txt;
+            t.style.top = '20px';
+            setTimeout(() => t.style.top = '-100px', 3000);
+        }
+        function tab(el, id) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            el.classList.add('active');
+            if(window.innerWidth < 768) toggleSidebar();
+        }
+        function closeVideo() { 
+            document.getElementById('video-player-overlay').style.display = 'none';
+            document.getElementById('video-frame-container').innerHTML = '';
+        }
         function logout() { localStorage.clear(); location.reload(); }
+        
         function sendChatMessage() {
             const user = JSON.parse(localStorage.getItem('kimo_auth_v26'));
-            const text = document.getElementById('chat-input').value;
-            if(text) { chatRef.push({ name: user.name, text: text }); document.getElementById('chat-input').value = ""; }
+            const input = document.getElementById('chat-input');
+            if(input.value.trim()) {
+                chatRef.push({ name: user.name, phone: user.phone, text: input.value, time: Date.now() });
+                input.value = "";
+            }
         }
-        window.onload = function() { if (localStorage.getItem('kimo_auth_v26')) runApp(); };
+
+        // وظائف الأدمن (كاملة)
+        function uploadFreeLesson() {
+            const title = document.getElementById('free-lesson-title').value;
+            const url = document.getElementById('free-lesson-url').value;
+            const sub = document.getElementById('free-lesson-subject').value;
+            if(title && url) {
+                lessonsRef.push({ title, url, subject: sub, type: 'video', date: Date.now() });
+                showToast("🚀 تم النشر بنجاح!");
+                document.getElementById('free-lesson-title').value = '';
+            }
+        }
+
+        async function loadAdminStudents() {
+            studentsRef.on('value', s => {
+                const data = s.val();
+                let h = '';
+                Object.entries(data).forEach(([phone, info]) => {
+                    h += `
+                    <div class="student-row hover:bg-slate-800/30">
+                        <div class="font-bold">${info.name} <br> <span class="text-[9px] text-slate-500">${phone}</span></div>
+                        <div class="en-num text-blue-400">${info.password}</div>
+                        <div class="text-[9px] text-slate-500">${info.joinDate ? new Date(info.joinDate).toLocaleDateString('ar-EG') : 'قديم'}</div>
+                        <div>
+                            <button class="text-red-500 p-2" onclick="deleteStudent('${phone}')"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </div>`;
+                });
+                document.getElementById('students-table-body').innerHTML = h;
+            });
+        }
+
+        window.onload = function() {
+            if (localStorage.getItem('kimo_auth_v26')) runApp();
+        };
     </script>
 </body>
 </html>

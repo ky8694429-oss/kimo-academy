@@ -13,252 +13,427 @@
     </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة كيمو أكاديمي | 2026</title>
-    
-    <link rel="stylesheet" href="سي اس اس.css">
+    <title>منصة كيمو أكاديمي | مراجعات وامتحانات ثانوية عامة 2026 مجانية</title>
     
     <link rel="icon" href="https://raw.githubusercontent.com/ky8694429-oss/kimo-academy/main/logo.png" type="image/png">
+    <meta property="og:image" content="https://raw.githubusercontent.com/ky8694429-oss/kimo-academy/main/logo.png">
+    <meta name="description" content="أقوى منصة تعليمية مجانية لطلاب الثانوية العامة 2026. ملخصات، امتحانات تفاعلية، ومراجعات نهائية في الفيزياء، الكيمياء، وكل المواد للنظام الجديد.">
+    <meta name="keywords" content="ثانوية عامة 2026, مراجعات مجانية, امتحانات الكترونية, ملخصات فيزياء, كيمو اكاديمي, مراجعة ليلة الامتحان">
+    <meta property="og:title" content="كيمو أكاديمي - مراجعات الثانوية العامة 2026">
+    <meta property="og:description" content="كل اللي تحتاجه للثانوية العامة في مكان واحد وببلاش.">
+    <meta property="og:url" content="https://ky8694429-oss.github.io/kimo-academy/">
+    <meta property="og:type" content="website">
+    <link rel="canonical" href="https://ky8694429-oss.github.io/kimo-academy/">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
 
     <style>
-        /* التنسيقات الهيكلية الأساسية لضمان عمل الـ Sidebar والصفحات */
-        body { margin: 0; font-family: 'Cairo', sans-serif; display: flex; min-height: 100vh; overflow-x: hidden; background-color: #0f172a; color: #f1f5f9; }
-        aside { width: 280px; position: sticky; top: 0; height: 100vh; z-index: 999; display: none; flex-direction: column; background: #020617; border-left: 1px solid #1e293b; transition: all 0.3s; }
-        main { flex: 1; padding: 20px; padding-top: 80px; display: none; position: relative; }
-        .page { display: none; animation: fadeIn 0.4s ease; }
-        .page.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        
-        /* تنسيق مشغل الفيديو والوترمارك */
-        .video-container { width: 100%; height: 85vh; background: #000; position: relative; border-radius: 20px; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
-        #watermark { position: absolute; z-index: 999999; color: rgba(255,255,255,0.2); font-weight: 900; font-size: 1.5rem; pointer-events: none; white-space: nowrap; text-shadow: 1px 1px 2px rgba(0,0,0,0.5); }
-        
-        /* تنسيق الجداول والقوائم الأصلية */
-        .student-row { display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; padding: 15px; border-bottom: 1px solid #1e293b; align-items: center; }
-        .nav-link { transition: all 0.2s; border-radius: 12px; margin: 4px 12px; }
-        .nav-link.active { background: #2563eb; color: white; box-shadow: 0 4px 15px rgba(37,99,235,0.3); }
-        
-        /* الموبايل */
-        @media (max-width: 768px) {
-            aside { position: fixed; right: -280px; height: 100%; }
-            aside.open { right: 0; display: flex; }
-            main { padding: 15px; padding-top: 90px; }
+        /* محتويات ملف سي اس اس.css المرفق */
+        @charset "UTF-8";
+        @import url(https://fonts.googleapis.com/css2?family=Almarai:wght@400;700;800&family=Aref+Ruqaa:wght@400;700&family=Cairo:wght@400;600;700;900&family=Comfortaa:wght@400;600;700&family=Comforter&family=IBM+Plex+Sans+Arabic:wght@400;600;700&family=Kufam:wght@400;600;700;900&family=Rubik:wght@400;600;700;900&family=Tajawal:wght@400;500;700;900&family=Vibes&display=swap);
+        @import url(https://fonts.googleapis.com/css2?family=Borel&family=Lalezar&family=Rakkas&display=swap);
+        @import url(https://fonts.googleapis.com/css2?family=Lemonada:wght@300;400;500;600;700&display=swap);
+        @import url(https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap);
+
+        *,:after,:before {
+            --tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:#3b82f680;--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow:0 0 #0000;
         }
+
+        /* إضافة تنسيقات ملف الـ CSS التي تدعم الأنيميشن والكونفيتي المذكورة في المعاينة */
+        .confetti-piece:nth-child(11){animation:makeItRain var(--celeb-duration) infinite ease-out;animation-delay:307ms;animation-duration:1132ms;left:77%;transform:rotate(4deg);}.confetti-piece:nth-child(12){animation:makeItRain var(--celeb-duration) infinite ease-out;animation-delay:464ms;animation-duration:776ms;left:84%;transform:rotate(42deg)}.confetti-piece:nth-child(13){animation:makeItRain var(--celeb-duration) infinite ease-out;animation-delay:429ms;animation-duration:818ms;left:91%;transform:rotate(-72deg);}.confetti-piece:nth-child(odd){background:#7431e8}.confetti-piece:nth-child(2n){z-index:1}.confetti-piece:nth-child(4n){animation-duration:2s}
+
+        /* تنسيقات الـ CSS الموجودة في كودك الأصلي */
+        :root { 
+            --main-bg: #05070a; --card-bg: #0d1117; --accent: #FF9800; --green: #00c851; 
+            --text: #e6edf3; --telegram: #0088cc; --danger: #ff4d4d; 
+            --gold: #FFD700; --sidebar-bg: rgba(1, 4, 9, 0.95); 
+            --logo-text: #ffffff;
+        }
+
+        body.light-mode { --main-bg: #f0f2f5; --card-bg: #ffffff; --text: #1c1e21; --sidebar-bg: #ffffff; }
+
+        body { 
+            margin: 0; background: linear-gradient(-45deg, var(--main-bg), #0a192f, var(--card-bg), var(--main-bg)); 
+            background-size: 400% 400%; animation: gradientBG 15s ease infinite; color: var(--text); 
+            font-family: 'Cairo', sans-serif; display: flex; min-height: 100vh; position: relative; user-select: none; 
+            overflow-x: hidden; font-variant-numeric: tabular-nums;
+        }
+
+        #watermark {
+            position: absolute; z-index: 2147483647 !important; color: #ffffff !important;
+            font-weight: 900 !important; font-size: 22px !important; pointer-events: none !important; 
+            user-select: none !important; -webkit-user-select: none;
+            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 2px 2px 8px rgba(0,0,0,1);
+            background: rgba(0, 0, 0, 0.1); padding: 4px 8px; border-radius: 5px; white-space: nowrap; transition: all 0.8s ease-in-out;
+        }
+
+        .logo-master-container {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding: 20px; margin: 0 auto; position: relative; animation: masterPulse 3s infinite ease-in-out; 
+        }
+
+        .logo-main-name { color: var(--logo-text, #ffffff); font-size: 45px; font-weight: 900; position: relative; }
+        .logo-crown-icon { position: absolute; top: -15px; right: -5px; font-size: 22px; color: #FFD700; animation: crownFloat 3s infinite ease-in-out; }
+
+        @keyframes masterPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+        @keyframes crownFloat { 0%, 100% { transform: translateY(0) rotate(-10deg); } 50% { transform: translateY(-5px) rotate(-10deg); } }
+        @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+
+        #notification-toast {
+            position: fixed; top: -100px; left: 50%; transform: translateX(-50%);
+            background: var(--accent); color: #000; padding: 15px 25px; border-radius: 50px;
+            box-shadow: 0 10px 30px rgba(255,152,0,0.4); z-index: 30000; font-weight: bold;
+            display: flex; align-items: center; gap: 10px; transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        #notification-toast.show { top: 20px; }
+
+        .btn-circle {
+            width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-size: 20px; border: none; cursor: pointer; transition: 0.2s; margin: 10px auto;
+            box-shadow: 0 5px 0 rgba(0,0,0,0.3); position: relative; color: #000;
+        }
+        .btn-circle:active { transform: translateY(3px); box-shadow: 0 1px 0 rgba(0,0,0,0.3); }
+        .bg-video { background: var(--accent); }
+        .bg-pdf { background: var(--green); }
+
+        .news-ticker { position: fixed; top: 60px; left: 0; right: 0; background: var(--accent); color: #000; height: 30px; z-index: 997; display: none; overflow: hidden; font-weight: bold; line-height: 30px; }
+        .ticker-text { display: inline-block; white-space: nowrap; animation: ticker 25s linear infinite; padding-right: 100%; }
+        @keyframes ticker { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
+
+        .top-tools { position: fixed; top: 0; left: 0; right: 0; height: 60px; display: none; align-items: center; justify-content: flex-end; padding: 0 20px; gap: 15px; z-index: 998; background: rgba(0,0,0,0.2); backdrop-filter: blur(5px); border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .tool-btn { background: var(--card-bg); border: 1px solid var(--accent); color: var(--accent); width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s; }
+
+        aside { width: 280px; background: var(--sidebar-bg); backdrop-filter: blur(10px); border-left: 1px solid #30363d; display: none; flex-direction: column; position: sticky; top: 0; height: 100vh; z-index: 999; }
+        .nav-link { padding: 18px 25px; cursor: pointer; color: #8b949e; display: flex; align-items: center; gap: 15px; transition: 0.2s; border-right: 4px solid transparent; font-size: 18px; }
+        .nav-link:hover, .nav-link.active { color: var(--accent); background: rgba(255, 152, 0, 0.05); border-right-color: var(--accent); }
+
+        main { flex: 1; padding: 30px; display: none; padding-top: 100px; padding-bottom: 120px; overflow-y: auto; }
+        .page { display: none; animation: fadeIn 0.5s ease-out; }
+        .page.active { display: block; }
+
+        .support-cloud { position: fixed; right: 20px; color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px; cursor: pointer; z-index: 9999; animation: pulse 2s infinite; text-decoration: none; }
+        #tg-btn { bottom: 80px; background: var(--telegram); box-shadow: 0 6px 15px rgba(0, 136, 204, 0.4); }
+
+        .subject-card { 
+            height: 160px; background-size: cover; background-position: center; border-radius: 20px; 
+            display: flex; align-items: center; justify-content: center; cursor: pointer; 
+            transition: 0.3s; position: relative; overflow: hidden; border: 1px solid rgba(255,255,255,0.1);
+        }
+        .subject-card::before { content: ""; position: absolute; inset: 0; background: rgba(0,0,0,0.6); z-index: 1; }
+        .subject-card h3 { position: relative; z-index: 2; color: #fff; text-shadow: 0 2px 10px #000; }
+        .subject-card:hover { transform: translateY(-5px); border-color: var(--accent); }
+
+        .card { background: rgba(13, 17, 23, 0.8); border-radius: 15px; padding: 20px; border: 1px solid #30363d; text-align: center; position: relative; transition: 0.3s; margin-bottom: 15px; }
+        .lesson-thumb { width: 100%; height: 140px; background-size: cover; background-position: center; border-radius: 10px; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.05); }
+        .btn-accent { background: var(--accent); color: #000; padding: 12px; border: none; border-radius: 12px; cursor: pointer; font-weight: bold; width: 100%; font-size: 16px; font-family: 'Cairo'; }
+
+        #video-player-overlay { position: fixed; inset: 0; background: #000; z-index: 15000; display: none; align-items: center; justify-content: center; flex-direction: column; }
+        .video-container { width: 100%; height: 85vh; background: #000; border: none; overflow: hidden; position: relative; }
+
+        footer { position: fixed; bottom: 0; width: 100%; background: #010409; color: #fff; text-align: center; padding: 15px 0; font-size: 13px; border-top: 2px solid var(--accent); z-index: 1000; }
+
+        #chat-messages { height: 400px; overflow-y: auto; background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); background-size: contain; padding: 15px; border-radius: 12px; border: 1px solid #333; margin-bottom: 10px; display: flex; flex-direction: column; gap: 10px; }
+        .msg-bubble { max-width: 80%; padding: 10px 15px; border-radius: 15px; font-size: 14px; position: relative; line-height: 1.4; color: #fff; }
+        .msg-student { align-self: flex-start; background: #202c33; border-bottom-left-radius: 2px; text-align: right; }
+        .msg-me { align-self: flex-end; background: #005c4b; border-bottom-right-radius: 2px; text-align: right; }
+        .msg-bubble b { display: block; font-size: 11px; margin-bottom: 3px; color: var(--accent); }
+        .msg-bubble small { display: block; font-size: 10px; opacity: 0.6; margin-top: 5px; text-align: left; }
+
+        .en-num { font-family: sans-serif !important; direction: ltr !important; display: inline-block; }
+
+        .student-row { display: grid; grid-template-columns: 1.2fr 1fr 1fr; align-items: center; padding: 12px 10px; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 14px; }
+        .student-row:hover { background: rgba(255, 152, 0, 0.03); }
+        .student-row span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding: 0 5px; }
+        .student-row button { padding: 5px 10px; border-radius: 5px; border: none; cursor: pointer; font-family: 'Cairo'; font-size: 12px; margin: 0 2px; background: #30363d; color: #fff; }
+        .student-row button:last-child { background: var(--danger); }
+
+        .admin-stat-card { background: var(--card-bg); padding: 15px; border-radius: 15px; border: 1px solid #30363d; text-align: center; }
+
+        @media (max-width: 768px) {
+            aside { display: none !important; }
+            .mobile-nav { position: fixed; bottom: 50px; left: 0; right: 0; background: var(--sidebar-bg); display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid var(--accent); z-index: 1001; }
+            .mobile-nav div { font-size: 20px; color: #8b949e; }
+            main { padding: 15px; padding-top: 80px; padding-bottom: 120px; }
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .content-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; }
+
+        .admin-controls { display: flex; gap: 5px; margin-top: 10px; justify-content: center; }
+        .btn-pin { background: var(--gold); color: #000; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 12px; font-weight: bold; }
+        .btn-del { background: var(--danger); color: #fff; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 12px; }
+
+        .whatsapp-float {
+            position: fixed; bottom: 150px; right: 20px; background-color: #25d366; color: white; border-radius: 50px;
+            padding: 15px; z-index: 9998; box-shadow: 2px 2px 10px rgba(0,0,0,0.2); text-decoration: none;
+            display: flex; align-items: center; transition: 0.3s;
+        }
+        .whatsapp-float:hover { transform: scale(1.1); background-color: #128c7e; }
+
+        #join-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85);
+            display: flex; justify-content: center; align-items: center; z-index: 99999; backdrop-filter: blur(5px);
+        }
+        .join-modal { background: white; padding: 30px; border-radius: 15px; text-align: center; max-width: 400px; width: 90%; }
+        .join-modal h2 { color: #075e54; margin-bottom: 15px; }
+        .btn-join { display: block; background: #25d366; color: white; padding: 12px; border-radius: 8px; text-decoration: none; margin: 15px 0; font-weight: bold; }
+        .btn-verify { background: #34b7f1; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-family: 'Cairo'; }
     </style>
 </head>
+<body oncontextmenu="return false;"> 
 
-<body oncontextmenu="return false;">
-
-    <div id="notification-toast" class="fixed -top-20 left-1/2 -translate-x-1/2 bg-blue-600 text-white px-6 py-3 rounded-full z-[100000] transition-all duration-500 shadow-2xl flex items-center gap-3">
-        <div class="w-2 h-2 bg-white rounded-full animate-ping"></div>
-        <span id="notif-text">تم تحديث البيانات بنجاح</span>
+    <div id="notification-toast">
+        <i class="fas fa-bell"></i>
+        <span id="notif-text">حاجة جديدة انضافت للمنصة!</span>
     </div>
 
-    <div id="top-bar" class="fixed top-0 inset-x-0 h-16 bg-slate-900/90 backdrop-blur-xl border-b border-slate-800 z-[998] hidden items-center justify-between px-6">
-        <button class="md:hidden text-2xl" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
-        <div class="flex items-center gap-4 mr-auto">
-            <div id="admin-live-info" style="display:none;" class="bg-blue-500/10 px-4 py-1 rounded-full border border-blue-500/20 text-blue-400 font-bold text-sm">
-                <i class="fas fa-circle text-[8px] animate-pulse ml-2"></i> متواجد الآن: <span id="online-now" class="en-num">0</span>
+    <div id="top-bar" class="top-tools">
+        <div id="admin-live-info" style="display:none; margin-left: auto; color: var(--accent); font-weight: bold; font-size: 13px;">
+            <i class="fas fa-eye"></i> الآن: <span id="online-now" class="en-num">0</span> | <i class="fas fa-users"></i> الكل: <span id="total-students-count" class="en-num">0</span>
+        </div>
+        <button class="tool-btn" onclick="toggleTheme()"><i id="theme-icon" class="fas fa-moon"></i></button>
+        <button class="tool-btn" onclick="logout()"><i class="fas fa-sign-out-alt"></i></button>
+    </div>
+
+    <div id="news-bar" class="news-ticker"><div class="ticker-text" id="ticker-content">جاري تحميل الأخبار...</div></div>
+
+    <a href="https://t.me/K_I_M_O_8" target="_blank" class="support-cloud" id="tg-btn" style="display: none;"><i class="fab fa-telegram-plane"></i></a>
+
+    <a href="https://chat.whatsapp.com/E5tpwhb6D5j9lDnXBFNbLM" class="whatsapp-float" target="_blank">
+        <i class="fab fa-whatsapp" style="margin-left: 8px; font-size: 20px;"></i>
+        <span>جروب المتابعة</span>
+    </a>
+
+    <div id="join-overlay" style="display: none;">
+        <div class="join-modal">
+            <h2>⚠️ خطوة أخيرة</h2>
+            <p style="color: #333;">يرجى الانضمام لجروب الواتساب الرسمي للمتابعة وتفعيل كامل ميزات المنصة.</p>
+            <a href="https://chat.whatsapp.com/E5tpwhb6D5j9lDnXBFNbLM" id="join-link" target="_blank" class="btn-join">اضغط هنا للانضمام للجروب</a>
+            <div id="verification-section" style="display:none;">
+                <p id="verify-text" style="color: #666; margin-bottom: 10px;">جاري التحقق...</p>
+                <button onclick="verifyJoin()" class="btn-verify">تم الانضمام، أكمل للمنصة</button>
             </div>
-            <button class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-red-500/20 hover:text-red-500 transition-colors" onclick="logout()">
-                <i class="fas fa-sign-out-alt"></i>
-            </button>
+        </div>
+    </div>
+
+    <div id="activation-overlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:30000; align-items:center; justify-content:center;">
+        <div class="card" style="width:90%; max-width:400px; border-color:var(--accent);">
+            <h3>🔓 تفعيل المحتوى</h3>
+            <p>هذا الكورس مدفوع، يرجى إدخال كود التفعيل:</p>
+            <input type="text" id="activation-code" placeholder="أدخل الكود هنا" style="width:90%; padding:12px; margin:15px 0; border-radius:10px; background:#000; color:#fff; border:1px solid var(--accent);">
+            <button class="btn-accent" id="confirm-activation-btn">تفعيل الآن</button>
+            <button class="btn-accent" style="background:#333; color:#fff; margin-top:10px;" onclick="document.getElementById('activation-overlay').style.display='none'">إلغاء</button>
+        </div>
+    </div>
+
+    <div id="video-player-overlay">
+        <div style="width: 95%; max-width: 1000px; display: flex; justify-content: space-between; margin-bottom: 15px;">
+            <div id="timer-display" class="en-num" style="background:var(--accent); color:#000; padding:8px 20px; border-radius:25px; font-weight:bold;">KAREEM ACADEMY PROTECTED</div>
+            <button class="btn-accent" style="width: auto; padding: 5px 20px;" onclick="closeVideo()">إغلاق ×</button>
+        </div>
+        <div class="video-container" id="video-frame-container"></div>
+    </div>
+
+    <div id="login-gate">
+        <div class="gate-box" style="max-width: 400px; margin: 50px auto; padding: 30px; background: var(--card-bg); border-radius: 20px; text-align: center; border: 1px solid var(--accent); box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+            <div class="logo-master-container">
+                <div class="logo-icon-box" style="position: relative;">
+                    <svg class="bulb-icon" viewBox="0 0 24 24" style="width:80px; filter: drop-shadow(0 0 15px #FF9800);">
+                        <path d="M9 21H15M9 18H15M10 15H14M12 3C9.23858 3 7 5.23858 7 8C7 9.58581 7.73444 11.0004 8.88563 11.9248C10.1944 12.9757 11 14.192 11 15.5V16H13V15.5C13 14.192 13.8056 12.9757 15.1144 11.9248C16.2656 11.0004 17 9.58581 17 8C17 5.23858 14.7614 3 12 3Z" stroke="#FF9800" stroke-width="2"/>
+                    </svg>
+                    <span style="position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%); color: #fff; font-size: 32px; font-weight: 900;">K</span>
+                </div>
+                <div class="logo-text-box">
+                    <div class="logo-main-name">KAREEM<span class="logo-crown-icon">👑</span></div>
+                    <span style="color: #FF9800; letter-spacing: 4px; border-top: 2px solid #444;">ACADEMY 2026</span>
+                </div>
+            </div>
+            <h3 id="gate-title" style="margin-bottom: 20px; color: var(--accent);">تسجيل الدخول</h3>
+            <div id="step-1">
+                <input type="tel" id="std-phone" class="en-num" placeholder="رقم الموبايل" style="width:90%; padding:12px; margin-bottom:15px; border-radius:10px; border:1px solid #30363d; background:#000; color:#fff; text-align:right;">
+                <button class="btn-accent" onclick="identifyStudent()">التالي</button>
+            </div>
+            <div id="step-login" style="display:none;">
+                <p id="welcome-back" style="font-size: 14px; margin-bottom: 10px;"></p>
+                <input type="password" id="std-pass" placeholder="أدخل كلمة المرور" style="width:90%; padding:12px; margin-bottom:15px; border-radius:10px; border:1px solid #30363d; background:#000; color:#fff;">
+                <button class="btn-accent" onclick="verifyPassword()">دخول 🚀</button>
+                <p style="margin-top:15px; font-size:12px; color:var(--accent); cursor:pointer;" onclick="showForgetPassword()">نسيت كلمة المرور؟</p>
+            </div>
+            <div id="step-register" style="display:none;">
+                <p style="font-size: 13px; color: var(--green); margin-bottom: 10px;">أهلاً بك لأول مرة! يرجى إعداد حسابك:</p>
+                <input type="text" id="reg-name" placeholder="الاسم الثلاثي" style="width:90%; padding:12px; margin-bottom:10px; border-radius:10px; border:1px solid #30363d; background:#000; color:#fff;">
+                <input type="password" id="reg-pass" placeholder="إنشاء كلمة مرور" style="width:90%; padding:12px; margin-bottom:10px; border-radius:10px; border:1px solid #30363d; background:#000; color:#fff;">
+                <select id="reg-question" style="width:97%; padding:12px; margin-bottom:10px; border-radius:10px; border:1px solid #30363d; background:#000; color:#fff;">
+                    <option value="">اختر سؤال أمان (للطوارئ)</option>
+                    <option value="ما هو اسم أول مدرس تحبه؟">ما هو اسم أول مدرس تحبه؟</option>
+                    <option value="ما هو اسم صديقك المقرب؟">ما هو اسم صديقك المقرب؟</option>
+                    <option value="ما هي أكلتك المفضلة؟">ما هي أكلتك المفضلة؟</option>
+                </select>
+                <input type="text" id="reg-answer" placeholder="إجابة السؤال السري" style="width:90%; padding:12px; margin-bottom:15px; border-radius:10px; border:1px solid #30363d; background:#000; color:#fff;">
+                <button class="btn-accent" onclick="completeRegistration()">حفظ والدخول للمنصة</button>
+            </div>
+            <div id="step-forget" style="display:none;">
+                <p id="security-q-text" style="font-size: 14px; margin-bottom: 10px; color: var(--gold);"></p>
+                <input type="text" id="forget-answer" placeholder="إجابة السؤال السري" style="width:90%; padding:12px; margin-bottom:15px; border-radius:10px; border:1px solid #30363d; background:#000; color:#fff;">
+                <button class="btn-accent" onclick="resetAccess()">تحقق واستعادة الحساب</button>
+                <p style="margin-top:10px; font-size:12px; cursor:pointer;" onclick="location.reload()">رجوع</p>
+            </div>
         </div>
     </div>
 
     <aside id="sidebar">
-        <div class="p-8 text-center">
-            <div class="w-16 h-16 bg-blue-600 rounded-2xl rotate-3 mx-auto mb-4 flex items-center justify-center shadow-lg shadow-blue-600/20">
-                <span class="text-3xl font-black text-white -rotate-3">K</span>
+        <div class="logo-master-container" style="transform: scale(0.65);">
+            <div class="logo-icon-box" style="position: relative;">
+                <svg class="bulb-icon" viewBox="0 0 24 24" style="width:60px; filter: drop-shadow(0 0 10px #FF9800);">
+                    <path d="M9 21H15M9 18H15M10 15H14M12 3C9.23858 3 7 5.23858 7 8C7 9.58581 7.73444 11.0004 8.88563 11.9248C10.1944 12.9757 11 14.192 11 15.5V16H13V15.5C13 14.192 13.8056 12.9757 15.1144 11.9248C16.2656 11.0004 17 9.58581 17 8C17 5.23858 14.7614 3 12 3Z" stroke="#FF9800" stroke-width="2"/>
+                </svg>
+                <span style="position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%); color: #fff; font-size: 24px; font-weight: 900;">K</span>
             </div>
-            <h2 class="text-xl font-black tracking-tight">KIMO <span class="text-blue-500">ACADEMY</span></h2>
-            <p class="text-[10px] text-slate-500 mt-1 uppercase tracking-widest">Premium Learning Experience</p>
+            <div class="logo-text-box">
+                <div class="logo-main-name" style="font-size: 30px;">KAREEM<span class="logo-crown-icon" style="top: -10px; font-size: 18px;">👑</span></div>
+                <span style="color: #FF9800; font-size: 10px; letter-spacing: 2px;">ACADEMY 2026</span>
+            </div>
         </div>
-
-        <nav class="flex-1 overflow-y-auto py-4">
-            <div class="nav-link p-4 cursor-pointer active" onclick="tab(this, 'p-home')"><i class="fas fa-th-large ml-3 w-5"></i>الرئيسية</div>
-            <div class="nav-link p-4 cursor-pointer" onclick="tab(this, 'p-courses')"><i class="fas fa-graduation-cap ml-3 w-5"></i>الكورسات</div>
-            <div class="nav-link p-4 cursor-pointer" onclick="tab(this, 'p-lessons')"><i class="fas fa-play-circle ml-3 w-5"></i>المحاضرات</div>
-            <div class="nav-link p-4 cursor-pointer" onclick="tab(this, 'p-files')"><i class="fas fa-file-pdf ml-3 w-5"></i>المذكرات</div>
-            <div class="nav-link p-4 cursor-pointer" onclick="tab(this, 'p-chat')"><i class="fas fa-comments ml-3 w-5"></i>الدردشة العامة</div>
-            
-            <div id="adm-links" style="display:none;" class="mt-6 pt-6 border-t border-slate-800">
-                <p class="px-8 text-[10px] text-slate-500 mb-2 font-bold">لوحة الإدارة</p>
-                <div class="nav-link p-4 cursor-pointer text-emerald-400 hover:bg-emerald-500/10" onclick="tab(this, 'p-students')"><i class="fas fa-users-cog ml-3 w-5"></i>إدارة الطلاب</div>
-                <div class="nav-link p-4 cursor-pointer text-emerald-400 hover:bg-emerald-500/10" onclick="tab(this, 'p-admin')"><i class="fas fa-magic ml-3 w-5"></i>رفع المحتوى</div>
-            </div>
-        </nav>
-        
-        <div class="p-6">
-            <div class="bg-slate-900 rounded-2xl p-4 border border-slate-800">
-                <p class="text-[10px] text-slate-400">الإصدار 2026.1</p>
-                <p class="text-[9px] text-slate-500">تطوير مستر كريم صبري</p>
-            </div>
+        <div class="nav-link active" onclick="tab(this, 'p-home')"><i class="fas fa-home"></i> <span>الرئيسية</span></div>
+        <div class="nav-link" onclick="tab(this, 'p-courses')"><i class="fas fa-graduation-cap"></i> <span>الكورسات المدفوعة</span></div>
+        <div class="nav-link" onclick="tab(this, 'p-lessons')"><i class="fas fa-play-circle"></i> <span>المحاضرات المجانية</span></div>
+        <div class="nav-link" onclick="tab(this, 'p-files')"><i class="fas fa-file-pdf"></i> <span>PDF</span></div>
+        <div class="nav-link" onclick="tab(this, 'p-exams')"><i class="fas fa-edit"></i> <span>الامتحانات</span></div>
+        <div class="nav-link" onclick="tab(this, 'p-chat')"><i class="fas fa-comments"></i> <span>الدردشة</span></div>
+        <div id="adm-links" style="display:none;">
+            <div class="nav-link" style="color:var(--green)" onclick="tab(this, 'p-students')"><i class="fas fa-users-cog"></i> <span>الطلاب</span></div>
+            <div class="nav-link" style="color:var(--green)" onclick="tab(this, 'p-admin')"><i class="fas fa-tools"></i> <span>الإدارة</span></div>
         </div>
     </aside>
 
+    <div class="mobile-nav" id="mob-nav" style="display:none;">
+        <div onclick="tab(null, 'p-home')"><i class="fas fa-home"></i></div>
+        <div onclick="tab(null, 'p-courses')"><i class="fas fa-graduation-cap"></i></div>
+        <div onclick="tab(null, 'p-lessons')"><i class="fas fa-play-circle"></i></div>
+        <div onclick="tab(null, 'p-files')"><i class="fas fa-file-pdf"></i></div>
+        <div onclick="tab(null, 'p-chat')"><i class="fas fa-comments"></i></div>
+    </div>
+
     <main id="content">
         <div id="p-home" class="page active">
-            <div class="relative overflow-hidden bg-gradient-to-br from-blue-600 to-indigo-700 p-8 rounded-[2.5rem] mb-8 shadow-xl shadow-blue-900/20">
-                <div class="relative z-10">
-                    <h1 class="text-3xl font-black mb-2">يا هلا، <span id="display-name" class="text-yellow-300">طالبنا</span> 👋</h1>
-                    <p class="text-blue-100 opacity-80">جاهز تكمل رحلة التفوق النهاردة؟</p>
-                </div>
-                <i class="fas fa-rocket absolute -bottom-4 -left-4 text-9xl text-white/10 -rotate-12"></i>
-            </div>
-            
-            <div class="flex items-center justify-between mb-6">
-                <h3 class="text-xl font-bold">آخر ما تم إضافته</h3>
-                <span class="text-xs bg-slate-800 px-3 py-1 rounded-full border border-slate-700">تحديث تلقائي</span>
-            </div>
-            <div id="latest-content" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"></div>
+            <h1>مرحباً، <span id="display-name" style="color:var(--accent)">طالبنا</span> 👋</h1>
+            <h3>المحتوى المثبت:</h3>
+            <div id="pinned-content" class="content-grid" style="margin-bottom: 30px;"></div>
+            <h3>آخر الدروس المضافة:</h3>
+            <div id="latest-content"></div>
         </div>
 
         <div id="p-courses" class="page">
-            <h2 class="text-2xl font-black mb-6">الكورسات الأكاديمية 📚</h2>
-            <div id="courses-grid" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
-            
-            <div id="course-details" style="display:none;" class="bg-slate-900/50 p-6 rounded-3xl border border-slate-800">
-                <div class="flex items-center gap-4 mb-8">
-                    <button class="w-12 h-12 bg-slate-800 rounded-2xl hover:bg-slate-700 transition-all" onclick="showCoursesGrid()"><i class="fas fa-arrow-right"></i></button>
-                    <div>
-                        <h3 id="current-course-title" class="text-2xl font-bold"></h3>
-                        <p class="text-sm text-slate-400">محتوى الكورس التعليمي</p>
-                    </div>
-                </div>
-                <div id="course-lessons-list" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+            <h2>الكورسات والاشتراكات 🎓</h2>
+            <div id="courses-grid" class="content-grid"></div>
+            <div id="course-details" style="display:none;">
+                <button class="btn-accent" style="width:100px; margin-bottom:20px;" onclick="showCoursesGrid()">رجوع</button>
+                <h3 id="current-course-title"></h3>
+                <div class="content-grid" id="course-lessons-list"></div>
             </div>
         </div>
 
         <div id="p-lessons" class="page">
-            <div class="flex items-center gap-4 mb-8">
-                <div class="w-12 h-12 bg-red-600/20 text-red-500 rounded-2xl flex items-center justify-center text-xl">
-                    <i class="fas fa-play"></i>
-                </div>
-                <h2 class="text-2xl font-black">المحاضرات المصورة</h2>
-            </div>
-            <div id="subjects-grid-video" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
+            <div id="subjects-container-video"><h2>المحاضرات المجانية 🎥</h2><div class="content-grid" id="subjects-grid-video"></div></div>
+            <div id="specific-subject-videos" style="display:none;"><button class="btn-accent" style="width:100px; margin-bottom:20px;" onclick="showSubjects('video')">رجوع</button><div class="content-grid" id="video-list"></div></div>
         </div>
 
         <div id="p-files" class="page">
-            <h2 class="text-2xl font-black mb-6">المذكرات والملخصات 📄</h2>
-            <div id="subjects-grid-pdf" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
+            <div id="subjects-container-file"><h2>ملفات PDF 📄</h2><div class="content-grid" id="subjects-grid-file"></div></div>
+            <div id="specific-subject-files" style="display:none;"><button class="btn-accent" style="width:100px; margin-bottom:20px;" onclick="showSubjects('file')">رجوع</button><div class="content-grid" id="file-list"></div></div>
+        </div>
+
+        <div id="p-exams" class="page">
+            <h2>الامتحانات الإلكترونية 📝</h2>
+            <div class="content-grid" id="exams-list"></div>
         </div>
 
         <div id="p-chat" class="page">
-            <div class="max-w-4xl mx-auto h-[75vh] flex flex-col bg-slate-900 rounded-[2.5rem] border border-slate-800 overflow-hidden shadow-2xl">
-                <div class="p-6 bg-slate-800/50 border-b border-slate-700 flex items-center justify-between">
-                    <div class="flex items-center gap-3">
-                        <div class="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
-                        <h3 class="font-bold">غرفة الدردشة المباشرة</h3>
-                    </div>
-                </div>
-                <div id="chat-messages" class="flex-1 overflow-y-auto p-6 space-y-4"></div>
-                <div class="p-6 bg-slate-950/50">
-                    <div class="relative flex gap-3">
-                        <input type="text" id="chat-input" placeholder="اكتب رسالتك هنا..." class="flex-1 bg-slate-900 border border-slate-700 p-4 rounded-2xl focus:border-blue-500 outline-none transition-all">
-                        <button class="bg-blue-600 px-8 rounded-2xl font-bold hover:bg-blue-500 transition-all active:scale-95 shadow-lg shadow-blue-600/20" onclick="sendChatMessage()">
-                            <i class="fas fa-paper-plane"></i>
-                        </button>
-                    </div>
+            <h2>دردشة الطلاب 💬</h2>
+            <div class="card">
+                <div id="chat-messages"></div>
+                <div style="display: flex; gap: 8px;">
+                    <input type="text" id="chat-input" placeholder="اكتب رسالتك..." style="flex:1; padding:12px; border-radius:10px; background:#161b22; color:#fff; border:1px solid var(--accent);">
+                    <button class="btn-accent" style="width:100px;" onclick="sendChatMessage()">إرسال</button>
                 </div>
             </div>
         </div>
 
         <div id="p-students" class="page">
-            <div class="flex items-center justify-between mb-8">
-                <h2 class="text-2xl font-black">قاعدة بيانات الطلاب 🛰️</h2>
-                <div class="relative w-64">
-                    <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-500"></i>
-                    <input type="text" id="search-std" oninput="filterStudents()" placeholder="ابحث بالاسم أو الرقم..." class="w-full bg-slate-900 border border-slate-800 pl-4 pr-12 py-2 rounded-xl text-sm outline-none focus:border-blue-500">
-                </div>
+            <h2>إدارة الطلاب (الرادار) 🛰️</h2>
+            <div class="content-grid" style="margin-bottom: 20px;">
+                <div class="admin-stat-card"><h3>إجمالي الطلاب</h3><h2 id="stat-total-std" class="en-num" style="color:var(--accent)">0</h2></div>
+                <div class="admin-stat-card"><h3>أونلاين الآن</h3><h2 id="stat-online-std" class="en-num" style="color:var(--green)">0</h2></div>
             </div>
-            <div class="bg-slate-900 rounded-3xl border border-slate-800 overflow-hidden">
-                <div class="student-row bg-slate-800/50 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-                    <div>الطالب</div>
-                    <div>كلمة المرور</div>
-                    <div>آخر ظهور</div>
-                    <div>الإجراءات</div>
+            <div class="card">
+                <input type="text" class="search-box" id="studentSearch" placeholder="ابحث باسم الطالب أو رقم الموبايل..." onkeyup="filterStudents()" style="width: 90%; padding: 10px; margin-bottom: 15px; border-radius: 10px; background: #000; border: 1px solid var(--accent); color: #fff;">
+                <div id="students-table-header" style="display:grid; grid-template-columns: 1.2fr 1fr 1fr; font-weight:bold; border-bottom:2px solid var(--accent); padding:10px;">
+                    <span>الطالب</span><span>الرقم</span><span>إجراء</span>
                 </div>
                 <div id="students-table-body"></div>
             </div>
         </div>
 
         <div id="p-admin" class="page">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div class="bg-slate-900 p-8 rounded-[2.5rem] border border-slate-800 shadow-xl">
-                    <div class="flex items-center gap-4 mb-6">
-                        <div class="w-12 h-12 bg-blue-600/20 text-blue-500 rounded-2xl flex items-center justify-center"><i class="fas fa-plus"></i></div>
-                        <h3 class="text-xl font-bold">نشر درس سريع</h3>
-                    </div>
-                    <div class="space-y-4">
-                        <input type="text" id="free-lesson-title" placeholder="عنوان الدرس (مثال: البلاغة - حصة 1)" class="w-full bg-slate-950 p-4 rounded-2xl border border-slate-800 focus:border-blue-500 outline-none">
-                        <input type="text" id="free-lesson-url" placeholder="رابط المحتوى (يوتيوب أو تليجرام)" class="w-full bg-slate-950 p-4 rounded-2xl border border-slate-800 focus:border-blue-500 outline-none">
-                        <select id="free-lesson-subject" class="w-full bg-slate-950 p-4 rounded-2xl border border-slate-800 focus:border-blue-500 outline-none">
-                            <option value="اللغة العربية">اللغة العربية</option>
-                            <option value="الفيزياء">الفيزياء</option>
-                            <option value="الكيمياء">الكيمياء</option>
-                        </select>
-                        <button class="w-full bg-blue-600 py-5 rounded-2xl font-black text-lg hover:bg-blue-500 transition-all shadow-xl shadow-blue-600/10" onclick="uploadFreeLesson()">نشر فوراً 🚀</button>
-                    </div>
-                </div>
-                <div class="bg-slate-900 p-8 rounded-[2.5rem] border border-slate-800">
-                    <h3 class="text-xl font-bold mb-6">إنشاء كورس مدفوع</h3>
-                    <input type="text" id="course-name" placeholder="اسم الكورس" class="w-full bg-slate-950 p-4 rounded-2xl mb-4 border border-slate-800">
-                    <button class="w-full bg-emerald-600 py-5 rounded-2xl font-black text-lg hover:bg-emerald-500" onclick="createCourse()">تجهيز الكورس ✅</button>
+            <div class="card" style="margin-bottom:20px; border-color:var(--gold)">
+                <h3>📢 التحكم في شريط الأخبار</h3>
+                <input type="text" id="adm-news-text" placeholder="اكتب الخبر هنا..." style="width:80%; padding:10px; border-radius:10px;">
+                <button class="btn-accent" style="width:15%;" onclick="updateNewsTicker()">نشر</button>
+            </div>
+
+            <div class="card" style="margin-bottom:20px; border-color:var(--accent)">
+                <h3>🎓 إدارة الكورسات المدفوعة</h3>
+                <input type="text" id="adm-course-name" placeholder="اسم الكورس (مثلاً: مراجعة الفيزياء)" style="width:90%; padding:10px; margin-bottom:10px; border-radius:10px;">
+                <button class="btn-accent" onclick="createNewCourse()">إنشاء كورس جديد</button>
+                <hr style="margin:20px 0; border:0; border-top:1px solid #333;">
+                <h4>إضافة محاضرة لكورس موجود:</h4>
+                <select id="adm-course-select" style="width:90%; padding:10px; margin-bottom:10px; border-radius:10px; background:#000; color:#fff;"></select>
+                <input type="text" id="adm-course-lesson-title" placeholder="عنوان المحاضرة" style="width:90%; padding:10px; margin-bottom:10px; border-radius:10px;">
+                <input type="text" id="adm-course-lesson-url" placeholder="رابط الفيديو/الملف" style="width:90%; padding:10px; margin-bottom:10px; border-radius:10px;">
+                <button class="btn-accent" onclick="addLessonToCourse()">إضافة المحاضرة ✅</button>
+            </div>
+
+            <div class="card" style="margin-bottom:20px; border-color:var(--green)">
+                <h3>📝 إضافة امتحان جديد</h3>
+                <input type="text" id="adm-exam-title" placeholder="اسم الامتحان" style="width:90%; padding:10px; margin-bottom:10px; border-radius:10px;">
+                <input type="text" id="adm-exam-url" placeholder="لينك الامتحان" style="width:90%; padding:10px; margin-bottom:10px; border-radius:10px;">
+                <button class="btn-accent" onclick="addExam()">نشر الامتحان ✅</button>
+            </div>
+            
+            <div class="card" style="margin-top: 20px; border: 1px solid var(--accent);">
+                <h3>➕ إضافة درس مجاني (أحدث الدروس)</h3>
+                <input type="text" id="free-lesson-title" placeholder="عنوان الدرس" style="width:90%; padding:10px; margin-bottom:10px; border-radius:10px;">
+                <input type="text" id="free-lesson-url" placeholder="رابط الفيديو أو الملف" style="width:90%; padding:10px; margin-bottom:10px; border-radius:10px;">
+                <select id="free-lesson-type" style="width: 90%; padding: 10px; margin-bottom: 10px; border-radius: 10px; background: #000; color: #fff; border: 1px solid #333;">
+                    <option value="video">فيديو</option>
+                    <option value="pdf">ملف PDF</option>
+                </select>
+                <button class="btn-accent" style="width: 90%;" onclick="uploadFreeLesson()">رفع الدرس الآن 🚀</button>
+            </div>
+
+            <div id="admin-subjects-selection">
+                <h2>🚀 رفع محتوى مجاني</h2>
+                <div class="content-grid" id="admin-subjects-grid"></div>
+            </div>
+
+            <div id="admin-upload-form" style="display:none;">
+                <button class="btn-accent" style="width:100px; margin-bottom:20px;" onclick="showAdminSubjects()">رجوع</button>
+                <div class="card" style="max-width:500px; margin:auto;">
+                    <p>المادة: <b id="current-adm-sub-name" style="color:var(--accent)"></b></p>
+                    <input type="text" id="adm-title" placeholder="عنوان الدرس" style="width:90%; padding:12px; margin-bottom:15px; background:#000; border:1px solid #30363d; color:#fff;">
+                    <input type="text" id="adm-url" placeholder="ضع الرابط هنا" style="width:90%; padding:12px; margin-bottom:15px; background:#000; border:1px solid #30363d; color:#fff;">
+                    <select id="adm-type" style="width:96%; padding:12px; margin-bottom:15px; background:#000; border:1px solid #30363d; color:#fff;">
+                        <option value="video">فيديو 🎥</option>
+                        <option value="file">ملف / صورة 📄</option>
+                    </select>
+                    <button class="btn-accent" onclick="handleUpload()">نشر الآن ✅</button>
                 </div>
             </div>
         </div>
     </main>
 
-    <div id="login-gate" class="fixed inset-0 bg-slate-950 z-[10000] flex items-center justify-center p-4 overflow-y-auto">
-        <div class="bg-slate-900 p-8 rounded-[3rem] border border-slate-800 w-full max-w-[450px] shadow-2xl relative">
-            <div class="absolute -top-12 left-1/2 -translate-x-1/2 w-24 h-24 bg-blue-600 rounded-[2rem] flex items-center justify-center shadow-2xl border-4 border-slate-950">
-                <i class="fas fa-shield-alt text-3xl text-white"></i>
-            </div>
-            <div class="mt-8 text-center mb-8">
-                <h2 class="text-2xl font-black">أهلاً بك في أكاديميتنا</h2>
-                <p class="text-slate-500 text-sm mt-2">برجاء إثبات هويتك للوصول للمحتوى</p>
-            </div>
-            
-            <div id="step-1" class="space-y-4">
-                <div class="relative">
-                    <i class="fas fa-phone absolute right-4 top-1/2 -translate-y-1/2 text-slate-500"></i>
-                    <input type="tel" id="std-phone" placeholder="رقم الموبايل المسجل" class="w-full bg-slate-950 p-5 rounded-2xl text-center font-bold tracking-[3px] border border-slate-800 focus:border-blue-500 outline-none transition-all">
-                </div>
-                <button class="w-full bg-blue-600 py-5 rounded-2xl font-black text-lg hover:bg-blue-500 transition-all active:scale-95" onclick="identifyStudent()">تـابـع <i class="fas fa-arrow-left mr-2"></i></button>
-            </div>
-
-            <div id="step-login" style="display:none;" class="space-y-4">
-                <div class="bg-blue-500/10 p-4 rounded-2xl border border-blue-500/20 mb-4">
-                    <p id="welcome-back" class="text-blue-400 font-bold"></p>
-                </div>
-                <input type="password" id="std-pass" placeholder="كلمة المرور" class="w-full bg-slate-950 p-5 rounded-2xl text-center font-bold border border-slate-800 focus:border-blue-500 outline-none">
-                <button class="w-full bg-blue-600 py-5 rounded-2xl font-black text-lg" onclick="verifyPassword()">دخول المنصة</button>
-            </div>
-
-            <div id="step-register" style="display:none;" class="space-y-3">
-                <p class="text-amber-500 text-xs font-bold mb-4">أنت طالب جديد! سجل بياناتك الآن:</p>
-                <input type="text" id="reg-name" placeholder="الاسم الثلاثي باللغة العربية" class="w-full bg-slate-950 p-4 rounded-2xl border border-slate-800">
-                <input type="password" id="reg-pass" placeholder="اختر كلمة مرور قوية" class="w-full bg-slate-950 p-4 rounded-2xl border border-slate-800">
-                <button class="w-full bg-emerald-600 py-5 rounded-2xl font-black text-lg" onclick="completeRegistration()">إنشاء حسابي</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="video-player-overlay" class="fixed inset-0 bg-black/95 backdrop-blur-3xl z-[60000] hidden flex-col items-center justify-center p-4">
-        <div class="w-full max-w-6xl relative animate-zoomIn">
-            <div class="flex items-center justify-between mb-4">
-                <div class="flex items-center gap-3">
-                    <img src="https://raw.githubusercontent.com/ky8694429-oss/kimo-academy/main/logo.png" class="h-8 w-8">
-                    <h4 class="font-bold text-white/50" id="video-title-display">مشاهدة آمنة</h4>
-                </div>
-                <button class="bg-white/10 hover:bg-red-500 text-white w-10 h-10 rounded-full transition-all" onclick="closeVideo()"><i class="fas fa-times"></i></button>
-            </div>
-            <div class="video-container" id="video-frame-container"></div>
-        </div>
-    </div>
+    <footer>جميع الحقوق محفوظة للمطور كيمو © <span class="en-num">2026</span></footer>
 
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
@@ -275,223 +450,186 @@
         };
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
-        
-        // المراجع (References)
-        const lessonsRef = database.ref('lessons'),
-              studentsRef = database.ref('students'),
-              presenceRef = database.ref('online_students'),
-              chatRef = database.ref('chat'),
-              coursesRef = database.ref('courses');
 
-        let allData = {}, allCourses = {}, currentStudentData = null;
+        const lessonsRef = database.ref('lessons'), studentsRef = database.ref('students'), 
+              settingsRef = database.ref('settings'), presenceRef = database.ref('online_students'),
+              blacklistRef = database.ref('blacklist'), chatRef = database.ref('chat'), 
+              logsRef = database.ref('logs'), examsRef = database.ref('exams'), 
+              resultsRef = database.ref('results'), coursesRef = database.ref('courses');
 
-        // نظام تسجيل الدخول (كامل)
+        let allData = {}, allStudents = {}, allCourses = {}, currentStudentData = null;
+
         async function identifyStudent() {
             const phone = document.getElementById('std-phone').value.trim();
-            if(!phone || phone.length < 10) return showToast("برجاء إدخال رقم هاتف صحيح");
-            
-            showToast("جاري التحقق...");
+            if (!/^01[0125][0-9]{8}$/.test(phone)) return alert("رقم الموبايل غير صحيح");
             const snapshot = await studentsRef.child(phone).once('value');
             const student = snapshot.val();
-            
             document.getElementById('step-1').style.display = 'none';
             if (student && student.password) {
                 currentStudentData = student;
                 document.getElementById('step-login').style.display = 'block';
-                document.getElementById('welcome-back').innerText = `أهلاً يا مستر/ ${student.name.split(' ')[0]}`;
+                document.getElementById('welcome-back').innerText = `أهلاً يا ${student.name.split(' ')[0]}`;
+                document.getElementById('gate-title').innerText = "تأكيد الهوية";
             } else {
                 document.getElementById('step-register').style.display = 'block';
+                document.getElementById('gate-title').innerText = "حساب جديد";
             }
         }
 
         function verifyPassword() {
             const pass = document.getElementById('std-pass').value;
-            if (pass === currentStudentData.password) {
-                saveAndLogin(currentStudentData);
-            } else {
-                showToast("❌ كلمة المرور غير صحيحة!");
-            }
+            if (pass === currentStudentData.password) saveAndLogin(currentStudentData);
+            else alert("كلمة المرور خطأ!");
         }
 
         function completeRegistration() {
-            const phone = document.getElementById('std-phone').value,
-                  name = document.getElementById('reg-name').value,
-                  pass = document.getElementById('reg-pass').value;
-            
-            if(name.length < 5) return showToast("الاسم قصير جداً");
-            if(pass.length < 4) return showToast("كلمة المرور ضعيفة");
-
-            const newData = { name, phone, password: pass, role: 'student', joinDate: Date.now() };
+            const phone = document.getElementById('std-phone').value, name = document.getElementById('reg-name').value.trim(),
+                  pass = document.getElementById('reg-pass').value, q = document.getElementById('reg-question').value,
+                  a = document.getElementById('reg-answer').value.trim();
+            if (name.length < 5 || pass.length < 4 || !q || !a) return alert("برجاء إكمال كافة البيانات");
+            const newData = { name, phone, password: pass, securityQ: q, securityA: a, loginTime: new Date().toLocaleString() };
             studentsRef.child(phone).update(newData);
             saveAndLogin(newData);
         }
 
-        function saveAndLogin(data) {
-            localStorage.setItem('kimo_auth_v26', JSON.stringify(data));
-            showToast("✅ تم الدخول بنجاح");
-            setTimeout(() => runApp(), 1000);
-        }
+        function saveAndLogin(data) { localStorage.setItem('kimo_auth_v26', JSON.stringify(data)); runApp(); }
 
-        // تشغيل التطبيق (كامل)
         function runApp() {
-            const user = JSON.parse(localStorage.getItem('kimo_auth_v26'));
-            if(!user) return;
-
+            const user = JSON.parse(localStorage.getItem('kimo_auth_v26')) || {name: 'طالب', phone: '000'};
             document.getElementById('login-gate').style.display = 'none';
             document.getElementById('sidebar').style.display = 'flex';
             document.getElementById('top-bar').style.display = 'flex';
+            document.getElementById('news-bar').style.display = 'block';
             document.getElementById('content').style.display = 'block';
-            document.getElementById('display-name').innerText = user.name;
+            document.getElementById('display-name').innerText = user.name.split(' ')[0];
+            presenceRef.child(user.phone).set({ name: user.name, last: Date.now() });
 
-            // نظام الحضور
-            const myStatus = presenceRef.child(user.phone);
-            myStatus.set({ name: user.name, last: Date.now(), device: navigator.userAgent.slice(0,20) });
-            myStatus.onDisconnect().remove();
-
-            // لو كان أدمن (رقمك)
             if(user.phone === "01023175098") {
                 document.getElementById('adm-links').style.display = 'block';
                 document.getElementById('admin-live-info').style.display = 'block';
                 presenceRef.on('value', s => document.getElementById('online-now').innerText = s.numChildren());
-                loadAdminStudents();
+                studentsRef.on('value', s => { allStudents = s.val() || {}; document.getElementById('total-students-count').innerText = s.numChildren(); });
+                coursesRef.on('value', s => { allCourses = s.val() || {}; updateAdminCourseSelect(); });
             }
 
-            // جلب البيانات
-            lessonsRef.on('value', s => { allData = s.val() || {}; renderLatest(); renderSubjects('video'); renderSubjects('pdf'); });
             coursesRef.on('value', s => { allCourses = s.val() || {}; renderCourses(); });
-            
-            // الدردشة (مزامنة فورية)
-            chatRef.limitToLast(30).on('child_added', s => {
-                const msg = s.val();
-                const box = document.getElementById('chat-messages');
-                const isMe = msg.phone === user.phone;
-                box.innerHTML += `
-                    <div class="flex ${isMe ? 'justify-start' : 'justify-end'}">
-                        <div class="${isMe ? 'bg-blue-600' : 'bg-slate-800'} p-4 rounded-2xl max-w-[80%] shadow-lg">
-                            <p class="text-[9px] opacity-50 mb-1">${msg.name}</p>
-                            <p class="text-sm">${msg.text}</p>
-                        </div>
-                    </div>`;
+            settingsRef.child('newsTicker').on('value', s => document.getElementById('ticker-content').innerText = s.val() || "مرحباً بكم في أكاديمية كريم!");
+            chatRef.limitToLast(40).on('child_added', s => {
+                const msg = s.val(), currUser = JSON.parse(localStorage.getItem('kimo_auth_v26')), 
+                      isMe = msg.name === currUser.name || msg.phone === "01023175098", box = document.getElementById('chat-messages');
+                box.innerHTML += `<div class="msg-bubble ${isMe ? 'msg-me' : 'msg-student'}"><b>${msg.name}</b><div>${msg.text}</div><small class="en-num">${msg.time}</small></div>`;
                 box.scrollTop = box.scrollHeight;
             });
+            lessonsRef.on('value', s => { allData = s.val() || {}; renderLatest(); });
         }
 
-        // عرض المحتوى (الأصلي)
-        function renderLatest() {
-            let h = '';
-            Object.entries(allData).reverse().slice(0, 8).forEach(([id, i]) => {
-                h += `
-                <div class="bg-slate-900 p-5 rounded-3xl border border-slate-800 hover:border-blue-500 transition-all group">
-                    <div class="w-full aspect-video bg-slate-950 rounded-2xl mb-4 flex items-center justify-center overflow-hidden">
-                         <i class="fas fa-play text-3xl opacity-20 group-hover:opacity-100 group-hover:scale-125 transition-all"></i>
-                    </div>
-                    <h4 class="font-bold text-sm mb-4 line-clamp-1">${i.title}</h4>
-                    <button class="w-full bg-slate-800 py-3 rounded-xl font-bold text-xs hover:bg-blue-600 transition-all" onclick="openContent('${i.url}','video','${i.title}')">بدء المشاهدة</button>
-                </div>`;
-            });
-            document.getElementById('latest-content').innerHTML = h;
-        }
-
-        function renderSubjects(type) {
-            const container = document.getElementById(type === 'video' ? 'subjects-grid-video' : 'subjects-grid-pdf');
-            const subjects = [...new Set(Object.values(allData).filter(x => x.type === type).map(x => x.subject))];
-            let h = '';
-            subjects.forEach(sub => {
-                h += `
-                <div class="bg-slate-900 p-8 rounded-[2rem] border border-slate-800 text-center hover:scale-105 transition-all cursor-pointer" onclick="filterBySubject('${sub}','${type}')">
-                    <div class="w-16 h-16 mx-auto bg-blue-600/10 text-blue-500 rounded-2xl flex items-center justify-center text-2xl mb-4"><i class="fas fa-folder-open"></i></div>
-                    <h3 class="font-black">${sub}</h3>
-                </div>`;
-            });
-            container.innerHTML = h;
-        }
-
-        // مشغل الفيديو والوترمارك المتحرك
         function openContent(url, type, title) {
-            const user = JSON.parse(localStorage.getItem('kimo_auth_v26'));
+            const user = JSON.parse(localStorage.getItem('kimo_auth_v26')) || {name: 'طالب', phone: '010xxxx'};
             if (type === 'video') {
+                let finalSrc = "";
+                if (url.includes('t.me/')) finalSrc = url.split('?')[0] + '?embed=1';
+                else if (url.includes('youtube.com') || url.includes('youtu.be')) {
+                    let videoId = url.includes('v=') ? url.split('v=')[1].split('&')[0] : url.split('/').pop();
+                    finalSrc = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&showinfo=0&iv_load_policy=3`;
+                } else finalSrc = url;
+
                 document.getElementById('video-player-overlay').style.display = 'flex';
-                document.getElementById('video-title-display').innerText = title;
-                const container = document.getElementById('video-frame-container');
-                container.innerHTML = `<div id="watermark">${user.name} - ${user.phone}</div><iframe src="${url}" width="100%" height="100%" frameborder="0" allowfullscreen></iframe>`;
-                
-                // تحريك الووترمارك
-                setInterval(() => {
-                    const w = document.getElementById('watermark');
-                    if(w) {
-                        w.style.top = Math.random() * 80 + '%';
-                        w.style.left = Math.random() * 70 + '%';
-                    }
-                }, 4000);
-            } else {
-                window.open(url, '_blank');
-            }
-        }
-
-        // الوظائف المساعدة (Helpful Functions)
-        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
-        function showToast(txt) { 
-            const t = document.getElementById('notification-toast');
-            document.getElementById('notif-text').innerText = txt;
-            t.style.top = '20px';
-            setTimeout(() => t.style.top = '-100px', 3000);
-        }
-        function tab(el, id) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            el.classList.add('active');
-            if(window.innerWidth < 768) toggleSidebar();
-        }
-        function closeVideo() { 
-            document.getElementById('video-player-overlay').style.display = 'none';
-            document.getElementById('video-frame-container').innerHTML = '';
-        }
-        function logout() { localStorage.clear(); location.reload(); }
-        
-        function sendChatMessage() {
-            const user = JSON.parse(localStorage.getItem('kimo_auth_v26'));
-            const input = document.getElementById('chat-input');
-            if(input.value.trim()) {
-                chatRef.push({ name: user.name, phone: user.phone, text: input.value, time: Date.now() });
-                input.value = "";
-            }
-        }
-
-        // وظائف الأدمن (كاملة)
-        function uploadFreeLesson() {
-            const title = document.getElementById('free-lesson-title').value;
-            const url = document.getElementById('free-lesson-url').value;
-            const sub = document.getElementById('free-lesson-subject').value;
-            if(title && url) {
-                lessonsRef.push({ title, url, subject: sub, type: 'video', date: Date.now() });
-                showToast("🚀 تم النشر بنجاح!");
-                document.getElementById('free-lesson-title').value = '';
-            }
-        }
-
-        async function loadAdminStudents() {
-            studentsRef.on('value', s => {
-                const data = s.val();
-                let h = '';
-                Object.entries(data).forEach(([phone, info]) => {
-                    h += `
-                    <div class="student-row hover:bg-slate-800/30">
-                        <div class="font-bold">${info.name} <br> <span class="text-[9px] text-slate-500">${phone}</span></div>
-                        <div class="en-num text-blue-400">${info.password}</div>
-                        <div class="text-[9px] text-slate-500">${info.joinDate ? new Date(info.joinDate).toLocaleDateString('ar-EG') : 'قديم'}</div>
-                        <div>
-                            <button class="text-red-500 p-2" onclick="deleteStudent('${phone}')"><i class="fas fa-trash"></i></button>
-                        </div>
+                document.getElementById('video-frame-container').innerHTML = `
+                    <div id="video-wrapper" style="position:relative; width:100%; height:100%; background:#000; overflow:hidden;">
+                        <div style="position:absolute; top:0; left:0; width:100%; height:calc(100% - 60px); z-index:100; background:transparent; pointer-events:auto;"></div>
+                        <div id="watermark" style="position:absolute; z-index:1000; pointer-events:none; color:rgba(255,255,255,0.5); font-weight:bold; white-space:nowrap;">${user.name} - ${user.phone}</div>
+                        <iframe src="${finalSrc}" width="100%" height="100%" frameborder="0" allow="autoplay" style="position:relative; z-index:1;"></iframe>
                     </div>`;
-                });
-                document.getElementById('students-table-body').innerHTML = h;
-            });
+                startWatermark();
+            } else window.open(url, '_blank');
         }
 
-        window.onload = function() {
-            if (localStorage.getItem('kimo_auth_v26')) runApp();
-        };
+        function startWatermark() {
+            if(window.wmInterval) clearInterval(window.wmInterval);
+            window.wmInterval = setInterval(() => {
+                const wm = document.getElementById('watermark');
+                if(wm) {
+                    wm.style.top = Math.floor(Math.random() * 80) + 5 + '%';
+                    wm.style.left = Math.floor(Math.random() * 60) + 5 + '%';
+                    wm.style.opacity = Math.random() * (0.9 - 0.6) + 0.6;
+                }
+            }, 4000);
+        }
+
+        function closeVideo() { document.getElementById('video-player-overlay').style.display = 'none'; document.getElementById('video-frame-container').innerHTML = ''; if(window.wmInterval) clearInterval(window.wmInterval); }
+        function createNewCourse() {
+            const name = document.getElementById('adm-course-name').value.trim();
+            if(!name) return alert("اكتب اسم الكورس");
+            coursesRef.push({ name: name, lectures: [] });
+            document.getElementById('adm-course-name').value = "";
+            alert("تم إنشاء الكورس بنجاح");
+        }
+        function deleteCourse(courseId) { if (confirm('حذف الكورس نهائياً؟')) coursesRef.child(courseId).remove().then(() => alert('تم الحذف ✅')); }
+        function deleteLesson(lessonId) { if (confirm('حذف المحاضرة؟')) lessonsRef.child(lessonId).remove().then(() => alert('تم الحذف ✅')); }
+        function updateAdminCourseSelect() {
+            let h = "<option value=''>اختر كورس لإضافة محاضرة</option>";
+            for(let id in allCourses) h += `<option value="${id}">${allCourses[id].name}</option>`;
+            document.getElementById('adm-course-select').innerHTML = h;
+        }
+        function addLessonToCourse() {
+            const courseId = document.getElementById('adm-course-select').value, title = document.getElementById('adm-course-lesson-title').value.trim(), url = document.getElementById('adm-course-lesson-url').value.trim();
+            if(!courseId || !title || !url) return alert("أكمل بيانات المحاضرة");
+            coursesRef.child(courseId).child('lectures').push({ title, url });
+            document.getElementById('adm-course-lesson-title').value = ""; document.getElementById('adm-course-lesson-url').value = ""; alert("تمت إضافة المحاضرة للكورس");
+        }
+        function renderCourses() {
+            let h = "", user = JSON.parse(localStorage.getItem('kimo_auth_v26')), isAdmin = user && user.phone === "01023175098";
+            for(let id in allCourses) {
+                h += `<div class="card" style="border-color:var(--gold)">
+                    <div class="lesson-thumb" style="background-image:url('https://cdn-icons-png.flaticon.com/512/3652/3652267.png')"></div>
+                    <h3>${allCourses[id].name}</h3>
+                    <button class="btn-accent" onclick="checkCourseActivation('${id}')">فتح الكورس 🔒</button>
+                    ${isAdmin ? `<button class="btn-del" style="margin-top:10px; background:red; color:white; border:none; padding:8px; border-radius:10px; cursor:pointer; width:100%; font-family: 'Cairo';" onclick="deleteCourse('${id}')">حذف الكورس بالكامل 🗑️</button>` : ''}
+                </div>`;
+            }
+            document.getElementById('courses-grid').innerHTML = h || "<p>لا توجد كورسات مدفوعة حالياً</p>";
+        }
+        function renderLatest() {
+            if (!allData) return;
+            let items = Object.entries(allData).reverse().slice(0, 10), user = JSON.parse(localStorage.getItem('kimo_auth_v26')), isAdmin = user && user.phone === "01023175098", html = `<div class="content-grid">`;
+            items.forEach(([id, i]) => {
+                html += `<div class="card"><h4>${i.title}</h4><button class="btn-accent" onclick="openContent('${i.url}','${i.type}','${i.title}')">فتح</button>${isAdmin ? `<button class="btn-del" style="margin-top:10px; background:red; color:white; border:none; padding:8px; border-radius:10px; cursor:pointer; width:100%; font-family: 'Cairo';" onclick="deleteLesson('${id}')">حذف الدرس 🗑️</button>` : ''}</div>`;
+            });
+            html += `</div>`;
+            document.getElementById('latest-content').innerHTML = html || "<p>لا يوجد محتوى حالياً</p>";
+        }
+        function uploadFreeLesson() {
+            const title = document.getElementById('free-lesson-title').value.trim(), url = document.getElementById('free-lesson-url').value.trim(), type = document.getElementById('free-lesson-type').value;
+            if(!title || !url) return alert("يا كيمو كمل البيانات الأول! 😅");
+            lessonsRef.push({ title, url, type, date: Date.now() }).then(() => { alert("تم رفع الدرس المجاني بنجاح ✅"); document.getElementById('free-lesson-title').value = ""; document.getElementById('free-lesson-url').value = ""; });
+        }
+        function checkCourseActivation(courseId) {
+            const user = JSON.parse(localStorage.getItem('kimo_auth_v26')), key = `active_${user.phone}_${courseId}`;
+            if(localStorage.getItem(key) === "true" || user.phone === "01023175098") openCourse(courseId);
+            else {
+                document.getElementById('activation-overlay').style.display = 'flex';
+                document.getElementById('confirm-activation-btn').onclick = () => {
+                    const code = document.getElementById('activation-code').value.trim();
+                    if(["K26-X9R2-QM7B", "K26-L5P1-V3N8"].includes(code)) { localStorage.setItem(key, "true"); alert("✅ تم التفعيل بنجاح!"); document.getElementById('activation-overlay').style.display = 'none'; openCourse(courseId); } 
+                    else alert("❌ الكود خاطئ!");
+                };
+            }
+        }
+        function openCourse(id) {
+            document.getElementById('courses-grid').style.display = 'none'; document.getElementById('course-details').style.display = 'block'; document.getElementById('current-course-title').innerText = allCourses[id].name;
+            let h = "", lectures = allCourses[id].lectures;
+            for(let lId in lectures) h += `<div class="card"><h4>${lectures[lId].title}</h4><button class="btn-accent" onclick="openContent('${lectures[lId].url}','video','${lectures[lId].title}')">مشاهدة</button></div>`;
+            document.getElementById('course-lessons-list').innerHTML = h || "<p>جاري الإضافة...</p>";
+        }
+        function showCoursesGrid() { document.getElementById('courses-grid').style.display = 'grid'; document.getElementById('course-details').style.display = 'none'; }
+        function logout() { localStorage.clear(); location.reload(); }
+        function tab(el, id) { document.querySelectorAll('.page').forEach(p => p.classList.remove('active')); document.getElementById(id).classList.add('active'); if(el) { document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active')); el.classList.add('active'); } }
+        window.onload = function() { const savedUser = localStorage.getItem('kimo_auth_v26'); if (savedUser) runApp(); else document.getElementById('login-gate').style.display = 'block'; };
+        function sendChatMessage() {
+            const input = document.getElementById('chat-input'), text = input.value.trim(), user = JSON.parse(localStorage.getItem('kimo_auth_v26'));
+            if (text && user) { chatRef.push({ name: user.name, phone: user.phone, text: text, time: new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }) }); input.value = ""; }
+        }
+        function updateNewsTicker() { const news = document.getElementById('adm-news-text').value; if (news) { settingsRef.update({ newsTicker: news }); alert("تم النشر 📢"); } }
     </script>
 </body>
 </html>

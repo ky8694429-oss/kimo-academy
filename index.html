@@ -1,4 +1,4 @@
-٠<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
@@ -871,6 +871,43 @@ function checkKimoPass() {
         alert("الباسورد غلط! مسموح لـ كيمو بس.");
     }
 }
+</script>
+
+    <script>
+// دالة الربط المباشر لزرار "تثبيت المدير الجديد"
+function pushAdminToFirebase() {
+    // 1. سحب البيانات من الحقول اللي في اللوحة عندك
+    const name = document.querySelector('input[name="admin_name"]').value;
+    const phone = document.querySelector('input[name="admin_phone"]').value;
+    
+    // 2. تجميع الصلاحيات اللي اخترتها (Checkboxes)
+    const checkboxes = document.querySelectorAll('input[name="perms"]:checked');
+    let permissions = Array.from(checkboxes).map(cb => cb.value);
+
+    // 3. التأكد إن البيانات مش فاضية
+    if (!name || !phone) {
+        return alert("يا كيمو لازم تكتب الاسم والرقم الأول!");
+    }
+
+    // 4. الإرسال لفايربيز (Realtime Database)
+    // بنستخدم 'database' اللي أنت معرفه في سطر 254 عندك
+    database.ref('sub_admins/' + phone).set({
+        admin_name: name,
+        admin_phone: phone,
+        permissions: permissions,
+        role: 'sub_admin',
+        date_added: new Date().toLocaleString('ar-EG')
+    }).then(() => {
+        alert('تم إضافة ' + name + ' بنجاح لمجموعة مديري كيمو أكاديمي ✅');
+        // إخفاء اللوحة بعد النجاح
+        document.getElementById('adminModal').style.display = 'none';
+    }).catch((error) => {
+        alert('حصل مشكلة في الربط يا بطل: ' + error.message);
+    });
+}
+
+// تأكد إن الزرار في اللوحة عندك واخد الأمر ده:
+// onclick="pushAdminToFirebase()"
 </script>
 
 </body>

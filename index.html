@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+٠<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
@@ -824,5 +824,54 @@
             if(el) { document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active')); el.classList.add('active'); }
         }
     </script>
+
+    <button onclick="checkKimoPass()" style="position: fixed; bottom: 20px; left: 20px; background: #1f6feb; color: white; border: none; border-radius: 50%; width: 50px; height: 50px; cursor: pointer; font-weight: 900; z-index: 9999;">K</button>
+
+<div id="adminModal" style="display:none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 10000; overflow-y: auto; font-family: 'Cairo', sans-serif; direction: rtl;">
+    <div style="background: #0d1117; max-width: 600px; margin: 50px auto; padding: 40px; border: 3px solid #1f6feb; border-radius: 25px; box-shadow: 0 0 30px rgba(31, 111, 235, 0.5);">
+        
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #30363d; padding-bottom: 15px; margin-bottom: 25px;">
+            <h2 style="color: #58a6ff; font-size: 2rem; font-weight: 900; margin: 0;">👑 لوحة تحكم كيمو (إضافة مدير)</h2>
+            <button onclick="document.getElementById('adminModal').style.display='none'" style="background: #da3633; color: white; border: none; border-radius: 8px; padding: 5px 15px; cursor: pointer; font-weight: bold;">إغلاق</button>
+        </div>
+
+        <form action="/add_sub_admin" method="POST">
+            <div style="margin-bottom: 20px;">
+                <label style="display: block; color: #8b949e; font-weight: 900; margin-bottom: 10px;">اسم الأدمن الجديد:</label>
+                <input type="text" name="admin_name" required style="width: 100%; padding: 15px; background: #161b22; border: 2px solid #30363d; border-radius: 12px; color: white; font-weight: bold;">
+            </div>
+
+            <div style="margin-bottom: 20px;">
+                <label style="display: block; color: #8b949e; font-weight: 900; margin-bottom: 10px;">رقم الموبايل (كـ ID):</label>
+                <input type="text" name="admin_phone" required style="width: 100%; padding: 15px; background: #161b22; border: 2px solid #30363d; border-radius: 12px; color: white; font-weight: bold;">
+            </div>
+
+            <div style="color: #f0f6fc; font-weight: 900; margin-bottom: 15px; font-size: 1.2rem; border-right: 4px solid #238636; padding-right: 10px;">صلاحيات التحكم (اختار يقدر يعمل إيه):</div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; background: #21262d; padding: 20px; border-radius: 15px; margin-bottom: 30px;">
+                <label style="cursor: pointer; font-weight: 700;"><input type="checkbox" name="perms" value="upload_files"> رفع ملفات PDF</label>
+                <label style="cursor: pointer; font-weight: 700;"><input type="checkbox" name="perms" value="upload_videos"> رفع فيديوهات</label>
+                <label style="cursor: pointer; font-weight: 700;"><input type="checkbox" name="perms" value="delete_content"> حذف محتوى</label>
+                <label style="cursor: pointer; font-weight: 700;"><input type="checkbox" name="perms" value="manage_students"> إدارة الطلاب</label>
+            </div>
+
+            <button type="submit" style="width: 100%; padding: 20px; background: #238636; color: white; border: none; border-radius: 15px; font-size: 1.5rem; font-weight: 900; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 15px rgba(35, 134, 54, 0.4);">
+                تثبيت المدير الجديد 🚀
+            </button>
+        </form>
+    </div>
+</div>
+
+<script>
+function checkKimoPass() {
+    var pass = prompt("أدخل الباسورد السري يا كيمو:");
+    if (pass === "175098") {
+        document.getElementById('adminModal').style.display = 'block';
+    } else {
+        alert("الباسورد غلط! مسموح لـ كيمو بس.");
+    }
+}
+</script>
+
 </body>
 </html>

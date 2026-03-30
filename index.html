@@ -734,5 +734,133 @@ function applyKimoSettings() {
 }
 </script>
 
+    <script>
+// 1. دالة العداد الذكي (8709 + الطلاب الجدد)
+async function syncKimoCounter() {
+    try {
+        // بنروح لجدول الـ users في الفايربيز بتاعك
+        const snapshot = await db.collection('users').get();
+        const firebaseStudentsCount = snapshot.size; // بيجيب عدد الطلاب اللي سجلوا فعلاً
+        
+        const offset = 8709; // الرقم الأساسي اللي بتبدأ منه
+        const finalDisplay = offset + firebaseStudentsCount;
+        
+        // تحديث الرقم في التصميم اللي أنت عامله (student-count)
+        const counterElement = document.getElementById('student-count');
+        if(counterElement) {
+            counterElement.innerText = finalDisplay.toLocaleString(); // بيخليها شكلها شيك 8,710
+        }
+        console.log("العداد شغال ومربوط بالفايربيز: " + finalDisplay);
+    } catch (error) {
+        console.error("في مشكلة في ربط العداد بالفايربيز: ", error);
+    }
+}
+
+// 2. دالة إضافة أدمن بجد (بتسيف في الفايربيز)
+async function applyKimoSettings() {
+    const adminPhone = document.getElementById('admin-phone').value;
+    const canLessons = document.getElementById('p-lesson').checked;
+    const canPDF = document.getElementById('p-pdf').checked;
+
+    if(adminPhone) {
+        try {
+            // بنسيف بيانات الأدمن الجديد في جدول اسمه admins
+            await db.collection('admins').doc(adminPhone).set({
+                phone: adminPhone,
+                role: 'admin',
+                permissions: {
+                    lessons: canLessons,
+                    pdf: canPDF
+                },
+                dateAdded: new Date()
+            });
+            alert("تم تفعيل صلاحيات الأدمن لـ " + adminPhone + " بنجاح! ✅");
+        } catch (e) {
+            alert("حصل مشكلة في السيرفر، حاول تاني!");
+        }
+    }
+    document.getElementById('kimo-admin-modal').style.display = 'none';
+}
+
+// 3. فحص الأدمن (عشان الترس يظهر عند الأدمن الجديد)
+async function checkAdminStatus() {
+    // بناخد رقم الموبايل اللي المستخدم داخل بيه (تأكد إنك بتسيفه في localStorage عند اللوجن)
+    const loggedInPhone = localStorage.getItem('userPhone'); 
+    
+    if (loggedInPhone) {
+        const adminDoc = await db.collection('admins').doc(loggedInPhone).get();
+        if (adminDoc.exists) {
+            // لو الرقم موجود في جدول الأدمنز، أظهر له الترس فوراً
+            document.getElementById('admin-panel').style.display = 'block';
+        }
+    }
+}
+
+// تشغيل الوظائف دي أول ما الصفحة تحمل
+window.addEventListener('load', () => {
+    syncKimoCounter();
+    checkAdminStatus();
+});
+</script>
+
+    <script>
+// 1. دالة إضافة الأدمن الجديد لقاعدة البيانات (Firestore)
+async function applyKimoSettings() {
+    const adminPhone = document.getElementById('admin-phone').value;
+    const canLessons = document.getElementById('p-lesson').checked;
+    const canPDF = document.getElementById('p-pdf').checked;
+
+    if (adminPhone) {
+        try {
+            // بنسجل الرقم في جدول (Collection) اسمه admins
+            // ده بيخلي السيستم يعرف إن الرقم ده "أدمن"
+            await db.collection('admins').doc(adminPhone).set({
+                phone: adminPhone,
+                role: 'admin',
+                permissions: {
+                    lessons: canLessons,
+                    pdf: canPDF
+                },
+                dateAdded: new Date()
+            });
+            
+            alert("تم تفعيل صلاحيات الأدمن لـ " + adminPhone + " بنجاح! ✅");
+            document.getElementById('kimo-admin-modal').style.display = 'none';
+        } catch (error) {
+            console.error("خطأ في السيرفر: ", error);
+            alert("في مشكلة حصلت، اتأكد إن الـ Firebase متصل صح!");
+        }
+    } else {
+        alert("اكتب رقم الموبايل الأول يا كيمو!");
+    }
+}
+
+// 2. دالة الفحص (Check): دي اللي بتخلي الترس يظهر عند الأدمن الجديد
+async function checkAdminAccess() {
+    // ركز هنا: لازم تكون بتسيف رقم المستخدم في الـ localStorage لما يعمل Login
+    // السطر ده هو اللي بيعرف الموقع "مين اللي فاتح دلوقتي؟"
+    const userPhone = localStorage.getItem('userPhone'); 
+
+    if (userPhone) {
+        // بنروح نسأل الفايربيز: "هل الرقم ده موجود في جدول الأدمنز؟"
+        const adminDoc = await db.collection('admins').doc(userPhone).get();
+        
+        if (adminDoc.exists) {
+            // لو موجود، بنظهر له زرار الترس (admin-panel) فوراً
+            const adminBtn = document.getElementById('admin-panel');
+            if (adminBtn) adminBtn.style.display = 'block';
+            console.log("تم التعرف على الأدمن: " + userPhone);
+        } else {
+            console.log("مستخدم عادي، ملوش صلاحيات أدمن.");
+        }
+    }
+}
+
+// 3. تشغيل الفحص أول ما الصفحة تفتح
+window.addEventListener('load', () => {
+    checkAdminAccess();
+});
+</script>
+
 </body>
 </html>

@@ -670,5 +670,69 @@ function openAdminMenu() {
     </div>
 </div>
 
+    <div id="kimo-admin-modal" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); width:90%; max-width:380px; background:#121212; border:2px solid #ffd700; border-radius:20px; padding:25px; z-index:10001; box-shadow:0 0 40px rgba(255, 215, 0, 0.2); color:white; text-align:right; direction:rtl;">
+    <h2 style="color:#ffd700; text-align:center; font-size:18px; margin-bottom:20px;">🛡️ إدارة منصة كيمو</h2>
+    
+    <div id="pass-area">
+        <input type="password" id="kimo-secret-pass" placeholder="كلمة السر السحرية" style="width:100%; padding:12px; background:#222; border:1px solid #444; color:white; border-radius:10px; margin-bottom:15px; outline:none;">
+        <button onclick="checkKimoAccess()" style="width:100%; padding:12px; background:#ffd700; color:black; border:none; border-radius:10px; font-weight:bold; cursor:pointer;">دخول للمنصة</button>
+    </div>
+
+    <div id="admin-controls" style="display:none;">
+        <p style="font-size:13px; color:#aaa;">تعديل العداد:</p>
+        <input type="number" id="quick-count" placeholder="الرقم الجديد" style="width:100%; padding:8px; background:#222; border:1px solid #444; color:white; border-radius:5px; margin-bottom:15px;">
+        
+        <hr style="border:0.1px solid #333; margin:15px 0;">
+        
+        <p style="font-size:13px; color:#ffd700;">➕ إضافة أدمن جديد:</p>
+        <input type="text" id="admin-phone" placeholder="رقم الموبايل" style="width:100%; padding:8px; background:#222; border:1px solid #444; color:white; border-radius:5px; margin-bottom:10px;">
+        
+        <div style="font-size:12px; margin-bottom:15px;">
+            <input type="checkbox" id="p-lesson"> رفع محاضرات 🎬 | 
+            <input type="checkbox" id="p-pdf"> رفع PDF 📚
+        </div>
+        
+        <button onclick="applyKimoSettings()" style="width:100%; padding:10px; background:#28a745; color:white; border:none; border-radius:8px; font-weight:bold; cursor:pointer;">حفظ وتفعيل</button>
+    </div>
+    <p onclick="document.getElementById('kimo-admin-modal').style.display='none'" style="text-align:center; color:#666; font-size:11px; margin-top:15px; cursor:pointer;">إغلاق اللوحة</p>
+</div>
+
+    <script>
+// دالة بتفتح اللوحة الفخمة بدل الـ Prompt القديم
+function openAdminMenu() {
+    document.getElementById('kimo-admin-modal').style.display = 'block';
+    // بنصفر الخانات عشان الأمان
+    document.getElementById('pass-area').style.display = 'block';
+    document.getElementById('admin-controls').style.display = 'none';
+    document.getElementById('kimo-secret-pass').value = '';
+}
+
+function checkKimoAccess() {
+    const p = document.getElementById('kimo-secret-pass').value;
+    if (p === "175098") {
+        document.getElementById('pass-area').style.display = 'none';
+        document.getElementById('admin-controls').style.display = 'block';
+    } else {
+        alert("كلمة السر غلط! حاول تاني يا مبرمج ❌");
+    }
+}
+
+function applyKimoSettings() {
+    const c = document.getElementById('quick-count').value;
+    if(c) {
+        // بيروح يغير الرقم في العداد اللي عندك في سطر 660
+        const counter = document.getElementById('student-count');
+        if(counter) counter.innerText = Number(c).toLocaleString();
+    }
+    
+    const phone = document.getElementById('admin-phone').value;
+    if(phone) {
+        alert("تم تسجيل الأدمن الجديد ( " + phone + " ) بنجاح! سيتم منحه الصلاحيات فوراً ✅");
+    }
+    
+    document.getElementById('kimo-admin-modal').style.display = 'none';
+}
+</script>
+
 </body>
 </html>

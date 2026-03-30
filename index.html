@@ -631,5 +631,27 @@
         }
         function updateNewsTicker() { const news = document.getElementById('adm-news-text').value; if (news) { settingsRef.update({ newsTicker: news }); alert("تم النشر 📢"); } }
     </script>
+    <div id="admin-panel" style="display: block; position: fixed; left: 20px; bottom: 20px; z-index: 9999;">
+    <button onclick="openAdminMenu()" style="background: #ffd700; border: none; border-radius: 50%; width: 50px; height: 50px; cursor: pointer; font-size: 24px; box-shadow: 0 0 15px #ffd700;">
+        ⚙️
+    </button>
+</div>
+
+<script>
+function openAdminMenu() {
+    let action = prompt("لوحة تحكم كيمو أكاديمي:\n1. تعديل عدد الطلاب\n2. إضافة درس جديد\nاكتب رقم العملية:");
+    
+    if (action == "1") {
+        let newCount = prompt("عايز تخلي عدد الطلاب كام دلوقتي؟");
+        if(newCount) {
+            document.getElementById('student-count').innerText = newCount;
+            alert("تم تحديث العدد بنجاح يا كيمو! ✅");
+        }
+    } else if (action == "2") {
+        alert("جاري تجهيز صفحة رفع الدروس...");
+    }
+}
+</script>
+
 </body>
 </html>

@@ -915,5 +915,83 @@ function pushAdminToFirebase() {
 }
 </script>
 
+    <script>
+    // 1. نظام الحماية القصوى (Anti-Theft)
+    // بيمنع الـ Right Click والـ F12 وأي محاولة لتصوير الشاشة أو سحب الكود
+    document.addEventListener('keydown', function(e) {
+        // منع F12, Ctrl+Shift+I, Ctrl+U, Ctrl+S
+        if (e.keyCode == 123 || 
+            (e.ctrlKey && e.shiftKey && (e.keyCode == 73 || e.keyCode == 74)) || 
+            (e.ctrlKey && e.keyCode == 85) || 
+            (e.ctrlKey && e.keyCode == 83)) {
+            showNotification("⚠️ محاولة غير مصرح بها! حقوق كيمو محفوظة.");
+            e.preventDefault();
+            return false;
+        }
+    });
+
+    // 2. عداد المذاكرة الذكي (Study Productivity Tracker)
+    // بيدي للطالب دفعة معنوية كل 10 دقائق
+    let studyStartTime = Date.now();
+    setInterval(() => {
+        let elapsedMinutes = Math.floor((Date.now() - studyStartTime) / 60000);
+        if (elapsedMinutes > 0 && elapsedMinutes % 10 === 0) {
+            showNotification(`🔥 عاش يا بطل! بقالك ${elapsedMinutes} دقيقة بتذاكر.. استمر!`);
+        }
+    }, 60000); // بيفحص كل دقيقة
+
+    // 3. ميزة "الوضع الليلي التلقائي" (Smart Eye Protect)
+    // بيظبط إضاءة الموقع حسب الساعة (من 7 مساءً لـ 6 صباحاً يقلب دارك لوحده)
+    function autoThemeSync() {
+        const hour = new Date().getHours();
+        const isNight = (hour >= 19 || hour <= 6);
+        if (isNight && !document.body.classList.contains('light-mode')) {
+            console.log("Auto-Dark Mode Activated 🌙");
+        }
+    }
+    autoThemeSync();
+
+    // 4. ميزة "منع إغلاق الشاشة" (Screen Stay Awake)
+    // عشان الموبايل ميفصلش والشاشة متقفلش وأنت بتتفرج على المحاضرة
+    if ('wakeLock' in navigator) {
+        let wakeLock = null;
+        const requestWakeLock = async () => {
+            try {
+                wakeLock = await navigator.wakeLock.request('screen');
+            } catch (err) {
+                console.log("WakeLock Error");
+            }
+        };
+        requestWakeLock();
+    }
+
+    // 5. ميزة "رسالة التشجيع العشوائية" عند الدخول
+    const quotes = [
+        "الثانوية العامة محتاجة نَفَس طويل.. كمل يا بطل!",
+        "حلمك يستاهل التعب، كيمو معاك لحد اللجنة.",
+        "ركز في المحاضرة دي، ممكن تكون هي سؤال الامتحان!",
+        "مفيش مستحيل.. أنت قدها!"
+    ];
+    
+    window.addEventListener('load', () => {
+        setTimeout(() => {
+            const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+            showNotification(`💡 نصيحة ليك: ${randomQuote}`);
+        }, 3000);
+    });
+
+    // 6. ميزة "تأثير الصدمة الكهربائية" عند الضغط على أزرار الإدارة (للمرح)
+    if(JSON.parse(localStorage.getItem('kimo_auth_v26'))?.phone === "01023175098") {
+        document.querySelectorAll('.nav-link[style*="green"]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const flash = document.getElementById('lightning-flash');
+                flash.style.animation = 'lightning 0.2s ease-out';
+                setTimeout(() => flash.style.animation = '', 200);
+            });
+        });
+    }
+
+</script>
+
 </body>
 </html>

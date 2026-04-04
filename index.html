@@ -802,11 +802,6 @@
                 setTimeout(() => { document.body.style.visibility = 'visible'; }, 2000);
             }
         });
-        window.addEventListener('resize', () => {
-            if (window.outerWidth - window.innerWidth > 100 || window.outerHeight - window.innerHeight > 100) {
-                document.body.innerHTML = "نعتذر، لا يمكن تشغيل المنصة مع فتح أدوات المطور.";
-            }
-        });
 
         function banStudent(phone) { if(confirm("حظر؟")) blacklistRef.child(phone).set(true); }
         function showSubjects(type) { document.getElementById(type==='video'?'subjects-container-video':'subjects-container-file').style.display='flex'; document.getElementById(type==='video'?'specific-subject-videos':'specific-subject-files').style.display='none'; }

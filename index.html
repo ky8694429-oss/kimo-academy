@@ -39,6 +39,7 @@
             --text: #e6edf3; --telegram: #0088cc; --danger: #ff4d4d; 
             --gold: #FFD700; --sidebar-bg: rgba(1, 4, 9, 0.95); 
             --logo-text: #ffffff;
+            --electric: #00f2ff;
         }
         
         body.light-mode { --main-bg: #f0f2f5; --card-bg: #ffffff; --text: #1c1e21; --sidebar-bg: #ffffff; }
@@ -51,7 +52,31 @@
             font-variant-numeric: tabular-nums;
         }
 
-        /* --- الألوان والأنيميشن الجديد للوجو --- */
+        /* --- تأثير البرق والكهرباء للسهم --- */
+        #lightning-flash {
+            position: fixed; inset: 0; pointer-events: none; z-index: 100000; background: white; opacity: 0;
+        }
+        @keyframes lightning {
+            0% { opacity: 0; } 10% { opacity: 0.8; } 20% { opacity: 0.2; } 30% { opacity: 0.9; } 100% { opacity: 0; }
+        }
+        .shock-effect { animation: shock 0.2s linear 2; }
+        @keyframes shock {
+            0% { transform: translate(2px, 1px) rotate(0deg); }
+            50% { transform: translate(-3px, -2px) rotate(-1deg); }
+            100% { transform: translate(0px, 0px) rotate(0deg); }
+        }
+
+        /* سهم القائمة المطور */
+        .sidebar-toggle-btn {
+            position: fixed; right: 280px; top: 20px; z-index: 10000;
+            background: var(--accent); border: none; padding: 12px; border-radius: 8px 0 0 8px;
+            cursor: pointer; transition: 0.5s cubic-bezier(0.87, 0, 0.13, 1); box-shadow: 0 0 15px var(--accent);
+            color: #000; font-size: 20px;
+        }
+        aside.closed + .sidebar-toggle-btn { right: 0; }
+        aside { transition: 0.5s cubic-bezier(0.87, 0, 0.13, 1); transform: translateX(0); }
+        aside.closed { transform: translateX(100%); }
+
         .logo-master-container {
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             padding: 20px; margin: 0 auto; position: relative;
@@ -98,11 +123,14 @@
         .top-tools { position: fixed; top: 0; left: 0; right: 0; height: 60px; display: none; align-items: center; justify-content: flex-end; padding: 0 20px; gap: 15px; z-index: 998; background: rgba(0,0,0,0.2); backdrop-filter: blur(5px); border-bottom: 1px solid rgba(255,255,255,0.05); }
         .tool-btn { background: var(--card-bg); border: 1px solid var(--accent); color: var(--accent); width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s; }
         
-        aside { width: 280px; background: var(--sidebar-bg); backdrop-filter: blur(10px); border-left: 1px solid #30363d; display: none; flex-direction: column; position: sticky; top: 0; height: 100vh; z-index: 999; }
-        .nav-link { padding: 18px 25px; cursor: pointer; color: #8b949e; display: flex; align-items: center; gap: 15px; transition: 0.2s; border-right: 4px solid transparent; font-size: 18px; }
+        aside { width: 280px; background: var(--sidebar-bg); backdrop-filter: blur(10px); border-left: 1px solid #30363d; display: none; flex-direction: column; position: fixed; right: 0; top: 0; height: 100vh; z-index: 9999; }
+        .nav-link { padding: 18px 25px; cursor: pointer; color: #8b949e; display: flex; align-items: center; gap: 15px; transition: 0.2s; border-right: 4px solid transparent; font-size: 18px; perspective: 1000px; }
+        .nav-link i { transition: 0.3s; filter: drop-shadow(0 4px 5px #000); }
+        .nav-link:hover i { color: var(--electric); transform: translateZ(30px) scale(1.2); filter: drop-shadow(0 0 8px var(--electric)); }
         .nav-link:hover, .nav-link.active { color: var(--accent); background: rgba(255, 152, 0, 0.05); border-right-color: var(--accent); }
 
-        main { flex: 1; padding: 30px; display: none; padding-top: 100px; padding-bottom: 120px; overflow-y: auto; }
+        main { flex: 1; padding: 30px; display: none; padding-top: 100px; padding-bottom: 120px; overflow-y: auto; transition: 0.5s; margin-right: 280px; }
+        main.full-width { margin-right: 0; }
         .page { display: none; animation: fadeIn 0.5s ease-out; }
         .page.active { display: block; }
         
@@ -184,7 +212,8 @@
             aside { display: none !important; }
             .mobile-nav { position: fixed; bottom: 50px; left: 0; right: 0; background: var(--sidebar-bg); display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid var(--accent); z-index: 1001; }
             .mobile-nav div { font-size: 20px; color: #8b949e; }
-            main { padding: 15px; padding-top: 80px; padding-bottom: 120px; }
+            main { padding: 15px; padding-top: 80px; padding-bottom: 120px; margin-right: 0 !important; }
+            .sidebar-toggle-btn { display: none; }
         }
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -211,26 +240,21 @@
         }
         .whatsapp-float:hover { transform: scale(1.1); background-color: #128c7e; }
 
+        /* --- الرسالة المدمجة المحدثة --- */
         #join-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.85);
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.9);
             display: flex; justify-content: center; align-items: center;
-            z-index: 99999; backdrop-filter: blur(5px);
+            z-index: 999999; backdrop-filter: blur(8px);
         }
-        .join-modal { background: white; padding: 30px; border-radius: 15px; text-align: center; max-width: 400px; width: 90%; }
-        .join-modal h2 { color: #075e54; margin-bottom: 15px; }
-        .btn-join { display: block; background: #25d366; color: white; padding: 12px; border-radius: 8px; text-decoration: none; margin: 15px 0; font-weight: bold; }
-        .btn-verify { background: #34b7f1; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-family: 'Cairo'; }
-
-        @media screen and (max-width: 767px) {
-            #p-exams, .exams-section, #exams-container { 
-                display: block !important; visibility: visible !important; opacity: 1 !important; width: 100% !important; height: auto !important; position: relative !important; overflow: visible !important;
-            }
-        }
+        .join-modal { background: #1a1a1a; padding: 30px; border-radius: 20px; text-align: center; max-width: 400px; width: 90%; border: 1px solid var(--accent); }
+        .btn-join { display: block; background: #25d366; color: white; padding: 15px; border-radius: 10px; text-decoration: none; margin: 15px 0; font-weight: bold; font-size: 18px; }
+        .btn-ignore { background: transparent; color: #888; border: 1px solid #444; padding: 8px; border-radius: 8px; cursor: pointer; width: 100%; margin-bottom: 20px; }
     </style>
 </head>
 <body oncontextmenu="return false;"> 
+
+    <div id="lightning-flash"></div>
 
     <div id="notification-toast">
         <i class="fas fa-bell"></i>
@@ -256,12 +280,15 @@
 
     <div id="join-overlay" style="display: none;">
         <div class="join-modal">
-            <h2>⚠️ خطوة أخيرة</h2>
-            <p style="color: #333;">يرجى الانضمام لجروب الواتساب الرسمي للمتابعة وتفعيل كامل ميزات المنصة.</p>
-            <a href="https://chat.whatsapp.com/E5tpwhb6D5j9lDnXBFNbLM" id="join-link" target="_blank" class="btn-join">اضغط هنا للانضمام للجروب</a>
-            <div id="verification-section" style="display:none;">
-                <p id="verify-text" style="color: #666; margin-bottom: 10px;">جاري التحقق...</p>
-                <button onclick="verifyJoin()" class="btn-verify">تم الانضمام، أكمل للمنصة</button>
+            <h2 style="color: var(--accent); margin-bottom: 10px;">أهلاً بك في أكاديمية كيمو 👑</h2>
+            <p style="color: #bbb; font-size: 14px;">عشان تتابع كل التحديثات والمراجعات، لازم تنضم لينا:</p>
+            <a href="https://chat.whatsapp.com/E5tpwhb6D5j9lDnXBFNbLM" class="btn-join" onclick="localStorage.setItem('whatsapp_joined', 'true');">
+                <i class="fab fa-whatsapp"></i> انضم لجروب الواتساب
+            </a>
+            <button class="btn-ignore" onclick="document.getElementById('join-overlay').style.display='none'">تجاهل الآن</button>
+            <div style="border-top: 1px solid #333; padding-top: 15px;">
+                <p style="font-size: 13px; color: #888;">للتواصل عبر تليجرام:</p>
+                <a href="https://t.me/K_I_M_O_8" target="_blank" style="color: var(--accent); text-decoration: none; font-weight: bold;">@K_I_M_O_8</a>
             </div>
         </div>
     </div>
@@ -344,6 +371,8 @@
             <div class="nav-link" style="color:var(--green)" onclick="tab(this, 'p-admin')"><i class="fas fa-tools"></i> <span>الإدارة</span></div>
         </div>
     </aside>
+
+    <button class="sidebar-toggle-btn" onclick="toggleSidebarMenu()"><i id="toggle-icon" class="fas fa-chevron-right"></i></button>
 
     <div class="mobile-nav" id="mob-nav" style="display:none;">
         <div onclick="tab(null, 'p-home')"><i class="fas fa-home"></i></div>
@@ -479,7 +508,7 @@
               logsRef = database.ref('logs'), examsRef = database.ref('exams'), 
               resultsRef = database.ref('results');
 
-        let allData = {}, allStudents = {}, seconds = 0, timerInterval, selectedAdminSubject = "";
+        let allData = {}, allStudents = {}, selectedAdminSubject = "";
         let isFirstLoad = true;
         let currentStudentData = null;
 
@@ -492,26 +521,57 @@
             "الرياضيات": "https://images.unsplash.com/photo-1509228468518-180dd482195e?q=80&w=400"
         };
 
+        function toggleSidebarMenu() {
+            const sidebar = document.getElementById('sidebar');
+            const content = document.getElementById('content');
+            const icon = document.getElementById('toggle-icon');
+            const flash = document.getElementById('lightning-flash');
+
+            flash.style.animation = 'lightning 0.4s ease-out';
+            setTimeout(() => flash.style.animation = '', 400);
+
+            sidebar.classList.toggle('closed');
+            content.classList.toggle('full-width');
+            
+            if(sidebar.classList.contains('closed')) {
+                icon.className = 'fas fa-chevron-left';
+            } else {
+                icon.className = 'fas fa-chevron-right';
+            }
+        }
+
+        // --- تصليح دالة الانتقال والتسجيل ---
         async function identifyStudent() {
             const phone = document.getElementById('std-phone').value.trim();
             if (!/^01[0125][0-9]{8}$/.test(phone)) return alert("رقم الموبايل غير صحيح");
-            const snapshot = await studentsRef.child(phone).once('value');
-            const student = snapshot.val();
-            document.getElementById('step-1').style.display = 'none';
-            if (student && student.password) {
-                currentStudentData = student;
-                document.getElementById('step-login').style.display = 'block';
-                document.getElementById('welcome-back').innerText = `أهلاً يا ${student.name.split(' ')[0]}`;
-                document.getElementById('gate-title').innerText = "تأكيد الهوية";
-            } else if (student && !student.password) {
-                currentStudentData = student;
-                document.getElementById('step-register').style.display = 'block';
-                document.getElementById('reg-name').value = student.name;
-                document.getElementById('reg-name').readOnly = true;
-                document.getElementById('gate-title').innerText = "تأمين الحساب";
-            } else {
-                document.getElementById('step-register').style.display = 'block';
-                document.getElementById('gate-title').innerText = "حساب جديد";
+            
+            try {
+                const snapshot = await studentsRef.child(phone).once('value');
+                const student = snapshot.val();
+                
+                // إخفاء الواجهة الأولى
+                document.getElementById('step-1').style.display = 'none';
+
+                if (student) {
+                    currentStudentData = student;
+                    if (student.password) {
+                        // طالب مسجل مسبقاً
+                        document.getElementById('step-login').style.display = 'block';
+                        document.getElementById('welcome-back').innerText = `أهلاً يا ${student.name.split(' ')[0]}`;
+                        document.getElementById('gate-title').innerText = "تأكيد الهوية";
+                    } else {
+                        // طالب مضاف من الإدارة لكن لم يكمل بياناته
+                        document.getElementById('step-register').style.display = 'block';
+                        document.getElementById('reg-name').value = student.name || "";
+                        document.getElementById('gate-title').innerText = "تأمين الحساب";
+                    }
+                } else {
+                    // طالب جديد تماماً
+                    document.getElementById('step-register').style.display = 'block';
+                    document.getElementById('gate-title').innerText = "حساب جديد";
+                }
+            } catch (error) {
+                alert("حدث خطأ في الاتصال، حاول مرة أخرى");
             }
         }
 
@@ -522,13 +582,18 @@
         }
 
         function completeRegistration() {
-            const phone = document.getElementById('std-phone').value, name = document.getElementById('reg-name').value.trim(),
-                  pass = document.getElementById('reg-pass').value, q = document.getElementById('reg-question').value,
+            const phone = document.getElementById('std-phone').value, 
+                  name = document.getElementById('reg-name').value.trim(),
+                  pass = document.getElementById('reg-pass').value, 
+                  q = document.getElementById('reg-question').value,
                   a = document.getElementById('reg-answer').value.trim();
+            
             if (name.length < 5 || pass.length < 4 || !q || !a) return alert("برجاء إكمال كافة البيانات");
+            
             const newData = { name, phone, password: pass, securityQ: q, securityA: a, loginTime: new Date().toLocaleString() };
-            studentsRef.child(phone).update(newData);
-            saveAndLogin(newData);
+            studentsRef.child(phone).update(newData).then(() => {
+                saveAndLogin(newData);
+            });
         }
 
         function showForgetPassword() {
@@ -553,50 +618,13 @@
             let videoId = "";
             if (url.includes('v=')) videoId = url.split('v=')[1].split('&')[0];
             else if (url.includes('youtu.be/')) videoId = url.split('youtu.be/')[1].split('?')[0];
-            else if (url.includes('embed/')) videoId = url.split('embed/')[1].split('?')[0];
             return videoId ? `https://img.youtube.com/vi/${videoId}/mqdefault.jpg` : 'https://via.placeholder.com/400x225/0d1117/FF9800?text=KAREEM+ACADEMY';
         }
-
-        async function uploadToCloud(input) {
-            const file = input.files[0]; if(!file) return;
-            const status = document.getElementById('upload-status'); status.innerText = "⏳ جاري الرفع...";
-            const formData = new FormData(); formData.append('file', file); formData.append('upload_preset', 'ml_default');
-            try {
-                const response = await fetch(`https://api.cloudinary.com/v1_1/demo/auto/upload`, { method: 'POST', body: formData });
-                const data = await response.json();
-                if(data.secure_url) {
-                    status.innerHTML = "✅ تم الرفع!";
-                    document.getElementById('copy-link-area').style.display = 'block';
-                    document.getElementById('generated-link').value = data.secure_url;
-                }
-            } catch (e) { status.innerText = "❌ فشل الرفع"; }
-        }
-
-        function copyLink() { document.getElementById('generated-link').select(); document.execCommand('copy'); alert("تم النسخ!"); }
-        function filterStudents() {
-            const val = document.getElementById('studentSearch').value.toLowerCase();
-            document.querySelectorAll('.student-row').forEach(row => { row.style.display = row.innerText.toLowerCase().includes(val) ? 'grid' : 'none'; });
-        }
-        document.onkeydown = (e) => { if(e.keyCode == 123 || (e.ctrlKey && e.shiftKey && (e.keyCode == 73 || e.keyCode == 74 || e.keyCode == 67)) || (e.ctrlKey && e.keyCode == 85)) return false; };
-
-        window.onload = () => {
-            const user = JSON.parse(localStorage.getItem('kimo_auth_v26'));
-            if (user) {
-                blacklistRef.child(user.phone).once('value', snapshot => {
-                    if (snapshot.exists()) {
-                        alert("عذراً، تم تعليق حسابك. تواصل مع الإدارة.");
-                        logout(); 
-                    } else {
-                        runApp(); 
-                    }
-                });
-            }
-        };
 
         function runApp() {
             const user = JSON.parse(localStorage.getItem('kimo_auth_v26'));
             if(!user) return;
-            blacklistRef.child(user.phone).on('value', s => { if(s.exists()) logout(); });
+            
             document.getElementById('login-gate').style.display = 'none';
             document.getElementById('sidebar').style.display = 'flex';
             document.getElementById('top-bar').style.display = 'flex';
@@ -605,16 +633,9 @@
             document.getElementById('content').style.display = 'block';
             document.getElementById('tg-btn').style.display = 'flex';
             document.getElementById('display-name').innerText = user.name.split(' ')[0];
+            
             presenceRef.child(user.phone).set({ name: user.name, last: Date.now() });
             presenceRef.child(user.phone).onDisconnect().remove();
-
-            const isJoined = localStorage.getItem("whatsapp_joined");
-            if (!isJoined) {
-                document.getElementById("join-overlay").style.display = "flex";
-            }
-            document.getElementById("join-link").onclick = function() {
-                document.getElementById("verification-section").style.display = "block";
-            };
 
             if(user.phone === "01023175098") {
                 document.getElementById('adm-links').style.display = 'block';
@@ -630,199 +651,121 @@
                     document.getElementById('stat-total-std').innerText = s.numChildren();
                     loadStudentsList(allStudents);
                 });
-                resultsRef.on('value', s => loadResultsList(s.val()));
             }
-            settingsRef.child('newsTicker').on('value', s => document.getElementById('ticker-content').innerText = s.val() || "مرحباً بكم في أكاديمية كريم!");
+            settingsRef.child('newsTicker').on('value', s => document.getElementById('ticker-content').innerText = s.val() || "مرحباً بكم في أكاديمية كيمو!");
             loadData(); renderSubjectGrids();
             setInterval(moveWatermark, 4000);
-            lessonsRef.limitToLast(1).on('child_added', s => { if(!isFirstLoad) showNotification(`🔥 جديد: ${s.val().title}`); });
-            setTimeout(() => isFirstLoad = false, 3000);
+            
             chatRef.limitToLast(40).on('child_added', s => {
                 const msg = s.val(), currUser = JSON.parse(localStorage.getItem('kimo_auth_v26')), 
-                      isMe = msg.name === currUser.name || msg.phone === "01023175098", box = document.getElementById('chat-messages');
+                      isMe = msg.name === currUser.name, box = document.getElementById('chat-messages');
                 box.innerHTML += `<div class="msg-bubble ${isMe ? 'msg-me' : 'msg-student'}"><b>${msg.name}</b><div>${msg.text}</div><small class="en-num">${msg.time}</small></div>`;
                 box.scrollTop = box.scrollHeight;
             });
             examsRef.on('value', s => renderExams(s.val()));
         }
 
-        function verifyJoin() {
-            let btn = document.querySelector(".btn-verify");
-            let text = document.getElementById("verify-text");
-            btn.innerHTML = "جاري الفحص...";
-            setTimeout(() => {
-                localStorage.setItem("whatsapp_joined", "true");
-                text.innerHTML = "✅ تم التحقق بنجاح!";
-                text.style.color = "green";
-                setTimeout(() => {
-                    document.getElementById("join-overlay").style.display = "none";
-                }, 1000);
-            }, 2000);
-        }
-
         function loadData() { lessonsRef.on('value', s => { allData = s.val() || {}; renderLatest(); renderPinned(); }); }
-        function loadStudentsList(data) {
-            let h = "";
-            for(let phone in data) h += `<div class="student-row"><span>${data[phone].name}</span><span class="en-num">${phone}</span><span style="display:flex;justify-content:center;"><button onclick="viewStudentLogs('${phone}')"><i class="fas fa-history"></i></button><button onclick="banStudent('${phone}')"><i class="fas fa-user-slash"></i></button></span></div>`;
-            document.getElementById('students-table-body').innerHTML = h;
-        }
-        function loadResultsList(data) {
-            let h = "";
-            for(let id in data) h += `<div class="student-row" style="grid-template-columns:1fr 1fr 0.5fr 1fr;font-size:11px;"><span>${data[id].studentName}</span><span>${data[id].examTitle}</span><span class="en-num" style="color:var(--accent)">${data[id].score}</span><span class="en-num">${data[id].time}</span></div>`;
-            document.getElementById('results-table-body').innerHTML = h;
-        }
-        function viewStudentLogs(phone) { logsRef.orderByChild('studentPhone').equalTo(phone).once('value', s => { const logs = s.val(); if(!logs) return alert("لا يوجد نشاط"); let m = "النشاط:\n"; for(let id in logs) m += `- ${logs[id].action}: ${logs[id].title}\n`; alert(m); }); }
+        
         function renderLatest() {
             let items = Object.entries(allData).reverse().slice(0, 4), user = JSON.parse(localStorage.getItem('kimo_auth_v26'));
-            document.getElementById('latest-content').innerHTML = `<div class="content-grid">${items.map(([id, i]) => `<div class="card"><div class="lesson-thumb" style="background-image:url('${getYoutubeThumb(i.url)}')"></div><h4>${i.title}</h4><button class="btn-accent" onclick="openContent('${i.url}','${i.type}','${i.title}')">فتح</button>${user.phone === "01023175098" ? `<div class="admin-controls"><button class="btn-pin" onclick="togglePin('lessons','${id}',${i.isPinned})"><i class="fas fa-thumbtack"></i> ${i.isPinned?'إلغاء':'تثبيت'}</button><button class="btn-del" onclick="deleteItem('lessons','${id}')"><i class="fas fa-trash"></i></button></div>`:''}</div>`).join('')}</div>`;
+            document.getElementById('latest-content').innerHTML = `<div class="content-grid">${items.map(([id, i]) => `<div class="card"><div class="lesson-thumb" style="background-image:url('${getYoutubeThumb(i.url)}')"></div><h4>${i.title}</h4><button class="btn-accent" onclick="openContent('${i.url}','${i.type}','${i.title}')">فتح</button></div>`).join('')}</div>`;
         }
+
         function renderPinned() {
-            let pinned = "", user = JSON.parse(localStorage.getItem('kimo_auth_v26'));
+            let pinned = "";
             for(let id in allData) if(allData[id].isPinned) pinned += `<div class="card" style="border-color:var(--gold)"><div class="lesson-thumb" style="background-image:url('${getYoutubeThumb(allData[id].url)}')"></div><h4>📌 ${allData[id].title}</h4><button class="btn-accent" onclick="openContent('${allData[id].url}','${allData[id].type}','${allData[id].title}')">فتح</button></div>`;
-            document.getElementById('pinned-content').innerHTML = pinned || "<p style='color:#555'>لا يوجد محتوى مثبت حالياً</p>";
+            document.getElementById('pinned-content').innerHTML = pinned || "<p>لا يوجد محتوى مثبت</p>";
         }
+
         function renderExams(data) {
-            let h = "", user = JSON.parse(localStorage.getItem('kimo_auth_v26'));
-            for(let id in data) h += `<div class="card" style="border-color:var(--green)"><h3>📝 ${data[id].title}</h3><button class="btn-accent" style="background:var(--green);margin-bottom:10px;" onclick="window.open('${data[id].url}','_blank')">ابدأ الامتحان</button><div style="background:rgba(0,0,0,0.5);padding:10px;border-radius:10px;"><small>اكتب درجتك هنا:</small><div style="display:flex;gap:5px;margin-top:5px;"><input type="text" id="score-${id}" placeholder="مثلاً 18/20" style="width:70%;background:#000;border:1px solid #333;color:#fff;border-radius:5px;padding:5px;"><button onclick="submitExamScore('${id}','${data[id].title}')" style="background:var(--accent);border:none;border-radius:5px;padding:5px 10px;cursor:pointer;"><i class="fas fa-paper-plane"></i></button></div></div>${user.phone === "01023175098" ? `<div class="admin-controls"><button class="btn-del" onclick="deleteItem('exams','${id}')">حذف</button></div>`:''}</div>`;
+            let h = "";
+            for(let id in data) h += `<div class="card" style="border-color:var(--green)"><h3>📝 ${data[id].title}</h3><button class="btn-accent" onclick="window.open('${data[id].url}','_blank')">ابدأ الامتحان</button></div>`;
             document.getElementById('exams-list').innerHTML = h || "<p>لا توجد امتحانات</p>";
-        }
-        function submitExamScore(id, title) {
-            const score = document.getElementById(`score-${id}`).value, user = JSON.parse(localStorage.getItem('kimo_auth_v26'));
-            if(!score) return alert("اكتب الدرجة أولاً");
-            resultsRef.push({ studentName: user.name, studentPhone: user.phone, examTitle: title, score: score, time: new Date().toLocaleString('ar-EG') });
-            alert("✅ تم إرسال درجتك!"); document.getElementById(`score-${id}`).value = "";
-        }
-        function togglePin(ref, id, currentStatus) { database.ref(ref).child(id).update({ isPinned: !currentStatus }); }
-        function deleteItem(ref, id) { if(confirm("هل أنت متأكد من الحذف؟")) database.ref(ref).child(id).remove(); }
-        function addExam() {
-            const title = document.getElementById('adm-exam-title').value, url = document.getElementById('adm-exam-url').value;
-            if(!title || !url) return alert("اكمل البيانات");
-            examsRef.push({ title, url, isPinned: false }); alert("تم إضافة الامتحان!");
-            document.getElementById('adm-exam-title').value = ""; document.getElementById('adm-exam-url').value = "";
-        }
-        function showNotification(msg) {
-            const toast = document.getElementById('notification-toast'); document.getElementById('notif-text').innerText = msg;
-            toast.classList.add('show'); setTimeout(() => toast.classList.remove('show'), 5000);
         }
 
         function openContent(url, type, title) {
             const user = JSON.parse(localStorage.getItem('kimo_auth_v26'));
-            if(user) logsRef.push({ studentPhone: user.phone, studentName: user.name, action: type, title: title, time: new Date().toLocaleString() });
-            
             if (type === 'video') {
-                let finalSrc = "";
-                if (url.includes('streamable.com')) {
-                    let videoId = url.split('/').pop().split('?')[0];
-                    finalSrc = `https://streamable.com/e/${videoId}?logo=0&info=0`;
-                } else if (url.includes('youtube.com') || url.includes('youtu.be')) {
-                    let videoId = url.includes('v=') ? url.split('v=')[1].split('&')[0] : url.split('/').pop();
-                    finalSrc = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&showinfo=0`;
-                } else { finalSrc = url; }
-
-                let thumbnailUrl = "https://raw.githubusercontent.com/ky8694429-oss/kimo-academy/main/logo.png";
-                if (url.includes('youtube.com') || url.includes('youtu.be')) {
-                    let yId = url.includes('v=') ? url.split('v=')[1].split('&')[0] : url.split('/').pop();
-                    thumbnailUrl = `https://img.youtube.com/vi/${yId}/maxresdefault.jpg`;
-                }
-                document.getElementById('video-player-overlay').style.backgroundImage = `url(${thumbnailUrl})`;
                 document.getElementById('video-player-overlay').style.display = 'flex';
-
-                document.getElementById('video-frame-container').innerHTML = `
-                <div style="position:relative; width:100%; height:100%;">
-                    <div id="watermark" style="position:absolute; z-index:9999; color:rgba(255,255,255,0.9); font-weight:900; font-size:22px; pointer-events:none; text-shadow: 2px 2px 0px #000, -2px -2px 0px #000, 2px -2px 0px #000, -2px 2px 0px #000; transition: all 1s ease; white-space: nowrap;">
-                        ${user.name} - ${user.phone}
-                    </div>
-                    <iframe src="${finalSrc}" width="100%" height="100%" frameborder="0" allowfullscreen></iframe>
-                </div>`;
-
-                if(window.wmInterval) clearInterval(window.wmInterval);
-                window.wmInterval = setInterval(() => {
-                    const wm = document.getElementById('watermark');
-                    if(wm) {
-                        wm.style.top = Math.random() * 80 + '%';
-                        wm.style.left = Math.random() * 70 + '%';
-                    }
-                }, 5000);
-            } else {
-                window.open(url, '_blank');
-            }
+                document.getElementById('video-frame-container').innerHTML = `<iframe src="${url.replace('watch?v=', 'embed/')}" width="100%" height="100%" frameborder="0" allowfullscreen></iframe>`;
+            } else { window.open(url, '_blank'); }
         }
 
-        function closeVideo() { 
-            document.getElementById('video-player-overlay').style.display='none'; 
-            document.getElementById('video-frame-container').innerHTML=''; 
-            if(window.wmInterval) clearInterval(window.wmInterval);
-        }
-        
+        function closeVideo() { document.getElementById('video-player-overlay').style.display='none'; document.getElementById('video-frame-container').innerHTML=''; }
+
         function renderSubjectGrids() {
             const subs = Object.keys(subjectImages); let v = "", f = "", a = "";
             subs.forEach(s => {
-                const img = subjectImages[s], cardV = `<div class="subject-card" style="background-image:url('${img}')" onclick="openSubject('${s}', 'video')"><h3>${s}</h3></div>`;
-                const cardF = `<div class="subject-card" style="background-image:url('${img}')" onclick="openSubject('${s}', 'file')"><h3>${s}</h3></div>`;
-                const cardA = `<div class="subject-card" style="background-image:url('${img}')" onclick="initiateUpload('${s}')"><h3>${s}</h3></div>`;
-                v += cardV; f += cardF; a += cardA;
+                const img = subjectImages[s];
+                v += `<div class="subject-card" style="background-image:url('${img}')" onclick="openSubject('${s}', 'video')"><h3>${s}</h3></div>`;
+                f += `<div class="subject-card" style="background-image:url('${img}')" onclick="openSubject('${s}', 'file')"><h3>${s}</h3></div>`;
+                a += `<div class="subject-card" style="background-image:url('${img}')" onclick="initiateUpload('${s}')"><h3>${s}</h3></div>`;
             });
-            document.getElementById('subjects-grid-video').innerHTML = v; document.getElementById('subjects-grid-file').innerHTML = f; document.getElementById('admin-subjects-grid').innerHTML = a;
+            document.getElementById('subjects-grid-video').innerHTML = v; 
+            document.getElementById('subjects-grid-file').innerHTML = f; 
+            document.getElementById('admin-subjects-grid').innerHTML = a;
         }
 
         function openSubject(name, type) {
             document.getElementById(type==='video'?'subjects-container-video':'subjects-container-file').style.display='none';
             document.getElementById(type==='video'?'specific-subject-videos':'specific-subject-files').style.display='block';
-            let h = "", user = JSON.parse(localStorage.getItem('kimo_auth_v26'));
+            let h = "";
             for(let id in allData) {
                 if(allData[id].subject === name && allData[id].type === type) {
-                    const thumb = type==='video' ? getYoutubeThumb(allData[id].url) : 'https://cdn-icons-png.flaticon.com/512/337/337946.png';
-                    h += `<div class="card"><div class="lesson-thumb" style="background-image:url('${thumb}')"></div><h3>${allData[id].title}</h3><button class="btn-accent" onclick="openContent('${allData[id].url}','${allData[id].type}','${allData[id].title}')">فتح</button>${user.phone === "01023175098" ? `<div class="admin-controls"><button class="btn-pin" onclick="togglePin('lessons','${id}',${allData[id].isPinned})">${allData[id].isPinned?'إلغاء':'تثبيت'}</button><button class="btn-del" onclick="deleteItem('lessons','${id}')">حذف</button></div>`:''}</div>`;
+                    h += `<div class="card"><h3>${allData[id].title}</h3><button class="btn-accent" onclick="openContent('${allData[id].url}','${allData[id].type}','${allData[id].title}')">فتح</button></div>`;
                 }
             }
             document.getElementById(type==='video'?'video-list':'file-list').innerHTML = h || "<p>لا يوجد محتوى</p>";
         }
+
+        function showSubjects(type) { document.getElementById(type==='video'?'subjects-container-video':'subjects-container-file').style.display='flex'; document.getElementById(type==='video'?'specific-subject-videos':'specific-subject-files').style.display='none'; }
 
         function sendChatMessage() {
             const input = document.getElementById('chat-input'), user = JSON.parse(localStorage.getItem('kimo_auth_v26'));
             if(!input.value.trim()) return;
             chatRef.push({ name: user.name, text: input.value, time: new Date().toLocaleTimeString('ar-EG'), phone: user.phone }); input.value = "";
         }
-        
+
         function moveWatermark() {
             const wm = document.getElementById('floating-watermark'), d = JSON.parse(localStorage.getItem('kimo_auth_v26'));
             if(d && wm) { 
                 wm.style.display = 'block'; 
-                wm.innerHTML = `<span class="en-num">${d.name} | ${d.phone}</span>`;
-                wm.style.top = Math.random() * 80 + '%';
-                wm.style.left = Math.random() * 70 + '%';
+                wm.innerHTML = `${d.name} | ${d.phone}`;
+                wm.style.top = Math.random() * 80 + '%'; wm.style.left = Math.random() * 70 + '%';
             }
         }
 
-        document.addEventListener('contextmenu', e => e.preventDefault());
-        document.addEventListener('keydown', e => {
-            if (e.key === 'PrintScreen' || (e.ctrlKey && e.shiftKey && (e.key === 'S' || e.key === 's'))) {
-                document.body.style.visibility = 'hidden';
-                alert("تصوير الشاشة ممنوع قطعيًا لحماية حقوق المنصة!");
-                setTimeout(() => { document.body.style.visibility = 'visible'; }, 2000);
-            }
-        });
-        window.addEventListener('resize', () => {
-            if (window.outerWidth - window.innerWidth > 100 || window.outerHeight - window.innerHeight > 100) {
-                document.body.innerHTML = "نعتذر، لا يمكن تشغيل المنصة مع فتح أدوات المطور.";
-            }
-        });
-
-        function banStudent(phone) { if(confirm("حظر؟")) blacklistRef.child(phone).set(true); }
-        function showSubjects(type) { document.getElementById(type==='video'?'subjects-container-video':'subjects-container-file').style.display='flex'; document.getElementById(type==='video'?'specific-subject-videos':'specific-subject-files').style.display='none'; }
-        function showAdminSubjects() { document.getElementById('admin-subjects-selection').style.display='block'; document.getElementById('admin-upload-form').style.display='none'; }
-        function initiateUpload(s) { selectedAdminSubject = s; document.getElementById('current-adm-sub-name').innerText = s; document.getElementById('admin-subjects-selection').style.display='none'; document.getElementById('admin-upload-form').style.display='block'; }
-        function handleUpload() {
-            const title = document.getElementById('adm-title').value, url = document.getElementById('adm-url').value, type = document.getElementById('adm-type').value;
-            if(!title || !url) return alert("أكمل البيانات");
-            lessonsRef.push({ title, url, subject: selectedAdminSubject, type, isPinned: false }); alert("تم!");
-        }
         function logout() { localStorage.clear(); location.reload(); }
+        
         function tab(el, id) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById(id).classList.add('active');
             if(el) { document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active')); el.classList.add('active'); }
         }
+
+        function initiateUpload(s) { 
+            selectedAdminSubject = s; 
+            document.getElementById('current-adm-sub-name').innerText = s; 
+            document.getElementById('admin-subjects-selection').style.display='none'; 
+            document.getElementById('admin-upload-form').style.display='block'; 
+        }
+
+        function showAdminSubjects() { document.getElementById('admin-subjects-selection').style.display='block'; document.getElementById('admin-upload-form').style.display='none'; }
+
+        function handleUpload() {
+            const title = document.getElementById('adm-title').value, url = document.getElementById('adm-url').value, type = document.getElementById('adm-type').value;
+            if(!title || !url) return alert("أكمل البيانات");
+            lessonsRef.push({ title, url, subject: selectedAdminSubject, type, isPinned: false }); 
+            alert("تم الرفع بنجاح!");
+            showAdminSubjects();
+        }
+
+        window.onload = () => {
+            const user = JSON.parse(localStorage.getItem('kimo_auth_v26'));
+            if (user) runApp();
+        };
     </script>
 </body>
 </html>
+

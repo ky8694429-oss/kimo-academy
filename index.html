@@ -1044,5 +1044,139 @@ function pushAdminToFirebase() {
     });
 </script>
 
+    <script>
+    const thunderColors = ['#ffffff', '#00f2ff', '#7000ff'];
+
+    // 1. دالة تخليق خيوط البرق المتعرجة في الشاشة
+    function createLightningStrike() {
+        const lightning = document.createElement('div');
+        lightning.className = 'lightning-strike-effect';
+        
+        const left = Math.random() * 100;
+        const width = 2 + Math.random() * 4;
+        
+        lightning.style.left = left + '%';
+        lightning.style.width = width + 'px';
+        lightning.style.backgroundColor = thunderColors[Math.floor(Math.random() * thunderColors.length)];
+        lightning.style.boxShadow = `0 0 20px ${lightning.style.backgroundColor}, 0 0 40px ${lightning.style.backgroundColor}`;
+        
+        document.body.appendChild(lightning);
+        setTimeout(() => lightning.remove(), 300);
+    }
+
+    // 2. المحرك الرئيسي للتنبيهات بالصعقة الكهربائية
+    function triggerThunderStorm(msg) {
+        if(typeof showNotification === "function") {
+            // إطلاق خيوط البرق (3 ضربات عشوائية)
+            for(let i = 0; i < 3; i++) {
+                setTimeout(createLightningStrike, i * 100);
+            }
+
+            // تفعيل فلاش الشاشة (الرعد)
+            document.body.classList.add('thunder-flash-active');
+            setTimeout(() => document.body.classList.remove('thunder-flash-active'), 400);
+
+            // إظهار التنبيه الأصلي
+            showNotification(msg);
+
+            // تلوين التنبيه وتثبيت تأثير النيون عليه
+            setTimeout(() => {
+                const notifs = document.querySelectorAll('.notification');
+                if(notifs.length > 0) {
+                    const last = notifs[notifs.length - 1];
+                    last.style.border = "3px solid #00f2ff";
+                    last.style.boxShadow = "0 0 30px #00f2ff";
+                    last.style.animation = "shakeNotification 0.2s infinite";
+                    setTimeout(() => last.style.animation = "", 500);
+                }
+            }, 50);
+        }
+    }
+
+    // 3. تتبع نشاط الطالب (عند العودة للمنصة)
+    document.addEventListener('visibilitychange', () => {
+        if (!document.hidden) {
+            triggerThunderStorm("🎯 حمد لله على السلامة.. ركز في حلمك واستغل وقتك!");
+        }
+    });
+
+    // 4. حماية النصوص وحفظ الحقوق عند النسخ
+    document.addEventListener('copy', (e) => {
+        const selectedText = window.getSelection().toString();
+        if(selectedText.length > 5) {
+            const watermark = `\n\n© تم النسخ من المنصة التعليمية الرسمية 2026\nرابط المنصة: ${window.location.origin}`;
+            e.clipboardData.setData('text/plain', selectedText + watermark);
+            e.preventDefault();
+            triggerThunderStorm("✅ تم حماية النص المنسوخ بالصعقة الكهربائية!");
+        }
+    });
+
+    // 5. رسائل الترحيب الذكية عند التحميل
+    window.addEventListener('load', () => {
+        setTimeout(() => {
+            const hour = new Date().getHours();
+            let greet = "مرحباً بك في منصتك التعليمية!";
+            if (hour >= 5 && hour < 12) greet = "صباح النشاط.. ابدأ يومك بتركيز عالي! ☀️";
+            else if (hour >= 12 && hour < 18) greet = "مساء الجد والاجتهاد.. استمر في العطاء! ☕";
+            else greet = "سهرة سعيدة مع المذاكرة.. الله لا يضيع تعبك! 🌙";
+            triggerThunderStorm(greet);
+        }, 3000);
+    });
+
+    // 6. تحسين انسيابية العناصر (الخدمة الإضافية)
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('.card').forEach(card => {
+            card.style.transition = "0.5s all ease";
+        });
+    });
+</script>
+
+<style>
+/* تأثير خيوط البرق العمودية */
+.lightning-strike-effect {
+    position: fixed;
+    top: 0;
+    height: 100vh;
+    z-index: 99999;
+    opacity: 0;
+    pointer-events: none;
+    transform: skewX(-20deg);
+    animation: lightningHitAnim 0.3s ease-out;
+}
+
+@keyframes lightningHitAnim {
+    0% { opacity: 0; }
+    10% { opacity: 1; }
+    20% { opacity: 0; }
+    30% { opacity: 1; transform: skewX(20deg) scaleX(1.5); }
+    100% { opacity: 0; }
+}
+
+/* فلاش الشاشة بالكامل (تأثير الرعد) */
+.thunder-flash-active {
+    animation: screenFlashAnim 0.4s ease-out forwards;
+}
+
+@keyframes screenFlashAnim {
+    0% { filter: brightness(1); }
+    20% { filter: brightness(5) contrast(2); background: #fff; }
+    40% { filter: brightness(0.5) sepia(1) hue-rotate(180deg); }
+    100% { filter: brightness(1); }
+}
+
+/* حركة الرعشة للتنبيه */
+@keyframes shakeNotification {
+    0% { transform: translate(2px, 1px) rotate(0deg); }
+    50% { transform: translate(-2px, -1px) rotate(-1deg); }
+    100% { transform: translate(2px, 1px) rotate(0deg); }
+}
+
+.notification {
+    border-radius: 12px !important;
+    font-weight: bold !important;
+    transition: all 0.3s ease !important;
+}
+</style>
+
 </body>
 </html>

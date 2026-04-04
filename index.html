@@ -1247,5 +1247,119 @@ function pushAdminToFirebase() {
 ::-webkit-scrollbar-thumb { background: #00f2ff; border-radius: 10px; box-shadow: 0 0 10px #00f2ff; }
 </style>
 
+    <div id="user-profile-icon" onclick="toggleProfileModal()">
+    <img id="nav-user-img" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="Profile">
+</div>
+
+<div id="profile-modal" class="profile-modal">
+    <div class="profile-card">
+        <span class="close-btn" onclick="toggleProfileModal()">&times;</span>
+        <h3 style="color: #ff9800; margin-bottom: 20px;">بروفايل الطالب 🎓</h3>
+        
+        <div class="profile-img-section">
+            <img id="profile-display-img" src="https://cdn-icons-png.flaticon.com/512/149/149071.png">
+            <label for="img-upload" class="upload-label">تغيير الصورة</label>
+            <input type="file" id="img-upload" hidden accept="image/*">
+        </div>
+
+        <div class="profile-info">
+            <label>الاسم:</label>
+            <input type="text" id="user-name-input" placeholder="ادخل اسمك...">
+            
+            <label>الموبايل:</label>
+            <input type="tel" id="user-phone-input" placeholder="01xxxxxxxxx">
+            
+            <button class="save-btn" onclick="saveProfileData()">حفظ التعديلات ✨</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    function toggleProfileModal() {
+        const modal = document.getElementById('profile-modal');
+        modal.style.display = (modal.style.display === 'flex') ? 'none' : 'flex';
+    }
+
+    document.getElementById('img-upload').addEventListener('change', function(e) {
+        const reader = new FileReader();
+        reader.onload = function() {
+            const base64 = reader.result;
+            document.getElementById('profile-display-img').src = base64;
+            document.getElementById('nav-user-img').src = base64;
+            localStorage.setItem('user-img', base64);
+        };
+        reader.readAsDataURL(e.target.files[0]);
+    });
+
+    function saveProfileData() {
+        const name = document.getElementById('user-name-input').value;
+        const phone = document.getElementById('user-phone-input').value;
+        localStorage.setItem('user-name', name);
+        localStorage.setItem('user-phone', phone);
+        
+        if(typeof triggerThunderStorm === "function") triggerThunderStorm("تم تحديث بروفايلك يا بطل! ✅");
+        toggleProfileModal();
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+        const savedName = localStorage.getItem('user-name');
+        const savedPhone = localStorage.getItem('user-phone');
+        const savedImg = localStorage.getItem('user-img');
+
+        if(savedName) document.getElementById('user-name-input').value = savedName;
+        if(savedPhone) document.getElementById('user-phone-input').value = savedPhone;
+        if(savedImg) {
+            document.getElementById('profile-display-img').src = savedImg;
+            document.getElementById('nav-user-img').src = savedImg;
+        }
+    });
+</script>
+
+<style>
+    /* تعديل المكان عشان يجي بالظبط جنب زراير الهيدر على الشمال */
+    #user-profile-icon {
+        position: fixed; 
+        top: 65px; /* المسافة من فوق عشان تبقى في نص الشريط الأسود */
+        left: 110px; /* المكان بالظبط جنب أيقونة الشمس/القمر */
+        width: 38px; 
+        height: 38px;
+        background: #1e1e1e;
+        border-radius: 12px; /* خليت الحواف مربعة شوية عشان تليق مع زرايرك */
+        padding: 2px; 
+        z-index: 10000;
+        cursor: pointer; 
+        border: 1px solid #ff9800;
+        transition: 0.3s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    #user-profile-icon:hover { transform: translateY(-2px); box-shadow: 0 0 15px #ff9800; }
+    #user-profile-icon img { width: 100%; height: 100%; border-radius: 10px; object-fit: cover; }
+
+    /* ستايل النافذة (الـ Modal) */
+    .profile-modal {
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0,0,0,0.85); display: none; align-items: center; justify-content: center;
+        z-index: 100000; backdrop-filter: blur(10px);
+    }
+    .profile-card {
+        background: #111; width: 90%; max-width: 340px; padding: 30px;
+        border-radius: 20px; border: 1px solid #ff9800; position: relative; color: white; text-align: center;
+    }
+    .close-btn { position: absolute; top: 15px; right: 20px; font-size: 25px; cursor: pointer; color: #ff9800; }
+    .profile-img-section img { width: 90px; height: 90px; border-radius: 50%; border: 2px solid #ff9800; margin-bottom: 5px; }
+    .upload-label { display: block; font-size: 12px; color: #ff9800; cursor: pointer; margin-bottom: 20px; }
+    .profile-info label { display: block; text-align: right; margin-bottom: 5px; font-size: 13px; color: #aaa; }
+    .profile-info input {
+        width: 100%; padding: 12px; margin-bottom: 20px; border-radius: 10px;
+        border: 1px solid #333; background: #000; color: #fff; text-align: center;
+    }
+    .save-btn {
+        width: 100%; padding: 12px; background: #ff9800; color: #000;
+        border: none; border-radius: 10px; font-weight: bold; cursor: pointer;
+    }
+</style>
+
 </body>
 </html>

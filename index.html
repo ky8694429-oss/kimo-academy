@@ -1178,5 +1178,74 @@ function pushAdminToFirebase() {
 }
 </style>
 
+    <script>
+    // 1. ميزة "اهتزاز التنبيه" (Haptic Feedback)
+    // بتخلي الجهاز "يرعش" لو الطالب حاول يسرق نص أو صورة، أو لما يرجع للمنصة
+    function mobileVibrate(pattern = [50]) {
+        if (navigator.vibrate) {
+            navigator.vibrate(pattern);
+        }
+    }
+
+    // 2. ميزة "منع تصوير الشاشة" (Screen Capture Blocker)
+    // بتضيف طبقة "نيون" متحركة خفيفة جداً بتلغوش على كاميرات الموبايل وبرامج التسجيل
+    const antiCapture = document.createElement('div');
+    antiCapture.style = "position:fixed; top:0; left:0; width:100vw; height:100vh; z-index:999999; pointer-events:none; background: repeating-linear-gradient(45deg, rgba(0,242,255,0.01) 0px, rgba(0,242,255,0.01) 2px, transparent 2px, transparent 4px);";
+    document.body.appendChild(antiCapture);
+
+    // 3. ميزة "السحب للتحديث" المخصص (Custom Touch Interaction)
+    // بتمنع الـ Refresh العشوائي اللي بيضيع مجهود الطالب في الامتحانات
+    let touchStart = 0;
+    document.addEventListener('touchstart', (e) => { touchStart = e.touches[0].pageY; }, {passive: true});
+    document.addEventListener('touchmove', (e) => {
+        const touchMove = e.touches[0].pageY;
+        if (window.scrollY === 0 && touchMove > touchStart + 50) {
+            // لو الطالب حاول يسحب لتحت عشان يعمل ريفريش بنطلعه تنبيه بدل ما الصفحة تحمل
+            if(typeof triggerThunderStorm === "function") {
+                triggerThunderStorm("⚠️ تنبيه: تم قفل التحديث التلقائي لحماية إجاباتك!");
+                mobileVibrate([100, 50, 100]);
+            }
+        }
+    }, {passive: true});
+
+    // 4. ميزة "رادار التركيز" (Focus Mode)
+    // لو قفل الموبايل أو خرج للواتساب ورجع، بنعمله استقبال بالبرق وهزة خفيفة
+    document.addEventListener('visibilitychange', () => {
+        if (!document.hidden) {
+            mobileVibrate([50, 30, 50]);
+            if(typeof triggerThunderStorm === "function") {
+                triggerThunderStorm("🎯 ركز في هدفك.. المنصة تتابع تقدمك الآن!");
+            }
+        }
+    });
+
+    // 5. ميزة "حماية الصور والروابط" (Long Press Protection)
+    // بتمنع القائمة اللي بتظهر لما الطالب يدوس ضغطة مطولة على صورة عشان يحفظها
+    document.addEventListener('contextmenu', (e) => {
+        if (e.target.tagName === 'IMG' || e.target.tagName === 'VIDEO') {
+            e.preventDefault();
+            mobileVibrate(100);
+            if(typeof triggerThunderStorm === "function") triggerThunderStorm("🚫 غير مسموح بحفظ الوسائط!");
+        }
+    });
+</script>
+
+<style>
+/* تحسين تجربة اللمس ومنع الاختيار العشوائي للنصوص في الأزرار */
+* {
+    -webkit-tap-highlight-color: transparent; /* بيشيل اللون الأزرق البايخ لما تدوس على زرار في الموبايل */
+}
+
+.no-select {
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+/* تخلي شكل السكرول بار نيون وشيك في التابلت واللاب توب */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #000; }
+::-webkit-scrollbar-thumb { background: #00f2ff; border-radius: 10px; box-shadow: 0 0 10px #00f2ff; }
+</style>
+
 </body>
 </html>

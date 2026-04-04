@@ -39,6 +39,7 @@
             --text: #e6edf3; --telegram: #0088cc; --danger: #ff4d4d; 
             --gold: #FFD700; --sidebar-bg: rgba(1, 4, 9, 0.95); 
             --logo-text: #ffffff;
+            --electric: #00f2ff;
         }
         
         body.light-mode { --main-bg: #f0f2f5; --card-bg: #ffffff; --text: #1c1e21; --sidebar-bg: #ffffff; }
@@ -51,7 +52,31 @@
             font-variant-numeric: tabular-nums;
         }
 
-        /* --- الألوان والأنيميشن الجديد للوجو --- */
+        /* --- تأثير البرق والكهرباء للسهم --- */
+        #lightning-flash {
+            position: fixed; inset: 0; pointer-events: none; z-index: 100000; background: white; opacity: 0;
+        }
+        @keyframes lightning {
+            0% { opacity: 0; } 10% { opacity: 0.8; } 20% { opacity: 0.2; } 30% { opacity: 0.9; } 100% { opacity: 0; }
+        }
+        .shock-effect { animation: shock 0.2s linear 2; }
+        @keyframes shock {
+            0% { transform: translate(2px, 1px) rotate(0deg); }
+            50% { transform: translate(-3px, -2px) rotate(-1deg); }
+            100% { transform: translate(0px, 0px) rotate(0deg); }
+        }
+
+        /* سهم القائمة المطور */
+        .sidebar-toggle-btn {
+            position: fixed; right: 280px; top: 20px; z-index: 10000;
+            background: var(--accent); border: none; padding: 12px; border-radius: 8px 0 0 8px;
+            cursor: pointer; transition: 0.5s cubic-bezier(0.87, 0, 0.13, 1); box-shadow: 0 0 15px var(--accent);
+            color: #000; font-size: 20px;
+        }
+        aside.closed + .sidebar-toggle-btn { right: 0; }
+        aside { transition: 0.5s cubic-bezier(0.87, 0, 0.13, 1); transform: translateX(0); }
+        aside.closed { transform: translateX(100%); }
+
         .logo-master-container {
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             padding: 20px; margin: 0 auto; position: relative;
@@ -98,11 +123,14 @@
         .top-tools { position: fixed; top: 0; left: 0; right: 0; height: 60px; display: none; align-items: center; justify-content: flex-end; padding: 0 20px; gap: 15px; z-index: 998; background: rgba(0,0,0,0.2); backdrop-filter: blur(5px); border-bottom: 1px solid rgba(255,255,255,0.05); }
         .tool-btn { background: var(--card-bg); border: 1px solid var(--accent); color: var(--accent); width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s; }
         
-        aside { width: 280px; background: var(--sidebar-bg); backdrop-filter: blur(10px); border-left: 1px solid #30363d; display: none; flex-direction: column; position: sticky; top: 0; height: 100vh; z-index: 999; }
-        .nav-link { padding: 18px 25px; cursor: pointer; color: #8b949e; display: flex; align-items: center; gap: 15px; transition: 0.2s; border-right: 4px solid transparent; font-size: 18px; }
+        aside { width: 280px; background: var(--sidebar-bg); backdrop-filter: blur(10px); border-left: 1px solid #30363d; display: none; flex-direction: column; position: fixed; right: 0; top: 0; height: 100vh; z-index: 9999; }
+        .nav-link { padding: 18px 25px; cursor: pointer; color: #8b949e; display: flex; align-items: center; gap: 15px; transition: 0.2s; border-right: 4px solid transparent; font-size: 18px; perspective: 1000px; }
+        .nav-link i { transition: 0.3s; filter: drop-shadow(0 4px 5px #000); }
+        .nav-link:hover i { color: var(--electric); transform: translateZ(30px) scale(1.2); filter: drop-shadow(0 0 8px var(--electric)); }
         .nav-link:hover, .nav-link.active { color: var(--accent); background: rgba(255, 152, 0, 0.05); border-right-color: var(--accent); }
 
-        main { flex: 1; padding: 30px; display: none; padding-top: 100px; padding-bottom: 120px; overflow-y: auto; }
+        main { flex: 1; padding: 30px; display: none; padding-top: 100px; padding-bottom: 120px; overflow-y: auto; transition: 0.5s; margin-right: 280px; }
+        main.full-width { margin-right: 0; }
         .page { display: none; animation: fadeIn 0.5s ease-out; }
         .page.active { display: block; }
         
@@ -184,7 +212,8 @@
             aside { display: none !important; }
             .mobile-nav { position: fixed; bottom: 50px; left: 0; right: 0; background: var(--sidebar-bg); display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid var(--accent); z-index: 1001; }
             .mobile-nav div { font-size: 20px; color: #8b949e; }
-            main { padding: 15px; padding-top: 80px; padding-bottom: 120px; }
+            main { padding: 15px; padding-top: 80px; padding-bottom: 120px; margin-right: 0 !important; }
+            .sidebar-toggle-btn { display: none; }
         }
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -211,26 +240,21 @@
         }
         .whatsapp-float:hover { transform: scale(1.1); background-color: #128c7e; }
 
+        /* --- الرسالة المدمجة المحدثة --- */
         #join-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.85);
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.9);
             display: flex; justify-content: center; align-items: center;
-            z-index: 99999; backdrop-filter: blur(5px);
+            z-index: 999999; backdrop-filter: blur(8px);
         }
-        .join-modal { background: white; padding: 30px; border-radius: 15px; text-align: center; max-width: 400px; width: 90%; }
-        .join-modal h2 { color: #075e54; margin-bottom: 15px; }
-        .btn-join { display: block; background: #25d366; color: white; padding: 12px; border-radius: 8px; text-decoration: none; margin: 15px 0; font-weight: bold; }
-        .btn-verify { background: #34b7f1; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-family: 'Cairo'; }
-
-        @media screen and (max-width: 767px) {
-            #p-exams, .exams-section, #exams-container { 
-                display: block !important; visibility: visible !important; opacity: 1 !important; width: 100% !important; height: auto !important; position: relative !important; overflow: visible !important;
-            }
-        }
+        .join-modal { background: #1a1a1a; padding: 30px; border-radius: 20px; text-align: center; max-width: 400px; width: 90%; border: 1px solid var(--accent); }
+        .btn-join { display: block; background: #25d366; color: white; padding: 15px; border-radius: 10px; text-decoration: none; margin: 15px 0; font-weight: bold; font-size: 18px; }
+        .btn-ignore { background: transparent; color: #888; border: 1px solid #444; padding: 8px; border-radius: 8px; cursor: pointer; width: 100%; margin-bottom: 20px; }
     </style>
 </head>
 <body oncontextmenu="return false;"> 
+
+    <div id="lightning-flash"></div>
 
     <div id="notification-toast">
         <i class="fas fa-bell"></i>
@@ -255,6 +279,19 @@
     </a>
 
     <div id="join-overlay" style="display: none;">
+        <div class="join-modal">
+            <h2 style="color: var(--accent); margin-bottom: 10px;">أهلاً بك في أكاديمية كيمو 👑</h2>
+            <p style="color: #bbb; font-size: 14px;">عشان تتابع كل التحديثات والمراجعات، لازم تنضم لينا:</p>
+            <a href="https://chat.whatsapp.com/E5tpwhb6D5j9lDnXBFNbLM" class="btn-join" onclick="localStorage.setItem('whatsapp_joined', 'true');">
+                <i class="fab fa-whatsapp"></i> انضم لجروب الواتساب
+            </a>
+            <button class="btn-ignore" onclick="document.getElementById('join-overlay').style.display='none'">تجاهل الآن</button>
+            <div style="border-top: 1px solid #333; padding-top: 15px;">
+                <p style="font-size: 13px; color: #888;">للتواصل عبر تليجرام:</p>
+                <a href="https://t.me/K_I_M_O_8" target="_blank" style="color: var(--accent); text-decoration: none; font-weight: bold;">@K_I_M_O_8</a>
+            </div>
+        </div>
+    </div>
 
     <div id="video-player-overlay">
         <div style="width: 95%; max-width: 1000px; display: flex; justify-content: space-between; margin-bottom: 15px;">
@@ -334,6 +371,8 @@
             <div class="nav-link" style="color:var(--green)" onclick="tab(this, 'p-admin')"><i class="fas fa-tools"></i> <span>الإدارة</span></div>
         </div>
     </aside>
+
+    <button class="sidebar-toggle-btn" onclick="toggleSidebarMenu()"><i id="toggle-icon" class="fas fa-chevron-right"></i></button>
 
     <div class="mobile-nav" id="mob-nav" style="display:none;">
         <div onclick="tab(null, 'p-home')"><i class="fas fa-home"></i></div>
@@ -482,6 +521,35 @@
             "الرياضيات": "https://images.unsplash.com/photo-1509228468518-180dd482195e?q=80&w=400"
         };
 
+        // --- دوال القائمة والكهرباء والبرق ---
+        function toggleSidebarMenu() {
+            const sidebar = document.getElementById('sidebar');
+            const content = document.getElementById('content');
+            const icon = document.getElementById('toggle-icon');
+            const flash = document.getElementById('lightning-flash');
+
+            // تأثير البرق
+            flash.style.animation = 'lightning 0.4s ease-out';
+            setTimeout(() => flash.style.animation = '', 400);
+
+            sidebar.classList.toggle('closed');
+            content.classList.toggle('full-width');
+            
+            if(sidebar.classList.contains('closed')) {
+                icon.className = 'fas fa-chevron-left';
+            } else {
+                icon.className = 'fas fa-chevron-right';
+            }
+        }
+
+        // تأثير الكهرباء عند الضغط على الروابط
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('mousedown', function() {
+                this.classList.add('shock-effect');
+                setTimeout(() => this.classList.remove('shock-effect'), 400);
+            });
+        });
+
         async function identifyStudent() {
             const phone = document.getElementById('std-phone').value.trim();
             if (!/^01[0125][0-9]{8}$/.test(phone)) return alert("رقم الموبايل غير صحيح");
@@ -567,7 +635,6 @@
             const val = document.getElementById('studentSearch').value.toLowerCase();
             document.querySelectorAll('.student-row').forEach(row => { row.style.display = row.innerText.toLowerCase().includes(val) ? 'grid' : 'none'; });
         }
-        document.onkeydown = (e) => { if(e.keyCode == 123 || (e.ctrlKey && e.shiftKey && (e.keyCode == 73 || e.keyCode == 74 || e.keyCode == 67)) || (e.ctrlKey && e.keyCode == 85)) return false; };
 
         window.onload = () => {
             const user = JSON.parse(localStorage.getItem('kimo_auth_v26'));
@@ -598,13 +665,10 @@
             presenceRef.child(user.phone).set({ name: user.name, last: Date.now() });
             presenceRef.child(user.phone).onDisconnect().remove();
 
-            const isJoined = localStorage.getItem("whatsapp_joined");
-            if (!isJoined) {
+            // فحص الانضمام
+            if (!localStorage.getItem("whatsapp_joined")) {
                 document.getElementById("join-overlay").style.display = "flex";
             }
-            document.getElementById("join-link").onclick = function() {
-                document.getElementById("verification-section").style.display = "block";
-            };
 
             if(user.phone === "01023175098") {
                 document.getElementById('adm-links').style.display = 'block';
@@ -634,20 +698,6 @@
                 box.scrollTop = box.scrollHeight;
             });
             examsRef.on('value', s => renderExams(s.val()));
-        }
-
-        function verifyJoin() {
-            let btn = document.querySelector(".btn-verify");
-            let text = document.getElementById("verify-text");
-            btn.innerHTML = "جاري الفحص...";
-            setTimeout(() => {
-                localStorage.setItem("whatsapp_joined", "true");
-                text.innerHTML = "✅ تم التحقق بنجاح!";
-                text.style.color = "green";
-                setTimeout(() => {
-                    document.getElementById("join-overlay").style.display = "none";
-                }, 1000);
-            }, 2000);
         }
 
         function loadData() { lessonsRef.on('value', s => { allData = s.val() || {}; renderLatest(); renderPinned(); }); }
@@ -784,15 +834,6 @@
             }
         }
 
-        document.addEventListener('contextmenu', e => e.preventDefault());
-        document.addEventListener('keydown', e => {
-            if (e.key === 'PrintScreen' || (e.ctrlKey && e.shiftKey && (e.key === 'S' || e.key === 's'))) {
-                document.body.style.visibility = 'hidden';
-                alert("تصوير الشاشة ممنوع قطعيًا لحماية حقوق المنصة!");
-                setTimeout(() => { document.body.style.visibility = 'visible'; }, 2000);
-            }
-        });
-
         function banStudent(phone) { if(confirm("حظر؟")) blacklistRef.child(phone).set(true); }
         function showSubjects(type) { document.getElementById(type==='video'?'subjects-container-video':'subjects-container-file').style.display='flex'; document.getElementById(type==='video'?'specific-subject-videos':'specific-subject-files').style.display='none'; }
         function showAdminSubjects() { document.getElementById('admin-subjects-selection').style.display='block'; document.getElementById('admin-upload-form').style.display='none'; }
@@ -820,7 +861,7 @@
             <button onclick="document.getElementById('adminModal').style.display='none'" style="background: #da3633; color: white; border: none; border-radius: 8px; padding: 5px 15px; cursor: pointer; font-weight: bold;">إغلاق</button>
         </div>
 
-        <form action="/add_sub_admin" method="POST">
+        <form onsubmit="event.preventDefault(); pushAdminToFirebase();">
             <div style="margin-bottom: 20px;">
                 <label style="display: block; color: #8b949e; font-weight: 900; margin-bottom: 10px;">اسم الأدمن الجديد:</label>
                 <input type="text" name="admin_name" required style="width: 100%; padding: 15px; background: #161b22; border: 2px solid #30363d; border-radius: 12px; color: white; font-weight: bold;">
@@ -856,43 +897,22 @@ function checkKimoPass() {
         alert("الباسورد غلط! مسموح لـ كيمو بس.");
     }
 }
-</script>
 
-    <script>
-// دالة الربط المباشر لزرار "تثبيت المدير الجديد"
 function pushAdminToFirebase() {
-    // 1. سحب البيانات من الحقول اللي في اللوحة عندك
     const name = document.querySelector('input[name="admin_name"]').value;
     const phone = document.querySelector('input[name="admin_phone"]').value;
-    
-    // 2. تجميع الصلاحيات اللي اخترتها (Checkboxes)
     const checkboxes = document.querySelectorAll('input[name="perms"]:checked');
     let permissions = Array.from(checkboxes).map(cb => cb.value);
 
-    // 3. التأكد إن البيانات مش فاضية
-    if (!name || !phone) {
-        return alert("يا كيمو لازم تكتب الاسم والرقم الأول!");
-    }
+    if (!name || !phone) return alert("يا كيمو لازم تكتب الاسم والرقم الأول!");
 
-    // 4. الإرسال لفايربيز (Realtime Database)
-    // بنستخدم 'database' اللي أنت معرفه في سطر 254 عندك
     database.ref('sub_admins/' + phone).set({
-        admin_name: name,
-        admin_phone: phone,
-        permissions: permissions,
-        role: 'sub_admin',
-        date_added: new Date().toLocaleString('ar-EG')
+        admin_name: name, admin_phone: phone, permissions: permissions, role: 'sub_admin', date_added: new Date().toLocaleString('ar-EG')
     }).then(() => {
         alert('تم إضافة ' + name + ' بنجاح لمجموعة مديري كيمو أكاديمي ✅');
-        // إخفاء اللوحة بعد النجاح
         document.getElementById('adminModal').style.display = 'none';
-    }).catch((error) => {
-        alert('حصل مشكلة في الربط يا بطل: ' + error.message);
-    });
+    }).catch((error) => { alert('حصل مشكلة: ' + error.message); });
 }
-
-// تأكد إن الزرار في اللوحة عندك واخد الأمر ده:
-// onclick="pushAdminToFirebase()"
 </script>
 
 </body>

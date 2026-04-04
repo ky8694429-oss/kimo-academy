@@ -1349,16 +1349,86 @@ function pushAdminToFirebase() {
     }
     .close-btn { position: absolute; top: 15px; right: 20px; font-size: 25px; cursor: pointer; color: #ff9800; }
     .profile-img-section img { width: 90px; height: 90px; border-radius: 50%; border: 2px solid #ff9800; margin-bottom: 5px; }
-    .upload-label { display: block; font-size: 12px; color: #ff9800; cursor: pointer; margin-bottom: 20px; }
-    .profile-info label { display: block; text-align: right; margin-bottom: 5px; font-size: 13px; color: #aaa; }
-    .profile-info input {
-        width: 100%; padding: 12px; margin-bottom: 20px; border-radius: 10px;
-        border: 1px solid #333; background: #000; color: #fff; text-align: center;
+<div id="user-profile-header-icon" onclick="toggleProfileModal()">
+    <img id="nav-user-img" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="Student">
+</div>
+
+<div id="profile-modal" class="profile-modal">
+    <div class="profile-card">
+        <span class="close-btn" onclick="toggleProfileModal()">&times;</span>
+        <h3 style="color: #ff9800; margin-bottom: 20px;">حساب الطالب 🎓</h3>
+        
+        <div class="profile-img-section">
+            <img id="profile-display-img" src="https://cdn-icons-png.flaticon.com/512/149/149071.png">
+            <label for="img-upload" class="upload-label">تغيير الصورة الشخصية</label>
+            <input type="file" id="img-upload" hidden accept="image/*">
+        </div>
+
+        <div class="profile-info">
+            <p style="color:#888; font-size:12px; margin-bottom: 5px;">الاسم المسجل:</p>
+            <h4 id="display-student-name" style="color:#fff; margin-bottom:20px; font-weight: bold;">Karim</h4>
+            
+            <button class="save-btn" onclick="toggleProfileModal()">رجوع للمنصة ⚡</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    function toggleProfileModal() {
+        const modal = document.getElementById('profile-modal');
+        modal.style.display = (modal.style.display === 'flex') ? 'none' : 'flex';
+        
+        // سحب الاسم من العنصر اللي في المنصة (مرحبا Karim)
+        const welcomeText = document.querySelector('h2')?.innerText || "Karim";
+        const nameOnly = welcomeText.replace('مرحباً، ', '').replace('👋', '').trim();
+        document.getElementById('display-student-name').innerText = nameOnly;
     }
-    .save-btn {
-        width: 100%; padding: 12px; background: #ff9800; color: #000;
-        border: none; border-radius: 10px; font-weight: bold; cursor: pointer;
+
+    document.getElementById('img-upload').addEventListener('change', function(e) {
+        const reader = new FileReader();
+        reader.onload = function() {
+            const base64 = reader.result;
+            document.getElementById('profile-display-img').src = base64;
+            document.getElementById('nav-user-img').src = base64;
+            localStorage.setItem('user-img', base64);
+        };
+        reader.readAsDataURL(e.target.files[0]);
+    });
+
+    window.addEventListener('DOMContentLoaded', () => {
+        const savedImg = localStorage.getItem('user-img');
+        if(savedImg) {
+            document.getElementById('profile-display-img').src = savedImg;
+            document.getElementById('nav-user-img').src = savedImg;
+        }
+    });
+</script>
+
+<style>
+    /* التموضع في الهيدر الأسود - موازي للزراير */
+    #user-profile-header-icon {
+        position: fixed; 
+        top: 12px; /* المسافة من فوق عشان تبقى في نص الشريط الأسود */
+        left: 100px; /* تظبيط المكان عشان يجي جنب زرايرك علطول */
+        width: 32px; 
+        height: 32px;
+        z-index: 99999;
+        cursor: pointer;
+        border: 1px solid #ff9800;
+        border-radius: 8px; /* نفس انحناء زراير اللوج أوت */
+        overflow: hidden;
+        transition: 0.3s;
     }
+    #user-profile-header-icon:hover { transform: scale(1.1); box-shadow: 0 0 10px #ff9800; }
+    #user-profile-header-icon img { width: 100%; height: 100%; object-fit: cover; }
+    
+    /* ستايل المودال (النافذة) */
+    .profile-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); display: none; align-items: center; justify-content: center; z-index: 100001; backdrop-filter: blur(8px); }
+    .profile-card { background: #111; width: 280px; padding: 25px; border-radius: 15px; border: 1px solid #ff9800; text-align: center; color: white; }
+    .close-btn { position: absolute; top: 10px; right: 15px; font-size: 25px; cursor: pointer; color: #ff9800; }
+    .profile-img-section img { width: 80px; height: 80px; border-radius: 50%; border: 2px solid #ff9800; margin-bottom: 10px; }
+    .save-btn { width: 100%; padding: 10px; background: #ff9800; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; color: #000; }
+    .upload-label { font-size: 11px; color: #ff9800; cursor: pointer; display: block; margin-bottom: 15px; text-decoration: underline; }
 </style>
 
 </body>

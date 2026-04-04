@@ -993,5 +993,56 @@ function pushAdminToFirebase() {
 
 </script>
 
+    <script>
+    // 1. تتبع نشاط الطالب (عند مغادرة أو العودة للصفحة)
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            // الطالب خرج من الصفحة
+            console.log("تنبيه: الطالب غادر صفحة المذاكرة.");
+        } else {
+            // الطالب رجع للصفحة
+            if(typeof showNotification === "function") {
+                showNotification("حمد لله على السلامة.. ركز في حلمك يا بطل! 🎯");
+            }
+        }
+    });
+
+    // 2. حماية النصوص وحفظ حقوق الملكية عند النسخ
+    document.addEventListener('copy', (e) => {
+        const selectedText = window.getSelection().toString();
+        if(selectedText.length > 5) {
+            const watermark = `\n\n© تم النسخ من المنصة التعليمية الرسمية 2026\nرابط المنصة: ${window.location.origin}`;
+            e.clipboardData.setData('text/plain', selectedText + watermark);
+            e.preventDefault();
+            if(typeof showNotification === "function") {
+                showNotification("✅ تم إضافة حقوق المنصة للنص المنسوخ.");
+            }
+        }
+    });
+
+    // 3. رسائل ترحيب ذكية متغيرة حسب وقت اليوم
+    function personalGreeting() {
+        const hour = new Date().getHours();
+        let message = "منور يا بطل في منصتك التعليمية!";
+        
+        if (hour >= 5 && hour < 12) message = "صباح الفل يا دحيح.. يوم جديد وفرصة جديدة! ☀️";
+        else if (hour >= 12 && hour < 17) message = "قيلولة سريعة وكمل مذاكرة.. أنت قدها! ☕";
+        else if (hour >= 17 && hour < 21) message = "مساء الجد والاجتهاد.. الحلم قرب! 🌙";
+        else message = "سهران بتعافر؟ ربنا مش هيضيع تعبك أبداً! ✨";
+        
+        setTimeout(() => {
+            if(typeof showNotification === "function") showNotification(message);
+        }, 5000);
+    }
+    personalGreeting();
+
+    // 4. تحسين مظهر وانسيابية عناصر الواجهة
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('.card').forEach(card => {
+            card.style.transition = "0.5s all ease";
+        });
+    });
+</script>
+
 </body>
 </html>

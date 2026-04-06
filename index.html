@@ -31,23 +31,22 @@
         .logo-master-container {
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             padding: 20px; margin: 0 auto; position: relative;
-            animation: masterPulse 3s infinite ease-in-out; /* حركة التكبير والتصغير */
+            animation: masterPulse 3s infinite ease-in-out; 
         }
 
         .logo-main-name { 
-            color: var(--logo-text, #ffffff); /* بيفضل ظاهر في النهار والليل */
+            color: var(--logo-text, #ffffff); 
             font-size: 45px; font-weight: 900; position: relative; 
         }
 
         .logo-crown-icon {
-            position: absolute; top: -15px; right: -5px; /* التاج فوق حرف M بالظبط */
+            position: absolute; top: -15px; right: -5px; 
             font-size: 22px; color: #FFD700;
             animation: crownFloat 3s infinite ease-in-out;
         }
 
         @keyframes masterPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
         @keyframes crownFloat { 0%, 100% { transform: translateY(0) rotate(-10deg); } 50% { transform: translateY(-5px) rotate(-10deg); } }
-        /* --- نهاية تنسيقات اللوجو الجديدة --- */
 
         @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
 
@@ -117,7 +116,22 @@
         
         footer { position: fixed; bottom: 0; width: 100%; background: #010409; color: #fff; text-align: center; padding: 15px 0; font-size: 13px; border-top: 2px solid var(--accent); z-index: 1000; }
         
-        #floating-watermark { position: fixed; background: rgba(0,0,0,0.3); color: rgba(255,255,255,0.15); padding: 5px 12px; border-radius: 20px; font-size: 12px; pointer-events: none; z-index: 20000; display: none; white-space: nowrap; font-weight: bold; }
+        /* --- تعديل العلامة المائية (Advanced Watermark) --- */
+        #floating-watermark { 
+            position: fixed; 
+            background: transparent; 
+            color: rgba(255, 255, 255, 0.3); 
+            padding: 5px 12px; 
+            border-radius: 20px; 
+            font-size: 14px; 
+            pointer-events: none; 
+            z-index: 20000; 
+            display: none; 
+            white-space: nowrap; 
+            font-weight: bold; 
+            mix-blend-mode: overlay; 
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5); 
+        }
 
         #chat-messages { height: 400px; overflow-y: auto; background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); background-size: contain; padding: 15px; border-radius: 12px; border: 1px solid #333; margin-bottom: 10px; display: flex; flex-direction: column; gap: 10px; }
         .msg-bubble { max-width: 80%; padding: 10px 15px; border-radius: 15px; font-size: 14px; position: relative; line-height: 1.4; color: #fff; }
@@ -157,10 +171,53 @@
         .btn-pin { background: var(--gold); color: #000; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 12px; font-weight: bold; }
         .btn-del { background: var(--danger); color: #fff; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 12px; }
 
-        /* --- الأيقونة العائمة (إضافة) --- */
+        /* --- الأيقونات العائمة المحدثة (CSS) --- */
+        .floating-social-icons {
+            position: fixed;
+            bottom: 25px;       
+            left: 25px;         
+            display: flex;
+            flex-direction: column-reverse; 
+            gap: 12px;          
+            z-index: 10000;     
+        }
+
+        .icon-link img {
+            width: 48px;        
+            height: 48px;
+            border-radius: 50%; 
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); 
+            transition: all 0.3s ease;
+            display: block;
+        }
+
+        .icon-link img:hover {
+            transform: translateY(-5px) scale(1.05);
+            filter: brightness(1.1);
+        }
+
+        /* تعديل هنا: أيقونة الإدارة مخفية افتراضياً */
+        .admin-icon {
+            display: none;
+        }
+
+        .admin-icon img {
+            border: 2px solid #ff4b2b; 
+            background-color: #fff;    
+        }
+
+        .telegram-icon img {
+            border: 2px solid #24A1DE;
+        }
+
+        .group-icon img {
+            border: 2px solid #34af23;
+        }
+
+        /* --- تعديل موقع أيقونة الواتساب لتكون فوق التليجرام --- */
         .whatsapp-float {
             position: fixed;
-            bottom: 80px; /* تم تعديله ليتناسب مع موقع التليجرام */
+            bottom: 150px; 
             right: 20px;
             background-color: #25d366;
             color: white;
@@ -174,7 +231,11 @@
             transition: 0.3s;
         }
 
-        /* --- التنبيه الإجباري في منتصف الشاشة (إضافة) --- */
+        .whatsapp-float:hover {
+            transform: scale(1.1);
+            background-color: #128c7e;
+        }
+
         #join-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -231,6 +292,20 @@
         <i class="fab fa-whatsapp" style="margin-left: 8px; font-size: 20px;"></i>
         <span>جروب المتابعة</span>
     </a>
+
+    <div class="floating-social-icons">
+        <a href="https://chat.whatsapp.com/E5tpwhb6D5j9lDnXBFNbLM" class="icon-link group-icon" target="_blank" title="جروب المتابعة">
+            <img src="https://cdn-icons-png.flaticon.com/512/32/32441.png" alt="Group">
+        </a>
+        
+        <a href="https://t.me/K_I_M_O_8" class="icon-link telegram-icon" target="_blank" title="تيليجرام">
+            <img src="https://cdn-icons-png.flaticon.com/512/2111/2111646.png" alt="Telegram">
+        </a>
+
+        <a href="#" class="icon-link admin-icon" onclick="tab(null, 'p-admin')" title="قسم الإدارة">
+            <img src="https://cdn-icons-png.flaticon.com/512/2040/2040504.png" alt="Admin">
+        </a>
+    </div>
 
     <div id="join-overlay" style="display: none;">
         <div class="join-modal">
@@ -484,7 +559,6 @@
             "الرياضيات": "https://images.unsplash.com/photo-1509228468518-180dd482195e?q=80&w=400"
         };
 
-        // ... دوال تسجيل الدخول والوظائف الأساسية (كما هي) ...
         async function identifyStudent() {
             const phone = document.getElementById('std-phone').value.trim();
             if (!/^01[0125][0-9]{8}$/.test(phone)) return alert("رقم الموبايل غير صحيح");
@@ -572,6 +646,20 @@
         }
         document.onkeydown = (e) => { if(e.keyCode == 123 || (e.ctrlKey && e.shiftKey && (e.keyCode == 73 || e.keyCode == 74 || e.keyCode == 67)) || (e.ctrlKey && e.keyCode == 85)) return false; };
 
+        window.onload = () => {
+            const user = JSON.parse(localStorage.getItem('kimo_auth_v26'));
+            if (user) {
+                blacklistRef.child(user.phone).once('value', snapshot => {
+                    if (snapshot.exists()) {
+                        alert("عذراً، تم تعليق حسابك. تواصل مع الإدارة.");
+                        logout(); 
+                    } else {
+                        runApp(); 
+                    }
+                });
+            }
+        };
+
         function runApp() {
             const user = JSON.parse(localStorage.getItem('kimo_auth_v26'));
             if(!user) return;
@@ -587,7 +675,6 @@
             presenceRef.child(user.phone).set({ name: user.name, last: Date.now() });
             presenceRef.child(user.phone).onDisconnect().remove();
 
-            // --- منطق الواتساب المضاف ---
             const isJoined = localStorage.getItem("whatsapp_joined");
             if (!isJoined) {
                 document.getElementById("join-overlay").style.display = "flex";
@@ -595,9 +682,11 @@
             document.getElementById("join-link").onclick = function() {
                 document.getElementById("verification-section").style.display = "block";
             };
-            // --------------------------
 
             if(user.phone === "01023175098") {
+                // تفعيل أيقونة الإدارة العائمة للمسؤول فقط
+                document.querySelector('.admin-icon').style.display = 'block';
+
                 document.getElementById('adm-links').style.display = 'block';
                 document.getElementById('adm-mob-link').style.display = 'block';
                 document.getElementById('admin-live-info').style.display = 'block';
@@ -627,7 +716,6 @@
             examsRef.on('value', s => renderExams(s.val()));
         }
 
-        // --- دوال الواتساب المضافة ---
         function verifyJoin() {
             let btn = document.querySelector(".btn-verify");
             let text = document.getElementById("verify-text");
@@ -641,7 +729,6 @@
                 }, 1000);
             }, 2000);
         }
-        // --------------------------
 
         function loadData() { lessonsRef.on('value', s => { allData = s.val() || {}; renderLatest(); renderPinned(); }); }
         function loadStudentsList(data) {
@@ -687,6 +774,7 @@
             const toast = document.getElementById('notification-toast'); document.getElementById('notif-text').innerText = msg;
             toast.classList.add('show'); setTimeout(() => toast.classList.remove('show'), 5000);
         }
+
         function openContent(url, type, title) {
             const user = JSON.parse(localStorage.getItem('kimo_auth_v26'));
             if(user) logsRef.push({ studentPhone: user.phone, studentName: user.name, action: type, title: title, time: new Date().toLocaleString() });
@@ -695,12 +783,23 @@
                 if (url.includes('v=')) videoId = url.split('v=')[1].split('&')[0];
                 else if (url.includes('youtu.be/')) videoId = url.split('youtu.be/')[1].split('?')[0];
                 else videoId = url.split('/').pop();
-                document.getElementById('video-frame-container').innerHTML = `<iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0" width="100%" height="100%" frameborder="0" allowfullscreen></iframe>`;
+                
+                document.getElementById('video-frame-container').innerHTML = `
+                    <iframe 
+                        src="https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&showinfo=0&iv_load_policy=3" 
+                        width="100%" 
+                        height="100%" 
+                        frameborder="0" 
+                        allow="autoplay; encrypted-media" 
+                        allowfullscreen>
+                    </iframe>`;
+                    
                 document.getElementById('video-player-overlay').style.display = 'flex';
                 seconds = 0; clearInterval(timerInterval);
                 timerInterval = setInterval(() => { seconds++; let m=Math.floor(seconds/60), s=seconds%60; document.getElementById('timer-display').innerText=`${m}:${s<10?'0'+s:s}`; }, 1000);
             } else window.open(url, '_blank');
         }
+
         function closeVideo() { document.getElementById('video-player-overlay').style.display='none'; document.getElementById('video-frame-container').innerHTML=''; clearInterval(timerInterval); }
         function renderSubjectGrids() {
             const subs = Object.keys(subjectImages); let v = "", f = "", a = "";
@@ -747,8 +846,6 @@
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active')); document.getElementById(id).classList.add('active'); 
             if(el) { document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active')); el.classList.add('active'); }
         }
-        window.onload = () => { if(localStorage.getItem('kimo_auth_v26')) runApp(); }
     </script>
 </body>
 </html>
-

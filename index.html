@@ -1277,91 +1277,123 @@ function pushAdminToFirebase() {
         }
     });
 </script>
-<style>
-    /* تصميم الشريط العلوي - الوان نيون محفزة */
-    #kimo-motivation-banner {
-        position: fixed; top: 0; left: 0; width: 100%;
-        background: linear-gradient(90deg, #ff8c00, #ff4b2b);
-        color: #fff; padding: 12px 45px 12px 15px;
-        text-align: center; font-size: 14px; font-weight: bold;
-        z-index: 2000000; /* أعلى من أي عنصر تاني */
-        box-shadow: 0 4px 15px rgba(0,0,0,0.4);
-        display: none; align-items: center; justify-content: center;
+    <style>
+    /* تصميم الكبسولة بلون نيون مختلف */
+    #kimo-toast-container {
+        position: fixed;
+        top: 25px;
+        right: 20px;
+        z-index: 2100000;
+        width: 320px;
+        max-width: calc(100vw - 40px);
+        display: none;
+        perspective: 1000px;
+    }
+
+    .kimo-toast-content {
+        /* لون بنفسجي نيون متميز */
+        background: rgba(15, 0, 30, 0.95);
+        backdrop-filter: blur(15px);
+        border-right: 5px solid #bc13fe; /* خط بنفسجي نيون */
+        border-radius: 15px;
+        padding: 20px 45px 20px 15px;
+        color: #fff;
+        /* توهج نيون (Glow) */
+        box-shadow: 0 0 20px rgba(188, 19, 254, 0.4), 0 10px 40px rgba(0,0,0,0.7);
+        position: relative;
         font-family: 'Cairo', sans-serif;
-        border-bottom: 2px solid rgba(255,255,255,0.2);
-        animation: slideDown 0.5s ease-out;
+        border: 1px solid rgba(188, 19, 254, 0.3);
+        animation: kimoPopIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
     }
 
-    @keyframes slideDown { from { top: -50px; } to { top: 0; } }
-    
-    /* زر الإغلاق الذكي */
-    .close-banner-btn {
-        position: absolute; right: 15px; top: 50%;
-        transform: translateY(-50%); cursor: pointer;
-        font-size: 20px; color: #fff; line-height: 1;
-        background: rgba(0,0,0,0.1); width: 25px; height: 25px;
-        border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    @keyframes kimoPopIn {
+        0% { transform: scale(0.5) translateY(-50px); opacity: 0; }
+        100% { transform: scale(1) translateY(0); opacity: 1; }
     }
 
-    /* لضمان عدم تداخل الشريط مع الهيدر */
-    body.with-banner { padding-top: 45px !important; transition: 0.3s; }
+    /* زر الإغلاق (X) بلون فوشيا نيون */
+    .kimo-toast-close {
+        position: absolute;
+        top: 50%;
+        right: 12px;
+        transform: translateY(-50%);
+        width: 28px;
+        height: 28px;
+        background: rgba(255, 0, 212, 0.1);
+        border: 1px solid #ff00d4;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        color: #ff00d4;
+        font-size: 20px;
+        transition: 0.3s;
+    }
+
+    .kimo-toast-close:hover {
+        background: #ff00d4;
+        color: #fff;
+        box-shadow: 0 0 15px #ff00d4;
+    }
+
+    .kimo-toast-text {
+        font-size: 14px;
+        line-height: 1.6;
+        display: block;
+        text-align: right;
+        text-shadow: 0 0 5px rgba(255, 255, 255, 0.2);
+    }
 </style>
 
-<div id="kimo-motivation-banner">
-    <span id="quote-display">جاري استدعاء العزيمة... 💪</span>
-    <div class="close-banner-btn" onclick="hideKimoBanner()">&times;</div>
+<div id="kimo-toast-container">
+    <div class="kimo-toast-content">
+        <span class="kimo-toast-text" id="kimo-quote-display">جاري شحن العزيمة... ⚡</span>
+        <div class="kimo-toast-close" onclick="closeKimoToast()">&times;</div>
+    </div>
 </div>
 
 <script>
     const kimoQuotes = [
-        "عافر.. القمة تستحق التعب! 🏔️", "تذكر حلمك يوم النتيجة.. هانت يا بطل! 🎓",
-        "الفيزياء محتاجة دماغ رايقة، سمّي الله وابدأ. ⚛️", "أنت مش لوحدك، إحنا معاك لحد باب الكلية. 🤝",
-        "المعاناة مؤقتة، لكن النجاح يدوم للأبد. ✨", "كل ساعة مذاكرة دلوقتي هي فرحة كبيرة بعدين. ⏳",
-        "الثانوية العامة رحلة، اصبر عشان نهايتها سعيدة. 🗺️", "مفيش مستحيل طول ما ربنا معاك. ❤️",
-        "اجتهد النهاردة عشان ترتاح بكرة. 🛌", "أنت قدها ودود يا وحش! 🔥",
-        "النجاح مبيجيش بالصدفة، بيجي بالتعب. 💪", "ركز في هدفك وسيب الباقي على الله. 🎯",
-        "صناعة المجد محتاجة وقت.. استمر. ⚒️", "كل يوم جديد هو فرصة تانية لتصحيح المسار. 🌅",
-        "متفكرش في اللي فات، فكر في اللي جاي. ⏩", "أهلك مستنيين يفرحوا بيك.. متخذلهمش. 👨‍👩‍👦",
-        "المذاكرة عبادة.. جدد نيتك. 🕌", "التعب اللي حاسس بيه دلوقتي هيتحول لفخر. 🏅",
-        "ابدأ دلوقتي، أحسن من إنك متدأش خالص. 🚀", "خطوة صغيرة كل يوم هتوصلك لأبعد مكان. 👟",
-        "خليك واثق في قدراتك، أنت ذكي. 🧠", "الثانوية مش نهاية العالم، دي بداية مستقبلك. 🌍",
-        "مستقبلك بيتبني باللي بتعمله دلوقتي. 🏗️", "كن أقوى من أعذارك. 🚫",
-        "النجاح هو الانتقال من فشل لفشل دون فقدان الحماس. 🔄", "اللي وصلوا مش أحسن منك، أنت تقدر. 👑",
-        "نظم وقتك، تملك يومك. 📅", "الحلم مبيتحققش بالتمني، بيتحقق بالعرق. 💦",
-        "اصبر صبراً جميلاً.. النصر قريب. ✌️", "أنت بطل قصتك، خلي نهايتها سعيدة. 📖",
-        "التركيز هو سر الإنجاز. 🔍", "مفيش حد وصل للقمة وهو نايم. 😴",
-        "النهاردة صعب، بكرة أصعب، بس اللي بعده أجمل. 🌈", "تعبت؟ ارتاح شوية بس متستسلمش. 🛑",
-        "أنت بتتعلم لنفسك ولمستقبلك، مش للامتحان بس. 👨‍🎓", "خلي عندك يقين إن تعبك مش هيروح هباءً. 💎",
-        "النجاح بيحب اللي بيعشقوا التحدي. 🥊", "ذاكر بذكاء، مش بس بجهد. 💡",
-        "اجعل من تعبك وقوداً لنجاحك. ⛽", "لا تتوقف حتى تصبح فخوراً بنفسك. 😊",
-        "الناجحون لا ينسحبون، والمنسحبون لا ينجحون. 🔚", "قوتك في استمرارك رغم كل الظروف. 🌊",
-        "الثانوية العامة محطة، خليك راكب في الدرجة الأولى. 🚂", "الوقت أغلى ما تملك، استثمره صح. 💰",
-        "ابتسم، المذاكرة بتبقى أسهل وأنت رايق. 😄", "تحدي نفسك كل يوم إنك تكون أحسن من امبارح. 📈",
-        "العلماء تعبوا عشان يوصلولنا العلم، اتعب عشان تفهمه. 🧪", "أنت مشروع ناجح قيد التنفيذ. 👷‍♂️",
-        "ربنا مبيضيعش أجر من أحسن عملاً. 🤲", "يا آدم، المنصة فخورة بوجود بطل زيك فيها! 👑"
+        "عافر.. القمة تستحق التعب! 🏔️",
+        "تذكر حلمك يوم النتيجة.. هانت يا بطل! 🎓",
+        "الفيزياء محتاجة دماغ رايقة، سمّي الله وابدأ. ⚛️",
+        "أنت مش لوحدك، إحنا معاك لحد باب الكلية. 🤝",
+        "المعاناة مؤقتة، النجاح يدوم للأبد. ✨",
+        "كل ساعة مذاكرة دلوقتي هي فرحة كبيرة بعدين. ⏳",
+        "الثانوية محطة، خليك راكب في الدرجة الأولى. 🚂",
+        "المنصة فخورة بوجود بطل زيك فيها! 👑",
+        "أهلك مستنيين يفرحوا بيك.. متخذلهمش. 👨‍👩‍👦",
+        "ربنا مبيضيعش أجر من أحسن عملاً. 🤲",
+        "اجعل من تعبك وقوداً لنجاحك القادم. 🔥",
+        "التركيز هو سر الإنجاز العظيم. 🔍",
+        "لا تتوقف حتى تصبح فخوراً بنفسك. 😊"
     ];
 
-    function initKimoBanner() {
-        if (sessionStorage.getItem('kimoBannerClosed') === 'true') return;
+    function showKimoToast() {
+        const container = document.getElementById('kimo-toast-container');
+        const display = document.getElementById('kimo-quote-display');
         
-        const banner = document.getElementById('kimo-motivation-banner');
-        const text = document.getElementById('quote-display');
-        
+        // اختيار جملة عشوائية
         const randomQuote = kimoQuotes[Math.floor(Math.random() * kimoQuotes.length)];
-        text.innerText = randomQuote;
+        display.innerText = randomQuote;
         
-        banner.style.display = 'flex';
-        document.body.classList.add('with-banner');
+        container.style.display = 'block';
+
+        // إغلاق تلقائي بعد 12 ثانية عشان يلحق يقرأ
+        setTimeout(closeKimoToast, 12000);
     }
 
-    function hideKimoBanner() {
-        document.getElementById('kimo-motivation-banner').style.display = 'none';
-        document.body.classList.remove('with-banner');
-        sessionStorage.setItem('kimoBannerClosed', 'true');
+    function closeKimoToast() {
+        const container = document.getElementById('kimo-toast-container');
+        container.style.animation = "kimoPopIn 0.4s reverse forwards";
+        setTimeout(() => { container.style.display = 'none'; }, 4000);
     }
 
-    // التشغيل التلقائي
-    window.addEventListener('load', () => setTimeout(initKimoBanner, 1500));
+    // يظهر بعد ثانية من فتح المنصة
+    window.addEventListener('load', () => {
+        setTimeout(showKimoToast, 1500);
+    });
 </script>
 
 </body>

@@ -914,6 +914,135 @@ function pushAdminToFirebase() {
     }).catch((error) => { alert('حصل مشكلة: ' + error.message); });
 }
 </script>
+<style>
+    /* 1. تصميم شريط التمرير (Custom Scrollbar) */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--main-bg); }
+    ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 10px; }
+
+    /* 2. تأثير التوهج للكروت المثبتة (Glow Effect) */
+    #pinned-content .card {
+        box-shadow: 0 0 15px rgba(255, 152, 0, 0.1);
+        border: 1px solid rgba(255, 152, 0, 0.3);
+        transition: 0.4s;
+    }
+    #pinned-content .card:hover {
+        box-shadow: 0 0 25px rgba(255, 152, 0, 0.5);
+        transform: translateY(-5px) scale(1.02);
+    }
+
+    /* 3. شريط تقدم علوي (Top Progress Bar) */
+    #scroll-progress {
+        position: fixed; top: 0; right: 0; height: 3px;
+        background: linear-gradient(to left, var(--accent), var(--electric));
+        z-index: 100000; width: 0%; transition: 0.2s;
+    }
+
+    /* 4. لمسة Glassmorphism للقائمة الجانبية */
+    aside {
+        background: rgba(13, 17, 23, 0.8) !important;
+        backdrop-filter: blur(12px) saturate(180%);
+        -webkit-backdrop-filter: blur(12px) saturate(180%);
+    }
+
+    /* 5. تأثير الـ Shine للوجو */
+    .logo-main-name::after {
+        content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
+        background: linear-gradient(to right, transparent, rgba(255,255,255,0.3), transparent);
+        transform: skewX(-25deg); animation: shine 3s infinite;
+    }
+    @keyframes shine { 100% { left: 200%; } }
+
+    /* 6. منع الـ Blur عند الخروج من التبويب */
+    .blur-overlay {
+        position: fixed; inset: 0; backdrop-filter: blur(15px);
+        z-index: 999999; display: none; background: rgba(0,0,0,0.4);
+    }
+
+    /* 7. تأثير انفجار الـ Confetti (CSS Only Part) */
+    .confetti { position: fixed; width: 10px; height: 10px; z-index: 9999; }
+</style>
+
+<div id="scroll-progress"></div>
+<div id="blur-overlay" class="blur-overlay">
+    <div style="color:white; text-align:center; margin-top:20vh; font-family:'Cairo';">
+        <h2 style="color:var(--accent)">ركز يا بطل! 💪</h2>
+        <p>المنصة في انتظارك ترجع تكمل مذاكرة..</p>
+    </div>
+</div>
+
+<script>
+    // 1. تحديث شريط التقدم العلوي مع السكرول
+    window.onscroll = function() {
+        let winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+        let height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        let scrolled = (winScroll / height) * 100;
+        document.getElementById("scroll-progress").style.width = scrolled + "%";
+    };
+
+    // 2. التحية الذكية حسب الوقت (صباح الخير / مساء الخير)
+    function updateGreeting() {
+        const hour = new Date().getHours();
+        const greetingSpan = document.getElementById('gate-title');
+        if (greetingSpan) {
+            if (hour < 12) greetingSpan.innerHTML = "صباح الخير يا كيمو ☀️";
+            else if (hour < 18) greetingSpan.innerHTML = "منورنا يا بطل ☕";
+            else greetingSpan.innerHTML = "مساء النجاح يا هندسة ✨";
+        }
+    }
+    setTimeout(updateGreeting, 1000);
+
+    // 3. تأثير الـ Blur عند فتح تبويب آخر (Security + Focus)
+    window.addEventListener('blur', () => {
+        document.getElementById('blur-overlay').style.display = 'block';
+    });
+    window.addEventListener('focus', () => {
+        document.getElementById('blur-overlay').style.display = 'none';
+    });
+
+    // 4. تعطيل كليك يمين برسالة شيك
+    document.addEventListener('contextmenu', (e) => {
+        e.preventDefault();
+        showNotification("⚠️ حقوق الملكية محفوظة لكيمو أكاديمي");
+    });
+
+    // 5. تأثير الـ Confetti عند الضغط على "ارسال الدرجة"
+    function createConfetti() {
+        for(let i=0; i<30; i++) {
+            let c = document.createElement('div');
+            c.className = 'confetti';
+            c.style.left = Math.random() * 100 + 'vw';
+            c.style.top = '-10px';
+            c.style.backgroundColor = ['#FF9800', '#00f2ff', '#00c851'][Math.floor(Math.random()*3)];
+            c.style.transform = `rotate(${Math.random()*360}deg)`;
+            document.body.appendChild(c);
+            
+            let anime = c.animate([
+                { transform: `translateY(0) rotate(0)` },
+                { transform: `translateY(100vh) rotate(720deg)` }
+            ], { duration: 2000 + Math.random()*3000 });
+            
+            anime.onfinish = () => c.remove();
+        }
+    }
+    
+    // ربط الانفجار بزرار إرسال الدرجات تلقائياً
+    document.addEventListener('click', (e) => {
+        if(e.target.innerText.includes('إرسال') || e.target.className.includes('fa-paper-plane')) {
+            createConfetti();
+        }
+    });
+
+    // 6. لوجو المنصة يلمع (Haptic/Visual Pulse)
+    setInterval(() => {
+        const logo = document.querySelector('.logo-icon-box');
+        if(logo) {
+            logo.style.transform = 'scale(1.1)';
+            setTimeout(() => logo.style.transform = 'scale(1)', 300);
+        }
+    }, 60000); // كل دقيقة
+
+</script>
 
 </body>
 </html>

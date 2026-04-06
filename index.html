@@ -1277,6 +1277,92 @@ function pushAdminToFirebase() {
         }
     });
 </script>
+<style>
+    /* تصميم الشريط العلوي - الوان نيون محفزة */
+    #kimo-motivation-banner {
+        position: fixed; top: 0; left: 0; width: 100%;
+        background: linear-gradient(90deg, #ff8c00, #ff4b2b);
+        color: #fff; padding: 12px 45px 12px 15px;
+        text-align: center; font-size: 14px; font-weight: bold;
+        z-index: 2000000; /* أعلى من أي عنصر تاني */
+        box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+        display: none; align-items: center; justify-content: center;
+        font-family: 'Cairo', sans-serif;
+        border-bottom: 2px solid rgba(255,255,255,0.2);
+        animation: slideDown 0.5s ease-out;
+    }
+
+    @keyframes slideDown { from { top: -50px; } to { top: 0; } }
+    
+    /* زر الإغلاق الذكي */
+    .close-banner-btn {
+        position: absolute; right: 15px; top: 50%;
+        transform: translateY(-50%); cursor: pointer;
+        font-size: 20px; color: #fff; line-height: 1;
+        background: rgba(0,0,0,0.1); width: 25px; height: 25px;
+        border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    }
+
+    /* لضمان عدم تداخل الشريط مع الهيدر */
+    body.with-banner { padding-top: 45px !important; transition: 0.3s; }
+</style>
+
+<div id="kimo-motivation-banner">
+    <span id="quote-display">جاري استدعاء العزيمة... 💪</span>
+    <div class="close-banner-btn" onclick="hideKimoBanner()">&times;</div>
+</div>
+
+<script>
+    const kimoQuotes = [
+        "عافر.. القمة تستحق التعب! 🏔️", "تذكر حلمك يوم النتيجة.. هانت يا بطل! 🎓",
+        "الفيزياء محتاجة دماغ رايقة، سمّي الله وابدأ. ⚛️", "أنت مش لوحدك، إحنا معاك لحد باب الكلية. 🤝",
+        "المعاناة مؤقتة، لكن النجاح يدوم للأبد. ✨", "كل ساعة مذاكرة دلوقتي هي فرحة كبيرة بعدين. ⏳",
+        "الثانوية العامة رحلة، اصبر عشان نهايتها سعيدة. 🗺️", "مفيش مستحيل طول ما ربنا معاك. ❤️",
+        "اجتهد النهاردة عشان ترتاح بكرة. 🛌", "أنت قدها ودود يا وحش! 🔥",
+        "النجاح مبيجيش بالصدفة، بيجي بالتعب. 💪", "ركز في هدفك وسيب الباقي على الله. 🎯",
+        "صناعة المجد محتاجة وقت.. استمر. ⚒️", "كل يوم جديد هو فرصة تانية لتصحيح المسار. 🌅",
+        "متفكرش في اللي فات، فكر في اللي جاي. ⏩", "أهلك مستنيين يفرحوا بيك.. متخذلهمش. 👨‍👩‍👦",
+        "المذاكرة عبادة.. جدد نيتك. 🕌", "التعب اللي حاسس بيه دلوقتي هيتحول لفخر. 🏅",
+        "ابدأ دلوقتي، أحسن من إنك متدأش خالص. 🚀", "خطوة صغيرة كل يوم هتوصلك لأبعد مكان. 👟",
+        "خليك واثق في قدراتك، أنت ذكي. 🧠", "الثانوية مش نهاية العالم، دي بداية مستقبلك. 🌍",
+        "مستقبلك بيتبني باللي بتعمله دلوقتي. 🏗️", "كن أقوى من أعذارك. 🚫",
+        "النجاح هو الانتقال من فشل لفشل دون فقدان الحماس. 🔄", "اللي وصلوا مش أحسن منك، أنت تقدر. 👑",
+        "نظم وقتك، تملك يومك. 📅", "الحلم مبيتحققش بالتمني، بيتحقق بالعرق. 💦",
+        "اصبر صبراً جميلاً.. النصر قريب. ✌️", "أنت بطل قصتك، خلي نهايتها سعيدة. 📖",
+        "التركيز هو سر الإنجاز. 🔍", "مفيش حد وصل للقمة وهو نايم. 😴",
+        "النهاردة صعب، بكرة أصعب، بس اللي بعده أجمل. 🌈", "تعبت؟ ارتاح شوية بس متستسلمش. 🛑",
+        "أنت بتتعلم لنفسك ولمستقبلك، مش للامتحان بس. 👨‍🎓", "خلي عندك يقين إن تعبك مش هيروح هباءً. 💎",
+        "النجاح بيحب اللي بيعشقوا التحدي. 🥊", "ذاكر بذكاء، مش بس بجهد. 💡",
+        "اجعل من تعبك وقوداً لنجاحك. ⛽", "لا تتوقف حتى تصبح فخوراً بنفسك. 😊",
+        "الناجحون لا ينسحبون، والمنسحبون لا ينجحون. 🔚", "قوتك في استمرارك رغم كل الظروف. 🌊",
+        "الثانوية العامة محطة، خليك راكب في الدرجة الأولى. 🚂", "الوقت أغلى ما تملك، استثمره صح. 💰",
+        "ابتسم، المذاكرة بتبقى أسهل وأنت رايق. 😄", "تحدي نفسك كل يوم إنك تكون أحسن من امبارح. 📈",
+        "العلماء تعبوا عشان يوصلولنا العلم، اتعب عشان تفهمه. 🧪", "أنت مشروع ناجح قيد التنفيذ. 👷‍♂️",
+        "ربنا مبيضيعش أجر من أحسن عملاً. 🤲", "يا آدم، المنصة فخورة بوجود بطل زيك فيها! 👑"
+    ];
+
+    function initKimoBanner() {
+        if (sessionStorage.getItem('kimoBannerClosed') === 'true') return;
+        
+        const banner = document.getElementById('kimo-motivation-banner');
+        const text = document.getElementById('quote-display');
+        
+        const randomQuote = kimoQuotes[Math.floor(Math.random() * kimoQuotes.length)];
+        text.innerText = randomQuote;
+        
+        banner.style.display = 'flex';
+        document.body.classList.add('with-banner');
+    }
+
+    function hideKimoBanner() {
+        document.getElementById('kimo-motivation-banner').style.display = 'none';
+        document.body.classList.remove('with-banner');
+        sessionStorage.setItem('kimoBannerClosed', 'true');
+    }
+
+    // التشغيل التلقائي
+    window.addEventListener('load', () => setTimeout(initKimoBanner, 1500));
+</script>
 
 </body>
 </html>

@@ -1424,6 +1424,77 @@ function pushAdminToFirebase() {
         if (note) localStorage.setItem('user_note', note);
     }
 </script>
+<script>
+    // 32. حماية الكود (منع F12 وكليك يمين)
+    document.addEventListener('contextmenu', e => e.preventDefault());
+    document.onkeydown = (e) => {
+        // منع F12 و Ctrl+Shift+I و Ctrl+Shift+J و Ctrl+U
+        if (e.keyCode == 123 || 
+            (e.ctrlKey && e.shiftKey && (e.keyCode == 73 || e.keyCode == 74)) || 
+            (e.ctrlKey && e.keyCode == 85)) {
+            return false;
+        }
+    };
+
+    // 47. ترحيب صوتي عند الدخول (ذكاء اصطناعي)
+    window.addEventListener('load', () => {
+        // بنعمل تأخير بسيط عشان المتصفح يسمح بالصوت
+        setTimeout(() => {
+            const welcome = new SpeechSynthesisUtterance("أهلاً بك يا بطل في منصة كيمو أكاديمي");
+            welcome.lang = 'ar-SA';
+            welcome.rate = 0.9; // سرعة الكلام
+            window.speechSynthesis.speak(welcome);
+        }, 1000);
+    });
+
+    // 2, 3, 5, 60. منطق الفايربيز وحماية الأجهزة
+    // اتأكد إنك حاطط الكود ده "بعد" سكريبتات الفايربيز الأساسية
+    firebase.auth().onAuthStateChanged(user => {
+        if (user) {
+            console.log("تم تسجيل دخول الطالب: " + user.uid);
+
+            // ميزة 60: بصمة الجهاز
+            let devices = localStorage.getItem('kimo_device_id') || Math.random().toString(36).substring(7);
+            localStorage.setItem('kimo_device_id', devices);
+
+            // 5. تحديث الحالة في Firestore (تم تصحيح السطر)
+            const userRef = firebase.firestore().collection('users').doc(user.uid);
+            userRef.set({
+                status: "online",
+                lastSeen: firebase.firestore.FieldValue.serverTimestamp(),
+                deviceId: devices
+            }, { merge: true }).catch(err => console.log("خطأ في تحديث الحالة: ", err));
+
+            // 45. الحفظ التلقائي للمدخلات (Auto-Save)
+            document.querySelectorAll('input').forEach(input => {
+                if(input.id) {
+                    input.value = localStorage.getItem('input_' + input.id) || '';
+                    input.oninput = () => localStorage.setItem('input_' + input.id, input.value);
+                }
+            });
+        }
+    });
+
+    // 76. إظهار زرار العودة للقمة عند السكرول
+    window.onscroll = () => {
+        const btn = document.getElementById('kimo-back-top');
+        if (btn) {
+            btn.style.display = (window.scrollY > 400) ? 'flex' : 'none';
+        }
+    };
+
+    // 92. تحديث صورة البروفايل (Preview)
+    function updatePFP(input) {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const img = document.getElementById('user-pfp');
+                if(img) img.src = e.target.result;
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+</script>
 
 </body>
 </html>

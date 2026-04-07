@@ -1559,6 +1559,64 @@ function pushAdminToFirebase() {
         if (e.key === "Escape") closeAdminPrompt();
     });
 </script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<style>
+    /* التنسيق الرئيسي الموحد للمنصة */
+    .swal2-popup {
+        border-radius: 20px !important;
+        border: 2px solid #ff6600 !important; /* برتقالي المنصة */
+        background: #000 !important;
+        box-shadow: 0 0 25px rgba(255, 102, 0, 0.3) !important;
+    }
+    .swal2-title, .swal2-html-container {
+        color: #fff !important;
+        font-family: 'Cairo', sans-serif !important;
+    }
+    .swal2-confirm {
+        background-color: #ff6600 !important;
+        color: #fff !important;
+        border-radius: 10px !important;
+        padding: 10px 35px !important;
+        font-weight: bold;
+    }
+    /* تنسيق خاص لو الحالة خطأ (أحمر) */
+    .kimo-error-border {
+        border: 2px solid #ff0000 !important;
+        box-shadow: 0 0 25px rgba(255, 0, 0, 0.4) !important;
+    }
+    .kimo-error-btn {
+        background-color: #ff0000 !important;
+    }
+</style>
+
+<script>
+    // دالة كيمو الموحدة للرسائل
+    function kimoMsg(title, text, type) {
+        let isError = type === 'error' || text.includes('غلط') || text.includes('خطأ') || text.includes('Incorrect');
+        
+        Swal.fire({
+            title: title,
+            text: text,
+            icon: isError ? 'error' : (type || 'info'),
+            confirmButtonText: 'تمام يا بطل',
+            customClass: {
+                popup: isError ? 'kimo-error-border' : '',
+                confirmButton: isError ? 'kimo-error-btn' : ''
+            },
+            background: '#000',
+            color: '#fff'
+        });
+    }
+
+    // السطر ده بيخلي أي alert قديم في المنصة يتحول أوتوماتيك للشكل ده
+    window.alert = function(message) {
+        kimoMsg("تنبيه من المنصة", message, "info");
+    };
+
+    // لو عايز تستخدمها يدوي في كود الموبايل أو الأدمن:
+    // kimoMsg("خطأ!", "الباسورد غلط يا صاحبي", "error");
+</script>
 
 </body>
 </html>

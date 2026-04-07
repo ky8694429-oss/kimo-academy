@@ -1684,6 +1684,102 @@ function pushAdminToFirebase() {
         scroll-behavior: smooth;
     }
 </style>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    // --- [19] ميزة الترحيب الصوتي (تلقائي كل 4 ساعات) ---
+    function kimoWelcomeVoice() {
+        const lastCheck = localStorage.getItem('kimo_welcome_time');
+        const now = new Date().getTime();
+        const fourHours = 4 * 60 * 60 * 1000;
+
+        if (!lastCheck || (now - lastCheck) > fourHours) {
+            let msg = new SpeechSynthesisUtterance("أهلاً بك يا بطل في كيمو أكاديمي، جاهز لمذاكرة النهاردة؟");
+            msg.lang = 'ar-EG';
+            window.speechSynthesis.speak(msg);
+            localStorage.setItem('kimo_welcome_time', now);
+        }
+    }
+
+    // --- [22] مراقب حالة الإنترنت ---
+    window.addEventListener('offline', () => {
+        Swal.fire({
+            title: 'النت فصل يا بطل! ⚠️',
+            text: 'خلي بالك عشان مجهودك ميروحش، أول ما يرجع كمل فوراً.',
+            icon: 'warning',
+            background: '#000', color: '#fff', confirmButtonColor: '#ff6600',
+            toast: true, position: 'top'
+        });
+    });
+
+    window.addEventListener('online', () => {
+        const Toast = Swal.mixin({
+            toast: true, position: 'top', showConfirmButton: false, timer: 2000,
+            background: '#000', color: '#ff6600'
+        });
+        Toast.fire({ icon: 'success', title: 'النت رجع.. كمل عظمة! ✅' });
+    });
+
+    // --- [5] حماية تصوير الشاشة ---
+    document.addEventListener('keyup', (e) => {
+        if (e.key === 'PrintScreen' || e.keyCode === 44) {
+            navigator.clipboard.writeText('محتوى محمي - كيمو أكاديمي 🛡️');
+            Swal.fire({
+                title: 'ممنوع التصوير! 🚫',
+                text: 'لحماية خصوصية المنصة، يرجى عدم تصوير الشاشة.',
+                icon: 'error',
+                background: '#000', color: '#fff', confirmButtonColor: '#ff6600'
+            });
+        }
+    });
+
+    // تشغيل الوظائف عند التحميل
+    window.addEventListener('DOMContentLoaded', () => {
+        kimoWelcomeVoice();
+        
+        // --- [16] تكبير الصور عند الضغط (Zoom) ---
+        document.querySelectorAll('img').forEach(img => {
+            img.classList.add('kimo-zoomable');
+            img.addEventListener('click', () => {
+                img.classList.toggle('is-zoomed');
+            });
+        });
+    });
+</script>
+
+<style>
+    /* --- [17] منع الزووم العشوائي وتثبيت الأبعاد --- */
+    html, body {
+        touch-action: manipulation;
+        overscroll-behavior-y: contain; /* [15] جزء من ميزة سحب التحديث */
+    }
+
+    /* --- [15] تأثير مرئي للسحب (Pull Effect) --- */
+    body::before {
+        content: "جاري التحديث... 🟠";
+        position: absolute; top: -40px; left: 0; width: 100%;
+        text-align: center; color: #ff6600; font-weight: bold;
+    }
+
+    /* --- [16] ستايل تكبير الصور --- */
+    .kimo-zoomable {
+        transition: transform 0.3s ease;
+        cursor: zoom-in;
+    }
+    .is-zoomed {
+        transform: scale(1.8);
+        z-index: 10000;
+        position: relative;
+        box-shadow: 0 0 30px rgba(0,0,0,0.5);
+        cursor: zoom-out;
+    }
+
+    /* تحسينات عامة لكل الأجهزة */
+    * {
+        -webkit-tap-highlight-color: transparent;
+        outline: none;
+    }
+</style>
 
 </body>
 </html>

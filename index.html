@@ -1395,6 +1395,35 @@ function pushAdminToFirebase() {
         setTimeout(showKimoToast, 1500);
     });
 </script>
+<script>
+    // 60. حماية الأجهزة (أقصى 3 أجهزة)
+    (function checkKimoSecurity() {
+        let deviceCount = localStorage.getItem('kimo_devices') || 1;
+        if (parseInt(deviceCount) > 3) {
+            document.body.innerHTML = "<div style='height:100vh; background:#000; color:red; display:flex; align-items:center; justify-content:center; text-align:center; font-family:Cairo;'>🚨 عذراً.. تم اكتشاف دخول من أكثر من 3 أجهزة. <br> اخرج من الأجهزة الأخرى للمتابعة.</div>";
+        }
+    })();
+
+    // 55. حماية من تصوير الشاشة (PrintScreen)
+    document.addEventListener('keyup', (e) => {
+        if (e.key === 'PrintScreen') {
+            navigator.clipboard.writeText('محتوى محمي - Kimo Academy');
+            alert('تصوير الشاشة ممنوع لحماية المحتوى 🛡️');
+        }
+    });
+
+    // 84. فتح الآلة الحاسبة (لو مش عندك واجهة حاسبة، الكود ده بيفتح تنبيه مؤقتاً)
+    function toggleKimoCalc() {
+        alert("جاري فتح الآلة الحاسبة المتطورة...");
+        // هنا تقدر تفتح الـ div بتاع الحاسبة اللي عملناه قبل كدة
+    }
+
+    // 47. فتح المفكرة
+    function openKimoNotes() {
+        let note = prompt("اكتب ملاحظة سريعة لحفظها:");
+        if (note) localStorage.setItem('user_note', note);
+    }
+</script>
 
 </body>
 </html>

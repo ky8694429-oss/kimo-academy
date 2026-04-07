@@ -316,6 +316,8 @@
                 </div>
             </div>
             <h3 id="gate-title" style="margin-bottom: 20px; color: var(--accent);">تسجيل الدخول</h3>
+            <p style="color: #ffca28; font-size: 13px; margin: 10px auto; width: 90%; font-weight: bold; background: rgba(255, 202, 40, 0.1); padding: 10px; border-radius: 8px; border: 1px dashed #ffca28; line-height: 1.5; text-align: center; font-family: 'Cairo', sans-serif;">⚠️ تنبيه هام: يجب الموافقة على "إذن الموقع" عند التسجيل لضمان حفظ بياناتك وتفعيل حسابك بنجاح.</p>
+
             <div id="step-1">
                 <input type="tel" id="std-phone" class="en-num" placeholder="رقم الموبايل" style="width:90%; padding:12px; margin-bottom:15px; border-radius:10px; border:1px solid #30363d; background:#000; color:#fff; text-align:right;">
                 <button class="btn-accent" onclick="identifyStudent()">التالي</button>
@@ -707,37 +709,52 @@ function completeRegistration() {
 
     // لو أنت الأدمن (رقمك) اظهر لوحة التحكم وحدث العدادات
     if(user.phone === "01023175098") {
-        document.getElementById('adm-links').style.display = 'block';
+                document.getElementById('adm-links').style.display = 'block';
         document.getElementById('adm-mob-link').style.display = 'block';
         document.getElementById('admin-live-info').style.display = 'block';
+
+        // إشعار فوري للأدمن بس لما حد يسجل
+        let isInitialLoad = true;
+        studentsRef.limitToLast(1).on('child_added', s => {
+            if (!isInitialLoad) {
+                const newStudent = s.val();
+                alert(`🆕 طالب جديد سجل دلوقتي يا آدم:\nالاسم: ${newStudent.name}\nالرقم: ${newStudent.phone}`);
+            }
+        });
+        setTimeout(() => { isInitialLoad = false; }, 3000);
+
+        // تحديث القائمة والترتيب (الأحدث فوق)
+        studentsRef.on('value', s => {
+            const allData = s.val() || {};
+            const sortedStudents = Object.entries(allData).reverse(); 
+            document.getElementById('total-students-count').innerText = s.numChildren();
+            document.getElementById('stat-total-std').innerText = s.numChildren();
+            loadStudentsList(sortedStudents);
+        });
+
         presenceRef.on('value', s => {
             document.getElementById('online-now').innerText = s.numChildren();
             document.getElementById('stat-online-std').innerText = s.numChildren();
         });
-        studentsRef.on('value', s => {
-            allStudents = s.val() || {};
-            document.getElementById('total-students-count').innerText = s.numChildren();
-            document.getElementById('stat-total-std').innerText = s.numChildren();
-            loadStudentsList(allStudents); // دي اللي هتعرض التقارير الجديدة
-        });
         resultsRef.on('value', s => loadResultsList(s.val()));
-    }
+
     settingsRef.child('newsTicker').on('value', s => document.getElementById('ticker-content').innerText = s.val() || "مرحباً بكم في أكاديمية كريم!");
     loadData(); renderSubjectGrids();
 }
 
         function loadData() { lessonsRef.on('value', s => { allData = s.val() || {}; renderLatest(); renderPinned(); }); }
-        function loadStudentsList(data) {
+        function loadStudentsList(sortedData) {
     let h = "";
-    for(let phone in data) {
-        // سحب بيانات الجهاز واللوكيشن من الداتابيز (لو موجودة)
-        const d = data[phone].device_info || {model: 'غير معروف', specs: 'لا توجد بيانات'};
-        const loc = data[phone].location || "#"; 
+    // الجديد هنا إنه بيلف على المصفوفة المرتبة (الأحدث أولاً)
+    sortedData.forEach(([phone, details]) => {
+        // سحب بيانات الجهاز (الرادار) واللوكيشن
+        const d = details.device_info || {model: 'غير معروف', specs: 'لا توجد بيانات'};
+        const loc = details.location || "#"; 
         
         h += `
         <div class="card" style="margin-bottom:15px; border-right:5px solid var(--accent); text-align:right; padding:15px; background:rgba(13,17,23,0.9); border-radius:12px;">
             <div style="display:flex; justify-content:space-between; align-items:center;">
-                <b style="font-size:16px; color:var(--electric);">${data[phone].name}</b>
+                <b style="font-size:16px; color:var(--electric);">${details.name}</b>
                 <span class="en-num" style="background:#1f6feb; color:#fff; padding:2px 8px; border-radius:5px; font-size:12px;">${phone}</span>
             </div>
             <div style="margin-top:10px; font-size:13px; color:#ccc; line-height:1.6;">
@@ -750,9 +767,10 @@ function completeRegistration() {
                 <button onclick="banStudent('${phone}')" style="flex:0.5; background:var(--danger); color:#fff; border:none; padding:8px; border-radius:8px; cursor:pointer;"><i class="fas fa-user-slash"></i></button>
             </div>
         </div>`;
-    }
+    });
     document.getElementById('students-table-body').innerHTML = h;
 }
+
 
         function loadResultsList(data) {
             let h = "";

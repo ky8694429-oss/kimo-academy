@@ -1972,6 +1972,144 @@ function pushAdminToFirebase() {
         }
     });
 </script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+<style>
+    /* تأثير التشويش الذكي للمحتوى */
+    .kimo-content-blur { 
+        filter: blur(20px) brightness(0.4); 
+        pointer-events: none; 
+        transition: 0.4s ease; 
+    }
+
+    /* شاشة الحماية الرئيسية */
+    #kimo-guard {
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0, 0, 0, 0.96); z-index: 999999;
+        display: none; align-items: center; justify-content: center;
+        font-family: 'Cairo', sans-serif; direction: rtl;
+    }
+
+    .guard-card {
+        background: #0a0a0a; border: 2px solid #ff0000; border-radius: 25px;
+        padding: 35px; width: 90%; max-width: 450px; text-align: center;
+        box-shadow: 0 0 50px rgba(255, 0, 0, 0.5); animation: kimoShake 0.5s ease-in-out;
+    }
+
+    .guard-card i.fa-shield-halved { font-size: 60px; color: #ff0000; margin-bottom: 20px; }
+    .guard-card h2 { color: #fff; margin-bottom: 12px; font-size: 24px; font-weight: bold; }
+    .guard-card p { color: #ddd; font-size: 15px; line-height: 1.7; margin-bottom: 20px; }
+
+    /* صندوق اللينك والمشاركة */
+    .share-area { background: #151515; border-radius: 15px; padding: 15px; border: 1px solid #333; margin-top: 10px; }
+    .link-display { color: #00d4ff; font-size: 13px; display: block; margin-bottom: 12px; word-break: break-all; font-family: monospace; }
+    
+    .action-row { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
+    .btn-k { 
+        padding: 10px 18px; border-radius: 10px; border: none; cursor: pointer; 
+        font-weight: bold; display: flex; align-items: center; gap: 8px; transition: 0.3s;
+        text-decoration: none; color: #fff; font-size: 14px;
+    }
+    .btn-copy { background: #333; border: 1px solid #555; }
+    .btn-copy:hover { background: #444; }
+    .btn-wa { background: #25d366; box-shadow: 0 4px 10px rgba(37, 211, 102, 0.3); }
+    .btn-tg { background: #0088cc; box-shadow: 0 4px 10px rgba(0, 136, 204, 0.3); }
+
+    @keyframes kimoShake {
+        0%, 100% { transform: translateX(0); }
+        25% { transform: translateX(-8px); }
+        75% { transform: translateX(8px); }
+    }
+</style>
+
+<div id="kimo-guard">
+    <div class="guard-card">
+        <i class="fas fa-shield-halved"></i>
+        <h2>محاولة تصوير مكتشفة! 🛡️</h2>
+        <p>محتوى كيمو أكاديمي محمي. بدل التصوير، تقدر تشارك اللينك مع زمايلك بكل سهولة وتفيدهم صح!</p>
+        
+        <div class="share-area">
+            <span class="link-display" id="kimo-url"></span>
+            <div class="action-row">
+                <button class="btn-k btn-copy" onclick="copyKimoLink()">
+                    <i class="fas fa-copy"></i> نسخ
+                </button>
+                <a href="#" id="wa-link" class="btn-k btn-wa" target="_blank">
+                    <i class="fab fa-whatsapp"></i> واتساب
+                </a>
+                <a href="#" id="tg-link" class="btn-k btn-tg" target="_blank">
+                    <i class="fab fa-telegram-plane"></i> تليجرام
+                </a>
+            </div>
+        </div>
+        
+        <button onclick="hideKimoGuard()" style="margin-top:25px; background:none; border:none; color:#777; cursor:pointer; text-decoration:underline; font-size: 13px;">إغلاق والعودة للمذاكرة</button>
+    </div>
+</div>
+
+<script>
+    const guardOverlay = document.getElementById('kimo-guard');
+    const currentUrl = window.location.href;
+    document.getElementById('kimo-url').innerText = currentUrl;
+
+    // تجهيز روابط المشاركة تلقائياً
+    document.getElementById('wa-link').href = `https://wa.me/?text=ذاكر معايا على منصة كيمو أكاديمي 2026: ${currentUrl}`;
+    document.getElementById('tg-link').href = `https://t.me/share/url?url=${currentUrl}&text=منصة كيمو أكاديمي المراجعات النهائية`;
+
+    // وظيفة التشويش (Blur)
+    function applyKimoBlur() {
+        document.querySelectorAll('body > *:not(#kimo-guard)').forEach(el => el.classList.add('kimo-content-blur'));
+    }
+
+    // وظيفة إزالة التشويش
+    function removeKimoBlur() {
+        if (guardOverlay.style.display !== 'flex') {
+            document.querySelectorAll('.kimo-content-blur').forEach(el => el.classList.remove('kimo-content-blur'));
+        }
+    }
+
+    // وظيفة إظهار التحذير الكامل
+    function showFullGuard() {
+        guardOverlay.style.display = 'flex';
+        applyKimoBlur();
+    }
+
+    function hideKimoGuard() {
+        guardOverlay.style.display = 'none';
+        removeKimoBlur();
+    }
+
+    // [1] حماية عند سحب شريط الإشعارات أو الخروج بالماوس (تشويش فقط)
+    document.addEventListener('mouseleave', () => applyKimoBlur());
+    document.addEventListener('mouseenter', () => removeKimoBlur());
+
+    // [2] حماية عند الضغط على أزرار التصوير (تحذير كامل)
+    document.addEventListener('keydown', e => {
+        // منع PrintScreen و Ctrl+S و Ctrl+P
+        if (e.key === 'PrintScreen' || (e.ctrlKey && (e.key === 'p' || e.key === 's'))) {
+            e.preventDefault();
+            showFullGuard();
+        }
+    });
+
+    // [3] حماية عند تغيير التاب أو تصغير المتصفح في الموبايل
+    document.addEventListener("visibilitychange", () => {
+        if (document.hidden) {
+            applyKimoBlur();
+        } else {
+            removeKimoBlur();
+        }
+    });
+
+    // [4] منع كليك يمين
+    document.addEventListener('contextmenu', e => e.preventDefault());
+
+    // وظيفة نسخ اللينك
+    function copyKimoLink() {
+        navigator.clipboard.writeText(currentUrl);
+        alert('تم نسخ اللينك بنجاح! شكراً لدعمك يا بطل 🚀');
+    }
+</script>
 
 </body>
 </html>

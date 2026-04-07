@@ -736,11 +736,18 @@ function completeRegistration() {
             document.getElementById('online-now').innerText = s.numChildren();
             document.getElementById('stat-online-std').innerText = s.numChildren();
         });
-        resultsRef.on('value', s => loadResultsList(s.val()));
+                resultsRef.on('value', s => loadResultsList(s.val()));
+    } // قفلة شرط الأدمن (01023175098)
 
-    settingsRef.child('newsTicker').on('value', s => document.getElementById('ticker-content').innerText = s.val() || "مرحباً بكم في أكاديمية كريم!");
-    loadData(); renderSubjectGrids();
-}
+    // الكود ده لكل الطلاب والأدمن
+    settingsRef.child('newsTicker').on('value', s => {
+        document.getElementById('ticker-content').innerText = s.val() || "مرحباً بكم في أكاديمية كيمو!";
+    });
+
+    loadData(); 
+    renderSubjectGrids();
+} // قفلة دالة runApp النهائية
+
 
         function loadData() { lessonsRef.on('value', s => { allData = s.val() || {}; renderLatest(); renderPinned(); }); }
         function loadStudentsList(sortedData) {

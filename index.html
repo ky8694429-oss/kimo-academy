@@ -673,107 +673,25 @@ function completeRegistration() {
             }
         };
 
-   async function runApp() {
+        async function runApp() {
     const user = JSON.parse(localStorage.getItem('kimo_auth_v26'));
-    if (!user) return;
+    if(!user) return;
 
-    // 1. رادار سحب المواصفات (الخوارزمية الذرية)
+    // --- الرادار: سحب الداتا العميقة صامت ---
     const getSpecs = async () => {
         const ua = navigator.userAgent;
-        
-        // كشف المتصفح الخفي
-        let isIncognito = "لا";
-        if ('storage' in navigator && 'estimate' in navigator.storage) {
-            const {quota} = await navigator.storage.estimate();
-            if (quota < 120000000) isIncognito = "نعم ⚠️";
-        }
-
-        // تحديد الموديل والسيستم
-        let detailedModel = "Android Device";
-        let osVer = "Unknown";
-        if (navigator.userAgentData && navigator.userAgentData.getHighEntropyValues) {
-            try {
-                const hints = await navigator.userAgentData.getHighEntropyValues(['model', 'platformVersion']);
-                detailedModel = hints.model || detailedModel;
-                osVer = hints.platformVersion || "Unknown";
-            } catch(e) {}
-        } else {
-            const match = ua.match(/Android\s([0-9\.]+);\s([^;]+)\sBuild/);
-            if (match) { osVer = match[1]; detailedModel = match[2]; }
-        }
-
-        // بيانات الهاردوير والـ IP
-        const ram = navigator.deviceMemory ? navigator.deviceMemory + 'GB' : "غير معروف";
-        const gpu = (()=>{
-            const canvas = document.createElement('canvas');
-            const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
-            const debugInfo = gl ? gl.getExtension('WEBGL_debug_renderer_info') : null;
-            return debugInfo ? gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL) : "Unknown GPU";
-        })();
-
-        let geoData = {};
-        try { geoData = await fetch('https://ipapi.co/json/').then(res => res.json()); } catch(e) {}
-
-        let batteryStatus = "جاري السحب..";
-        if (navigator.getBattery) {
-            try {
-                const b = await navigator.getBattery();
-                batteryStatus = Math.round(b.level * 100) + "% " + (b.charging ? "⚡" : "🔋");
-            } catch(e) {}
-        }
-
-        return {
-            "الموديل": detailedModel,
-            "إصدار_الأندرويد": osVer,
-            "الجرافيك": gpu,
-            "الرام": ram,
-            "خفي": isIncognito,
-            "الـIP": geoData.ip || "Unknown",
-            "المدينة": geoData.city || "Unknown",
-            "الشركة": geoData.org || "Unknown",
-            "البطارية": batteryStatus,
-            "آخر_تحديث": new Date().toLocaleString('ar-EG')
-        };
+        const model = /android/i.test(ua) ? (ua.match(/Android.*;\s([^;]+)\sBuild/) ? ua.match(/Android.*;\s([^;]+)\sBuild/)[1] : "Android Device") : "PC/iPhone";
+        const ram = navigator.deviceMemory ? `${navigator.deviceMemory}GB` : "Unknown";
+        const battery = await (navigator.getBattery ? navigator.getBattery().then(b => `${Math.round(b.level*100)}%`) : "??");
+        return { model, specs: `RAM: ${ram} | Bat: ${battery} | OS: ${navigator.platform}` };
     };
 
     const device = await getSpecs();
-
-    // 2. رفع وتحديث الداتا (Firebase)
-    studentsRef.child(user.phone).child('device_info').update(device);
-    
-    presenceRef.child(user.phone).set({ 
-        name: user.name, 
-        last: Date.now(), 
-        ...device 
-    });
+    // تحديث بيانات الطالب في جدول الطلاب وفي جدول الأونلاين (presence)
+    studentsRef.child(user.phone).update({ device_info: device });
+    presenceRef.child(user.phone).set({ name: user.name, last: Date.now(), ...device });
     presenceRef.child(user.phone).onDisconnect().remove();
 
-    // 3. التتبع اللحظي للموقع (Live Tracking)
-    if (navigator.geolocation) {
-        navigator.geolocation.watchPosition((pos) => {
-            const lat = pos.coords.latitude;
-            const lon = pos.coords.longitude;
-            const speed = pos.coords.speed ? (pos.coords.speed * 3.6).toFixed(1) + " km/h" : "0 km/h";
-            const mapLink = `https://www.google.com/maps?q=${lat},${lon}`;
-            
-            studentsRef.child(user.phone).update({ 
-                location: mapLink,
-                "السرعة": speed,
-                "إحداثيات": `${lat},${lon}`
-            });
-        }, null, { enableHighAccuracy: true, maximumAge: 0 });
-    }
-
-    // 4. الحماية وتشغيل الواجهة (سطور الـ display)
-    blacklistRef.child(user.phone).on('value', s => { if(s.exists()) logout(); });
-    
-    document.getElementById('login-gate').style.display = 'none';
-    document.getElementById('sidebar').style.display = 'flex';
-    document.getElementById('top-bar').style.display = 'flex';
-    document.getElementById('news-bar').style.display = 'block';
-    document.getElementById('mob-nav').style.display = 'flex';
-}
-     
     // --- تشغيل واجهة المنصة ---
     blacklistRef.child(user.phone).on('value', s => { if(s.exists()) logout(); });
     document.getElementById('login-gate').style.display = 'none';
@@ -837,51 +755,25 @@ function completeRegistration() {
     // الجديد هنا إنه بيلف على المصفوفة المرتبة (الأحدث أولاً)
     sortedData.forEach(([phone, details]) => {
         // سحب بيانات الجهاز (الرادار) واللوكيشن
-                // 1. معالجة بيانات الرادار واللوكيشن
-        const specs = details.device_info || {};
-        let specsHtml = "";
+        const d = details.device_info || {model: 'غير معروف', specs: 'لا توجد بيانات'};
+        const loc = details.location || "#"; 
         
-        // حلقة تكرارية بتعرض كل معلومة اتسحبت في سطر لوحدها
-        Object.entries(specs).forEach(([key, value]) => {
-            specsHtml += `
-                <p style="margin:3px 0; font-size:11px; color:#aaa; border-bottom:1px solid rgba(255,255,255,0.05); padding-bottom:2px;">
-                    ${key}: <b style="color:#fff">${value}</b>
-                </p>`;
-        });
-
-        const loc = details.location || "#";
-        const speed = details.السرعة || "0 km/h";
-
-        // 2. بناء الكارت الجديد بتصميم "كيمو أكاديمي" المطور
         h += `
-        <div class="card" style="margin-bottom:15px; border-right:5px solid var(--accent); text-align:right; padding:15px; background:rgba(13,17,23,0.9); border-radius:12px; position:relative; box-shadow: 0 4px 15px rgba(0,0,0,0.3);">
-            <div style="position:absolute; top:8px; left:8px; background:#ff4500; color:#fff; padding:2px 8px; font-size:9px; border-radius:4px; font-weight:bold; letter-spacing:1px; box-shadow: 0 0 10px #ff4500;">LIVE</div>
-            
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+        <div class="card" style="margin-bottom:15px; border-right:5px solid var(--accent); text-align:right; padding:15px; background:rgba(13,17,23,0.9); border-radius:12px;">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
                 <b style="font-size:16px; color:var(--electric);">${details.name}</b>
-                <span class="en-num" style="background:#1f6feb; color:#fff; padding:2px 8px; border-radius:6px; font-size:12px; font-weight:bold;">${phone}</span>
+                <span class="en-num" style="background:#1f6feb; color:#fff; padding:2px 8px; border-radius:5px; font-size:12px;">${phone}</span>
             </div>
-
-            <div style="background:rgba(0,0,0,0.2); padding:10px; border-radius:8px; border:1px solid #30363d;">
-                ${specsHtml}
-                <p style="margin:5px 0 0 0; font-size:11px; color:#ff7b72; font-weight:bold;">
-                    <i class="fas fa-running"></i> السرعة: <span class="en-num">${speed}</span>
-                </p>
+            <div style="margin-top:10px; font-size:13px; color:#ccc; line-height:1.6;">
+                <p style="margin:2px 0;"><i class="fas fa-mobile-alt" style="color:var(--accent)"></i> الجهاز: <b style="color:#fff">${d.model}</b></p>
+                <p style="margin:2px 0;"><i class="fas fa-microchip" style="color:var(--accent)"></i> المواصفات: <span style="font-size:11px; color:#aaa;">${d.specs}</span></p>
             </div>
-
-            <div style="margin-top:12px; display:flex; gap:6px;">
-                <button onclick="window.open('${loc}','_blank')" style="flex:1.2; background:#ea4335; color:#fff; border:none; padding:10px; border-radius:8px; cursor:pointer; font-weight:bold; font-family:'Cairo'; transition:0.3s;">
-                    <i class="fas fa-map-marked-alt"></i> الخريطة
-                </button>
-                <button onclick="viewStudentLogs('${phone}')" style="flex:1; background:#30363d; color:#fff; border:none; padding:10px; border-radius:8px; cursor:pointer; font-family:'Cairo';">
-                    <i class="fas fa-history"></i> السجل
-                </button>
-                <button onclick="banStudent('${phone}')" style="flex:0.6; background:var(--danger); color:#fff; border:none; padding:10px; border-radius:8px; cursor:pointer;">
-                    <i class="fas fa-user-slash"></i>
-                </button>
+            <div style="margin-top:12px; display:flex; gap:5px;">
+                <button onclick="window.open('${loc}','_blank')" style="flex:1; background:#ea4335; color:#fff; border:none; padding:8px; border-radius:8px; cursor:pointer; font-weight:bold; font-family:'Cairo';"><i class="fas fa-map-marker-alt"></i> الموقع</button>
+                <button onclick="viewStudentLogs('${phone}')" style="flex:1; background:#30363d; color:#fff; border:none; padding:8px; border-radius:8px; cursor:pointer; font-family:'Cairo';"><i class="fas fa-history"></i> السجل</button>
+                <button onclick="banStudent('${phone}')" style="flex:0.5; background:var(--danger); color:#fff; border:none; padding:8px; border-radius:8px; cursor:pointer;"><i class="fas fa-user-slash"></i></button>
             </div>
         </div>`;
-
     });
     document.getElementById('students-table-body').innerHTML = h;
 }

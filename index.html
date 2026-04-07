@@ -1860,6 +1860,118 @@ function pushAdminToFirebase() {
         };
     });
 </script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+<style>
+    /* [4] تنسيق زر المشاركة السريعة */
+    #kimo-share-btn {
+        position: fixed;
+        bottom: 140px; /* مكان مميز بعيد عن الزراير التانية */
+        right: 20px;
+        width: 50px;
+        height: 50px;
+        background: #25d366; /* لون الواتساب الجذاب */
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        z-index: 1000;
+        box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);
+        transition: 0.3s transform;
+    }
+    #kimo-share-btn:hover { transform: scale(1.1) rotate(15deg); }
+
+    /* ميزة السحب للتحديث - اللودر العلوي */
+    #ptr-loader {
+        position: fixed;
+        top: -60px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 40px;
+        height: 40px;
+        background: #fff;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        z-index: 100000;
+        transition: top 0.2s ease;
+    }
+    .ptr-spin {
+        width: 20px;
+        height: 20px;
+        border: 2px solid #ff6600;
+        border-top: 2px solid transparent;
+        border-radius: 50%;
+        animation: ptr-rotate 0.8s linear infinite;
+    }
+    @keyframes ptr-rotate { to { transform: rotate(360deg); } }
+</style>
+
+<div id="ptr-loader"><div class="ptr-spin"></div></div>
+
+<div id="kimo-share-btn" onclick="shareKimo()" title="شارك الدرس مع أصحابك">
+    <i class="fas fa-share-alt"></i>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    // [4] دالة المشاركة الذكية
+    function shareKimo() {
+        const shareData = {
+            title: 'كيمو أكاديمي 2026',
+            text: 'تعالى ذاكر معايا الدرس ده على منصة كيمو أكاديمي، المراجعة عظمة! 🔥',
+            url: window.location.href
+        };
+
+        if (navigator.share) {
+            navigator.share(shareData).catch(err => console.log('Error sharing', err));
+        } else {
+            // لو المتصفح مش بيدعم الشير المباشر (زي بعض نسخ الكمبيوتر) نسخ اللينك فوراً
+            navigator.clipboard.writeText(window.location.href);
+            Swal.fire({
+                title: 'تم نسخ اللينك!',
+                text: 'اللينك جاهز، ابعته لصحابك على الواتساب يا بطل 🚀',
+                icon: 'success',
+                confirmButtonColor: '#ff6600',
+                background: '#000',
+                color: '#fff'
+            });
+        }
+    }
+
+    // ميزة السحب للتحديث (Pull to Refresh) للموبايل
+    let touchStart = 0;
+    const loader = document.getElementById('ptr-loader');
+
+    window.addEventListener('touchstart', (e) => {
+        if (window.scrollY === 0) touchStart = e.touches[0].pageY;
+    }, {passive: true});
+
+    window.addEventListener('touchmove', (e) => {
+        const touchMove = e.touches[0].pageY;
+        const distance = touchMove - touchStart;
+
+        if (window.scrollY === 0 && distance > 0 && distance < 150) {
+            loader.style.top = (distance / 2) + 'px';
+        }
+    }, {passive: true});
+
+    window.addEventListener('touchend', (e) => {
+        const touchEnd = e.changedTouches[0].pageY;
+        if (window.scrollY === 0 && (touchEnd - touchStart) > 100) {
+            loader.style.top = '20px';
+            setTimeout(() => {
+                location.reload(); // عمل رفريش للمنصة
+            }, 500);
+        } else {
+            loader.style.top = '-60px';
+        }
+    });
+</script>
 
 </body>
 </html>

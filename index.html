@@ -1617,6 +1617,73 @@ function pushAdminToFirebase() {
     // لو عايز تستخدمها يدوي في كود الموبايل أو الأدمن:
     // kimoMsg("خطأ!", "الباسورد غلط يا صاحبي", "error");
 </script>
+<script>
+    // 1. وظيفة استعادة المكان عند التحميل
+    window.addEventListener('DOMContentLoaded', () => {
+        const savedScroll = localStorage.getItem('kimo_scroll_pos');
+        const savedPath = localStorage.getItem('kimo_page_path');
+
+        // لو الطالب رجع لنفس الصفحة وفي مكان محفوظ
+        if (savedScroll && savedPath === window.location.pathname) {
+            // ندي الصفحة ثانية واحدة تحمل الصور والملفات
+            setTimeout(() => {
+                window.scrollTo({
+                    top: parseInt(savedScroll),
+                    behavior: 'smooth' 
+                });
+
+                // إشعار شيك (Toast) يطمن الطالب
+                if (typeof Swal !== 'undefined') {
+                    const Toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000,
+                        background: '#000',
+                        color: '#ff6600'
+                    });
+                    Toast.fire({
+                        icon: 'info',
+                        title: 'أهلاً يا بطل.. كمل من مكان ما وقفت! 📖'
+                    });
+                }
+            }, 800); 
+        }
+    });
+
+    // 2. وظيفة حفظ المكان (تحديث كل ما الطالب يتحرك)
+    let scrollTimeout;
+    window.addEventListener('scroll', () => {
+        // نستخدم Timeout عشان الكود ميبقاش ثقيل على موبايلات الطلاب
+        clearTimeout(scrollTimeout);
+        scrollTimeout = setTimeout(() => {
+            localStorage.setItem('kimo_scroll_pos', window.pageYOffset || document.documentElement.scrollTop);
+            localStorage.setItem('kimo_page_path', window.location.pathname);
+        }, 200); // تحديث كل 200 ملي ثانية (دقة ممتازة)
+    });
+
+    // 3. ميزة إضافية: حفظ حالة الفورم (لو بيكتب كومنت أو سؤال وطلع فجأة)
+    const inputs = document.querySelectorAll('input[type="text"], textarea');
+    inputs.forEach(input => {
+        // استرجاع النص لو موجود
+        const savedText = localStorage.getItem('temp_text_' + input.id);
+        if (savedText) input.value = savedText;
+
+        // حفظ النص وهو بيكتب
+        input.addEventListener('input', () => {
+            if (input.id) {
+                localStorage.setItem('temp_text_' + input.id, input.value);
+            }
+        });
+    });
+</script>
+
+<style>
+    /* تأثير بصري بسيط عشان الطالب ميتخضش لما الصفحة تنزل لوحدها */
+    html {
+        scroll-behavior: smooth;
+    }
+</style>
 
 </body>
 </html>

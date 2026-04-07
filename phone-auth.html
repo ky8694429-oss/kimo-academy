@@ -1,0 +1,12 @@
+<div id="kimo-standalone-phone-auth" style="margin: 20px auto; padding: 20px; width: 95%; max-width: 400px; border: 2px solid #bc13fe; border-radius: 15px; background: #000; text-align: center; box-shadow: 0 0 15px #bc13fe; box-sizing: border-box;">
+    <p style="color: #fff; font-weight: bold; margin-bottom: 15px; font-size: 1.1rem;">تسجيل سريع برقم الموبايل 📱</p>
+    <div id="kimo-step-1">
+        <input type="tel" id="kimo-input-phone" placeholder="+2010xxxxxxxx" style="width: 100%; padding: 12px; margin-bottom: 15px; border-radius: 8px; border: 1px solid #bc13fe; background: #111; color: #fff; font-size: 16px; outline: none;">
+        <button type="button" onclick="kimoSendCode()" id="kimo-btn-send" style="width: 100%; padding: 12px; background: #bc13fe; color: #fff; border: none; border-radius: 8px; cursor: pointer; font-weight: bold;">إرسال الكود SMS 📩</button>
+    </div>
+    <div id="kimo-step-2" style="display: none;">
+        <input type="text" id="kimo-input-code" placeholder="اكتب الـ 6 أرقام" style="width: 100%; padding: 12px; margin-bottom: 15px; border-radius: 8px; border: 1px solid #00ff00; background: #111; color: #fff; font-size: 16px;">
+        <button type="button" onclick="kimoVerifyCode()" style="width: 100%; padding: 12px; background: #00ff00; color: #000; border: none; border-radius: 8px; cursor: pointer; font-weight: bold;">تأكيد ودخول ✅</button>
+    </div>
+    <div id="kimo-recaptcha" style="margin-top: 10px; display: flex; justify-content: center;"></div>
+</div>

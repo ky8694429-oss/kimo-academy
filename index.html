@@ -1495,6 +1495,70 @@ function pushAdminToFirebase() {
         }
     }
 </script>
+<div id="admin-trigger" onclick="openAdminPrompt()" style="position: fixed; bottom: 15px; left: 15px; width: 15px; height: 15px; background: rgba(188, 19, 254, 0.1); border-radius: 50%; cursor: pointer; z-index: 10000; transition: 0.3s;"></div>
+
+<style>
+    #admin-trigger:hover { 
+        background: rgba(188, 19, 254, 1); 
+        box-shadow: 0 0 10px #bc13fe; 
+        width: 20px; height: 20px; 
+    }
+    
+    .admin-modal {
+        position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+        background: #000; border: 2px solid #bc13fe; padding: 25px; border-radius: 20px;
+        z-index: 10001; display: none; text-align: center; box-shadow: 0 0 30px #bc13fe;
+        width: 280px; font-family: sans-serif;
+    }
+    .admin-modal input {
+        background: #111; border: 1px solid #bc13fe; color: #fff; padding: 12px;
+        border-radius: 8px; margin-bottom: 15px; width: 100%; text-align: center;
+        font-size: 18px; outline: none; box-sizing: border-box;
+    }
+    .admin-btn-confirm { background: #bc13fe; color: #fff; border: none; padding: 10px 25px; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%; }
+    .admin-btn-close { background: transparent; color: #666; border: none; margin-top: 10px; cursor: pointer; font-size: 13px; }
+</style>
+
+<div id="admin-modal" class="admin-modal">
+    <h3 style="color: #fff; margin-top: 0;">لوحة التحكم 👑</h3>
+    <p style="color: #ccc; font-size: 12px;">أدخل الرمز السري للمتابعة</p>
+    <input type="password" id="admin-pass" placeholder="••••••">
+    <button class="admin-btn-confirm" onclick="checkAdminPass()">دخول الآن</button>
+    <button class="admin-btn-close" onclick="closeAdminPrompt()">إلغاء</button>
+</div>
+
+<script>
+    function openAdminPrompt() {
+        document.getElementById('admin-modal').style.display = 'block';
+        document.getElementById('admin-pass').focus();
+    }
+
+    function closeAdminPrompt() {
+        document.getElementById('admin-modal').style.display = 'none';
+        document.getElementById('admin-pass').value = '';
+    }
+
+    function checkAdminPass() {
+        const pass = document.getElementById('admin-pass').value;
+        const correctPass = "175098"; 
+
+        if (pass === correctPass) {
+            // الرسالة العامة لأي حد يدخل الكود صح
+            alert("تم التحقق بنجاح.. لقد أصبحت أدمن الآن! 🚀");
+            
+            // هنا بيفتح صفحة الإدارة في نفس التبويب
+            window.location.href = "admin-dashboard.html"; 
+        } else {
+            alert("الرمز غير صحيح!");
+            closeAdminPrompt();
+        }
+    }
+
+    // إغلاق لو دوسنا Esc
+    window.addEventListener('keydown', function(e) {
+        if (e.key === "Escape") closeAdminPrompt();
+    });
+</script>
 
 </body>
 </html>

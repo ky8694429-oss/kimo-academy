@@ -2110,6 +2110,104 @@ function pushAdminToFirebase() {
         alert('تم نسخ اللينك بنجاح! شكراً لدعمك يا بطل 🚀');
     }
 </script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+    /* حاوية الرسالة الاحترافية */
+    #kimo-ultra-alert {
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0, 0, 0, 0.92); z-index: 10000000;
+        display: none; align-items: center; justify-content: center;
+        backdrop-filter: blur(20px); font-family: 'Cairo', sans-serif;
+    }
+
+    /* كارت التحذير */
+    .kimo-card-v2 {
+        background: #000; border: 2px solid #ff6600; border-radius: 25px;
+        padding: 40px; width: 88%; max-width: 440px; text-align: center;
+        box-shadow: 0 0 40px rgba(255, 102, 0, 0.4); 
+        animation: kimoSlideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .kimo-card-v2 h2 { color: #ff6600; font-size: 26px; margin-bottom: 15px; font-weight: 800; }
+    .kimo-card-v2 p { color: #eee; font-size: 15px; line-height: 1.6; margin-bottom: 30px; }
+
+    /* صندوق اللينك المودرن */
+    .kimo-link-box {
+        background: #111; border-radius: 12px; padding: 10px 15px;
+        display: flex; align-items: center; justify-content: space-between;
+        border: 1px solid #333; margin-bottom: 25px;
+    }
+    #kimo-url-txt { font-size: 12px; color: #ff9900; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; max-width: 200px; }
+
+    /* أزرار المشاركة */
+    .kimo-social-row { display: flex; justify-content: center; gap: 20px; }
+    .kimo-btn {
+        width: 50px; height: 50px; border-radius: 15px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 22px; color: #fff; cursor: pointer;
+        transition: 0.4s; border: none; text-decoration: none;
+    }
+    .kimo-copy { background: #333; }
+    .kimo-wa { background: #25d366; box-shadow: 0 0 15px rgba(37, 211, 102, 0.4); }
+    .kimo-tg { background: #0088cc; box-shadow: 0 0 15px rgba(0, 136, 204, 0.4); }
+    .kimo-btn:hover { transform: scale(1.15) translateY(-5px); filter: brightness(1.2); }
+
+    /* زر الإغلاق */
+    .kimo-close { margin-top: 30px; background: none; border: 1px solid #444; color: #777; padding: 10px 25px; border-radius: 30px; cursor: pointer; transition: 0.3s; }
+    .kimo-close:hover { border-color: #ff6600; color: #fff; background: rgba(255, 102, 0, 0.1); }
+
+    @keyframes kimoSlideUp {
+        from { transform: translateY(50px); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+    }
+</style>
+
+<div id="kimo-ultra-alert">
+    <div class="kimo-card-v2">
+        <i class="fas fa-lock" style="font-size: 45px; color: #ff6600; margin-bottom: 20px;"></i>
+        <h2>ممنوع التصوير يا بطل! 🛡️</h2>
+        <p>محتوى "كيمو أكاديمي" خاص بالطلاب المجتهدين زيك. لو عايز تنفع غيرك، شارك اللينك ده معاهم وهتاخد أجرهم!</p>
+        
+        <div class="kimo-link-box">
+            <span id="kimo-url-txt"></span>
+            <button class="kimo-btn kimo-copy" style="width:35px; height:35px; font-size:14px;" onclick="kimoCopy()"><i class="fas fa-copy"></i></button>
+        </div>
+
+        <div class="kimo-social-row">
+            <a href="#" id="kimo-wa-link" class="kimo-btn kimo-wa" target="_blank"><i class="fab fa-whatsapp"></i></a>
+            <a href="#" id="kimo-tg-link" class="kimo-btn kimo-tg" target="_blank"><i class="fab fa-telegram-plane"></i></a>
+        </div>
+
+        <button class="kimo-close" onclick="document.getElementById('kimo-ultra-alert').style.display='none'">إغلاق ومتابعة المذاكرة</button>
+    </div>
+</div>
+
+<script>
+    (function() {
+        const ultraAlert = document.getElementById('kimo-ultra-alert');
+        const urlText = document.getElementById('kimo-url-txt');
+        const fullUrl = window.location.href;
+        
+        urlText.innerText = fullUrl;
+        document.getElementById('kimo-wa-link').href = `https://wa.me/?text=ذاكر معايا على كيمو أكاديمي، المراجعة عظمة 🔥: ${fullUrl}`;
+        document.getElementById('kimo-tg-link').href = `https://t.me/share/url?url=${fullUrl}&text=منصة كيمو أكاديمي - ثانوية عامة 2026`;
+
+        window.kimoCopy = function() {
+            navigator.clipboard.writeText(fullUrl);
+            alert('تم نسخ اللينك بنجاح! شكراً لأمانتك يا بطل 🚀');
+        }
+
+        // إظهار الرسالة عند الضغط على أزرار التصوير أو فقدان التركيز
+        window.addEventListener('blur', () => { ultraAlert.style.display = 'flex'; });
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'PrintScreen' || (e.ctrlKey && (e.key === 'p' || e.key === 's'))) {
+                e.preventDefault();
+                ultraAlert.style.display = 'flex';
+            }
+        });
+    })();
+</script>
 
 </body>
 </html>

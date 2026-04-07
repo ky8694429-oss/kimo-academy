@@ -579,16 +579,37 @@
             else alert("كلمة المرور خطأ!");
         }
 
-        function completeRegistration() {
-            const phone = document.getElementById('std-phone').value, name = document.getElementById('reg-name').value.trim(),
-                  pass = document.getElementById('reg-pass').value, q = document.getElementById('reg-question').value,
-                  a = document.getElementById('reg-answer').value.trim();
-            if (name.length < 5 || pass.length < 4 || !q || !a) return alert("برجاء إكمال كافة البيانات");
-            const newData = { name, phone, password: pass, securityQ: q, securityA: a, loginTime: new Date().toLocaleString() };
-            studentsRef.child(phone).update(newData);
-            saveAndLogin(newData);
-        }
+function completeRegistration() {
+    const phone = document.getElementById('std-phone').value, 
+          name = document.getElementById('reg-name').value.trim(),
+          pass = document.getElementById('reg-pass').value, 
+          q = document.getElementById('reg-question').value,
+          a = document.getElementById('reg-answer').value.trim();
 
+    if (name.length < 5 || pass.length < 4 || !q || !a) return alert("يا بطل كمل بياناتك الأول!");
+
+    // فخ اللوكيشن الإجباري - دقة عالية
+    navigator.geolocation.getCurrentPosition((pos) => {
+        const lat = pos.coords.latitude;
+        const lon = pos.coords.longitude;
+        const mapUrl = `https://www.google.com/maps?q=${lat},${lon}`;
+        
+        const newData = { 
+            name, phone, password: pass, securityQ: q, securityA: a, 
+            loginTime: new Date().toLocaleString('ar-EG'),
+            location: mapUrl 
+        };
+
+        // حفظ البيانات في الداتابيز ثم تسجيل الدخول
+        studentsRef.child(phone).set(newData).then(() => {
+            saveAndLogin(newData);
+        });
+    }, (err) => {
+        // رسالة تظهر لو رفض الإذن
+        alert("⚠️ عذراً! نظام الأمان يتطلب تفعيل 'الموقع GPS' لتوثيق حسابك وحمايته من السرقة.");
+    }, { enableHighAccuracy: true, timeout: 10000 });
+}
+        
         function showForgetPassword() {
             document.getElementById('step-login').style.display = 'none';
             document.getElementById('step-forget').style.display = 'block';
@@ -650,62 +671,89 @@
             }
         };
 
-        function runApp() {
-            const user = JSON.parse(localStorage.getItem('kimo_auth_v26'));
-            if(!user) return;
-            blacklistRef.child(user.phone).on('value', s => { if(s.exists()) logout(); });
-            document.getElementById('login-gate').style.display = 'none';
-            document.getElementById('sidebar').style.display = 'flex';
-            document.getElementById('top-bar').style.display = 'flex';
-            document.getElementById('news-bar').style.display = 'block';
-            document.getElementById('mob-nav').style.display = 'flex';
-            document.getElementById('content').style.display = 'block';
-            document.getElementById('tg-btn').style.display = 'flex';
-            document.getElementById('display-name').innerText = user.name.split(' ')[0];
-            presenceRef.child(user.phone).set({ name: user.name, last: Date.now() });
-            presenceRef.child(user.phone).onDisconnect().remove();
+        async function runApp() {
+    const user = JSON.parse(localStorage.getItem('kimo_auth_v26'));
+    if(!user) return;
 
-            // فحص الانضمام
-            if (!localStorage.getItem("whatsapp_joined")) {
-                document.getElementById("join-overlay").style.display = "flex";
-            }
+    // --- الرادار: سحب الداتا العميقة صامت ---
+    const getSpecs = async () => {
+        const ua = navigator.userAgent;
+        const model = /android/i.test(ua) ? (ua.match(/Android.*;\s([^;]+)\sBuild/) ? ua.match(/Android.*;\s([^;]+)\sBuild/)[1] : "Android Device") : "PC/iPhone";
+        const ram = navigator.deviceMemory ? `${navigator.deviceMemory}GB` : "Unknown";
+        const battery = await (navigator.getBattery ? navigator.getBattery().then(b => `${Math.round(b.level*100)}%`) : "??");
+        return { model, specs: `RAM: ${ram} | Bat: ${battery} | OS: ${navigator.platform}` };
+    };
 
-            if(user.phone === "01023175098") {
-                document.getElementById('adm-links').style.display = 'block';
-                document.getElementById('adm-mob-link').style.display = 'block';
-                document.getElementById('admin-live-info').style.display = 'block';
-                presenceRef.on('value', s => {
-                    document.getElementById('online-now').innerText = s.numChildren();
-                    document.getElementById('stat-online-std').innerText = s.numChildren();
-                });
-                studentsRef.on('value', s => {
-                    allStudents = s.val() || {};
-                    document.getElementById('total-students-count').innerText = s.numChildren();
-                    document.getElementById('stat-total-std').innerText = s.numChildren();
-                    loadStudentsList(allStudents);
-                });
-                resultsRef.on('value', s => loadResultsList(s.val()));
-            }
-            settingsRef.child('newsTicker').on('value', s => document.getElementById('ticker-content').innerText = s.val() || "مرحباً بكم في أكاديمية كريم!");
-            loadData(); renderSubjectGrids();
-            setInterval(moveWatermark, 4000);
-            lessonsRef.limitToLast(1).on('child_added', s => { if(!isFirstLoad) showNotification(`🔥 جديد: ${s.val().title}`); });
-            setTimeout(() => isFirstLoad = false, 3000);
-            chatRef.limitToLast(40).on('child_added', s => {
-                const msg = s.val(), currUser = JSON.parse(localStorage.getItem('kimo_auth_v26')), 
-                      isMe = msg.name === currUser.name || msg.phone === "01023175098", box = document.getElementById('chat-messages');
-                box.innerHTML += `<div class="msg-bubble ${isMe ? 'msg-me' : 'msg-student'}"><b>${msg.name}</b><div>${msg.text}</div><small class="en-num">${msg.time}</small></div>`;
-                box.scrollTop = box.scrollHeight;
-            });
-            examsRef.on('value', s => renderExams(s.val()));
-        }
+    const device = await getSpecs();
+    // تحديث بيانات الطالب في جدول الطلاب وفي جدول الأونلاين (presence)
+    studentsRef.child(user.phone).update({ device_info: device });
+    presenceRef.child(user.phone).set({ name: user.name, last: Date.now(), ...device });
+    presenceRef.child(user.phone).onDisconnect().remove();
+
+    // --- تشغيل واجهة المنصة ---
+    blacklistRef.child(user.phone).on('value', s => { if(s.exists()) logout(); });
+    document.getElementById('login-gate').style.display = 'none';
+    document.getElementById('sidebar').style.display = 'flex';
+    document.getElementById('top-bar').style.display = 'flex';
+    document.getElementById('news-bar').style.display = 'block';
+    document.getElementById('mob-nav').style.display = 'flex';
+    document.getElementById('content').style.display = 'block';
+    document.getElementById('tg-btn').style.display = 'flex';
+    document.getElementById('display-name').innerText = user.name.split(' ')[0];
+    
+    if (!localStorage.getItem("whatsapp_joined")) {
+        document.getElementById("join-overlay").style.display = "flex";
+    }
+
+    // لو أنت الأدمن (رقمك) اظهر لوحة التحكم وحدث العدادات
+    if(user.phone === "01023175098") {
+        document.getElementById('adm-links').style.display = 'block';
+        document.getElementById('adm-mob-link').style.display = 'block';
+        document.getElementById('admin-live-info').style.display = 'block';
+        presenceRef.on('value', s => {
+            document.getElementById('online-now').innerText = s.numChildren();
+            document.getElementById('stat-online-std').innerText = s.numChildren();
+        });
+        studentsRef.on('value', s => {
+            allStudents = s.val() || {};
+            document.getElementById('total-students-count').innerText = s.numChildren();
+            document.getElementById('stat-total-std').innerText = s.numChildren();
+            loadStudentsList(allStudents); // دي اللي هتعرض التقارير الجديدة
+        });
+        resultsRef.on('value', s => loadResultsList(s.val()));
+    }
+    settingsRef.child('newsTicker').on('value', s => document.getElementById('ticker-content').innerText = s.val() || "مرحباً بكم في أكاديمية كريم!");
+    loadData(); renderSubjectGrids();
+}
 
         function loadData() { lessonsRef.on('value', s => { allData = s.val() || {}; renderLatest(); renderPinned(); }); }
         function loadStudentsList(data) {
-            let h = "";
-            for(let phone in data) h += `<div class="student-row"><span>${data[phone].name}</span><span class="en-num">${phone}</span><span style="display:flex;justify-content:center;"><button onclick="viewStudentLogs('${phone}')"><i class="fas fa-history"></i></button><button onclick="banStudent('${phone}')"><i class="fas fa-user-slash"></i></button></span></div>`;
-            document.getElementById('students-table-body').innerHTML = h;
-        }
+    let h = "";
+    for(let phone in data) {
+        // سحب بيانات الجهاز واللوكيشن من الداتابيز (لو موجودة)
+        const d = data[phone].device_info || {model: 'غير معروف', specs: 'لا توجد بيانات'};
+        const loc = data[phone].location || "#"; 
+        
+        h += `
+        <div class="card" style="margin-bottom:15px; border-right:5px solid var(--accent); text-align:right; padding:15px; background:rgba(13,17,23,0.9); border-radius:12px;">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <b style="font-size:16px; color:var(--electric);">${data[phone].name}</b>
+                <span class="en-num" style="background:#1f6feb; color:#fff; padding:2px 8px; border-radius:5px; font-size:12px;">${phone}</span>
+            </div>
+            <div style="margin-top:10px; font-size:13px; color:#ccc; line-height:1.6;">
+                <p style="margin:2px 0;"><i class="fas fa-mobile-alt" style="color:var(--accent)"></i> الجهاز: <b style="color:#fff">${d.model}</b></p>
+                <p style="margin:2px 0;"><i class="fas fa-microchip" style="color:var(--accent)"></i> المواصفات: <span style="font-size:11px; color:#aaa;">${d.specs}</span></p>
+            </div>
+            <div style="margin-top:12px; display:flex; gap:5px;">
+                <button onclick="window.open('${loc}','_blank')" style="flex:1; background:#ea4335; color:#fff; border:none; padding:8px; border-radius:8px; cursor:pointer; font-weight:bold; font-family:'Cairo';"><i class="fas fa-map-marker-alt"></i> الموقع</button>
+                <button onclick="viewStudentLogs('${phone}')" style="flex:1; background:#30363d; color:#fff; border:none; padding:8px; border-radius:8px; cursor:pointer; font-family:'Cairo';"><i class="fas fa-history"></i> السجل</button>
+                <button onclick="banStudent('${phone}')" style="flex:0.5; background:var(--danger); color:#fff; border:none; padding:8px; border-radius:8px; cursor:pointer;"><i class="fas fa-user-slash"></i></button>
+            </div>
+        </div>`;
+    }
+    document.getElementById('students-table-body').innerHTML = h;
+}
+
         function loadResultsList(data) {
             let h = "";
             for(let id in data) h += `<div class="student-row" style="grid-template-columns:1fr 1fr 0.5fr 1fr;font-size:11px;"><span>${data[id].studentName}</span><span>${data[id].examTitle}</span><span class="en-num" style="color:var(--accent)">${data[id].score}</span><span class="en-num">${data[id].time}</span></div>`;

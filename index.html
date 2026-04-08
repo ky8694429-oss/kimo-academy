@@ -798,7 +798,7 @@ function completeRegistration() {
     // --- ✅ الدالة المسؤولة عن إظهار المنصة والزراير ---
     function openPlatform() {
         const elements = ['login-gate', 'sidebar', 'top-bar', 'content'];
-        elements.forEach(id => {
+                elements.forEach(id => {
             const el = document.getElementById(id);
             if (el) {
                 if (id === 'sidebar' || id === 'top-bar') el.style.display = 'flex';
@@ -810,17 +810,17 @@ function completeRegistration() {
         const nameDisplay = document.getElementById('display-name');
         if (nameDisplay) nameDisplay.innerText = user.name.split(' ')[0];
 
-        // تشغيل دوال تحميل البيانات الأصلية بتاعتك
+        // تشغيل دوال تحميل البيانات
         if (typeof loadData === "function") loadData();
         if (typeof renderSubjectGrids === "function") renderSubjectGrids();
 
         // حماية البلاك ليست
         if (typeof blacklistRef !== "undefined") {
-            blacklistRef.child(user.phone).on('value', s => { if(s.exists()) logout(); });
+            blacklistRef.child(user.phone).on('value', s => { if (s.exists()) logout(); });
         }
     }
 }
-  
+
         function loadData() { lessonsRef.on('value', s => { allData = s.val() || {}; renderLatest(); renderPinned(); }); }
         function loadStudentsList(sortedData) {
     let h = "";

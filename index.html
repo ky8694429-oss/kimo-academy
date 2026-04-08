@@ -1056,6 +1056,22 @@ function pushAdminToFirebase() {
         document.getElementById('adminModal').style.display = 'none';
     }).catch((error) => { alert('حصل مشكلة: ' + error.message); });
 }
+    // كود تشغيل أي زرار واقف
+document.addEventListener('click', function(e) {
+    const target = e.target.closest('button');
+    if (!target) return;
+    
+    // لو الزرار ليه وظيفة (onclick) بس مش شغال، الكود ده هينفذه
+    const action = target.getAttribute('onclick');
+    if (action) {
+        try {
+            eval(action); 
+        } catch(err) {
+            console.log("Error in button: ", err);
+        }
+    }
+});
+
 </script>
 <style>
     /* 1. تصميم شريط التمرير (Custom Scrollbar) */

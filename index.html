@@ -12,17 +12,17 @@
 </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة كيمو أكاديمي | مراجعات وامتحانات ثانوية عامة 2026 مجانية</title>
+    <title>منصة ذاكر أكاديمي </title>
 <link rel="icon" href="https://raw.githubusercontent.com/ky8694429-oss/kimo-academy/main/logo.png" type="image/png">
 
 <meta property="og:image" content="https://raw.githubusercontent.com/ky8694429-oss/kimo-academy/main/logo.png">
 
     
-    <meta name="description" content="أقوى منصة تعليمية مجانية لطلاب الثانوية العامة 2026. ملخصات، امتحانات تفاعلية، ومراجعات نهائية في الفيزياء، الكيمياء، وكل المواد للنظام الجديد.">
-    <meta name="keywords" content="ثانوية عامة 2026, مراجعات مجانية, امتحانات الكترونية, ملخصات فيزياء, كيمو اكاديمي, مراجعة ليلة الامتحان">
+    <meta name="description" content="أقوى منصة تعليمية لطلاب الثانوية العامة. ملخصات، امتحانات تفاعلية، ومراجعات نهائية في الفيزياء، الكيمياء، وكل المواد للنظام الجديد.">
+    <meta name="keywords" content="ثانوية عامة , مراجعات مجانية, امتحانات الكترونية, ملخصات فيزياء, ذاكر اكاديمي, مراجعة ليلة الامتحان">
     
-    <meta property="og:title" content="كيمو أكاديمي - مراجعات الثانوية العامة 2026">
-    <meta property="og:description" content="كل اللي تحتاجه للثانوية العامة في مكان واحد وببلاش.">
+    <meta property="og:title" content="ذاكر أكاديمي - مراجعات الثانوية العامة ">
+    <meta property="og:description" content="كل اللي تحتاجه للثانوية العامة في مكان واحد .">
     <meta property="og:url" content="https://ky8694429-oss.github.io/kimo-academy/">
     <meta property="og:type" content="website">
     
@@ -50,20 +50,6 @@
             font-family: 'Cairo', sans-serif; display: flex; min-height: 100vh; position: relative; user-select: none; 
             overflow-x: hidden;
             font-variant-numeric: tabular-nums;
-        }
-
-        /* --- تأثير البرق والكهرباء للسهم --- */
-        #lightning-flash {
-            position: fixed; inset: 0; pointer-events: none; z-index: 100000; background: white; opacity: 0;
-        }
-        @keyframes lightning {
-            0% { opacity: 0; } 10% { opacity: 0.8; } 20% { opacity: 0.2; } 30% { opacity: 0.9; } 100% { opacity: 0; }
-        }
-        .shock-effect { animation: shock 0.2s linear 2; }
-        @keyframes shock {
-            0% { transform: translate(2px, 1px) rotate(0deg); }
-            50% { transform: translate(-3px, -2px) rotate(-1deg); }
-            100% { transform: translate(0px, 0px) rotate(0deg); }
         }
 
         /* سهم القائمة المطور */
@@ -238,18 +224,6 @@
             align-items: center;
             transition: 0.3s;
         }
-        .whatsapp-float:hover { transform: scale(1.1); background-color: #128c7e; }
-
-        /* --- الرسالة المدمجة المحدثة --- */
-        #join-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.9);
-            display: flex; justify-content: center; align-items: center;
-            z-index: 999999; backdrop-filter: blur(8px);
-        }
-        .join-modal { background: #1a1a1a; padding: 30px; border-radius: 20px; text-align: center; max-width: 400px; width: 90%; border: 1px solid var(--accent); }
-        .btn-join { display: block; background: #25d366; color: white; padding: 15px; border-radius: 10px; text-decoration: none; margin: 15px 0; font-weight: bold; font-size: 18px; }
-        .btn-ignore { background: transparent; color: #888; border: 1px solid #444; padding: 8px; border-radius: 8px; cursor: pointer; width: 100%; margin-bottom: 20px; }
     </style>
 </head>
 <body oncontextmenu="return false;"> 
@@ -269,26 +243,7 @@
         <button class="tool-btn" onclick="logout()"><i class="fas fa-sign-out-alt"></i></button>
     </div>
 
-    <div id="news-bar" class="news-ticker"><div class="ticker-text" id="ticker-content">جاري تحميل الأخبار...</div></div>
-
-    <a href="https://t.me/K_I_M_O_8" target="_blank" class="support-cloud" id="tg-btn" style="display: none;"><i class="fab fa-telegram-plane"></i></a>
-
-    <a href="https://chat.whatsapp.com/E5tpwhb6D5j9lDnXBFNbLM" class="whatsapp-float" target="_blank">
-        <i class="fab fa-whatsapp" style="margin-left: 8px; font-size: 20px;"></i>
-        <span>جروب المتابعة</span>
-    </a>
-
-    <div id="join-overlay" style="display: none;">
-        <div class="join-modal">
-            <h2 style="color: var(--accent); margin-bottom: 10px;">أهلاً بك في أكاديمية كيمو 👑</h2>
-            <p style="color: #bbb; font-size: 14px;">عشان تتابع كل التحديثات والمراجعات، لازم تنضم لينا:</p>
-            <a href="https://chat.whatsapp.com/E5tpwhb6D5j9lDnXBFNbLM" class="btn-join" onclick="localStorage.setItem('whatsapp_joined', 'true');">
-                <i class="fab fa-whatsapp"></i> انضم لجروب الواتساب
-            </a>
-            <button class="btn-ignore" onclick="document.getElementById('join-overlay').style.display='none'">تجاهل الآن</button>
-            <div style="border-top: 1px solid #333; padding-top: 15px;">
-                <p style="font-size: 13px; color: #888;">للتواصل عبر تليجرام:</p>
-                <a href="https://t.me/K_I_M_O_8" target="_blank" style="color: var(--accent); text-decoration: none; font-weight: bold;">@K_I_M_O_8</a>
+    <div id="news-bar" class="news-ticker"><div class="ticker-text" id="ticker-content">جاري تحميل الأخبار...</div>
             </div>
         </div>
     </div>
@@ -311,8 +266,8 @@
                     <span style="position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%); color: #fff; font-size: 32px; font-weight: 900;">K</span>
                 </div>
                 <div class="logo-text-box">
-                    <div class="logo-main-name">KAREEM<span class="logo-crown-icon">👑</span></div>
-                    <span style="color: #FF9800; letter-spacing: 4px; border-top: 2px solid #444;">ACADEMY 2026</span>
+                    <div class="logo-main-name">ذاكر<span class="logo-crown-icon">👑</span></div>
+                    <span style="color: #FF9800; letter-spacing: 4px; border-top: 2px solid #444;">ACADEMY </span>
                 </div>
             </div>
             <h3 id="gate-title" style="margin-bottom: 20px; color: var(--accent);">تسجيل الدخول</h3>
@@ -359,8 +314,8 @@
                 <span style="position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%); color: #fff; font-size: 24px; font-weight: 900;">K</span>
             </div>
             <div class="logo-text-box">
-                <div class="logo-main-name" style="font-size: 30px;">KAREEM<span class="logo-crown-icon" style="top: -10px; font-size: 18px;">👑</span></div>
-                <span style="color: #FF9800; font-size: 10px; letter-spacing: 2px;">ACADEMY 2026</span>
+                <div class="logo-main-name" style="font-size: 30px;">ذاكر<span class="logo-crown-icon" style="top: -10px; font-size: 18px;">👑</span></div>
+                <span style="color: #FF9800; font-size: 10px; letter-spacing: 2px;">ACADEMY </span>
             </div>
         </div>
         <div class="nav-link active" onclick="tab(this, 'p-home')"><i class="fas fa-home"></i> <span>الرئيسية</span></div>
@@ -485,7 +440,7 @@
         </div>
     </main>
 
-    <footer>جميع الحقوق محفوظة للمطور كيمو © <span class="en-num">2026</span></footer>
+    <footer>جميع الحقوق محفوظة للمطور  © <span class="en-num">2026</span></footer>
     <div id="floating-watermark"></div>
 
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>

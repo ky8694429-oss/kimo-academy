@@ -2082,34 +2082,6 @@ function pushAdminToFirebase() {
         }
     }
 
-    // ميزة السحب للتحديث (Pull to Refresh) للموبايل
-    let touchStart = 0;
-    const loader = document.getElementById('ptr-loader');
-
-    window.addEventListener('touchstart', (e) => {
-        if (window.scrollY === 0) touchStart = e.touches[0].pageY;
-    }, {passive: true});
-
-    window.addEventListener('touchmove', (e) => {
-        const touchMove = e.touches[0].pageY;
-        const distance = touchMove - touchStart;
-
-        if (window.scrollY === 0 && distance > 0 && distance < 150) {
-            loader.style.top = (distance / 2) + 'px';
-        }
-    }, {passive: true});
-
-    window.addEventListener('touchend', (e) => {
-        const touchEnd = e.changedTouches[0].pageY;
-        if (window.scrollY === 0 && (touchEnd - touchStart) > 100) {
-            loader.style.top = '20px';
-            setTimeout(() => {
-                location.reload(); // عمل رفريش للمنصة
-            }, 500);
-        } else {
-            loader.style.top = '-60px';
-        }
-    });
 </script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 

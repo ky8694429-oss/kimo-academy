@@ -12,17 +12,17 @@
 </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة كيمو أكاديمي | مراجعات وامتحانات ثانوية عامة 2026 مجانية</title>
+    <title>منصة محاضراتي | مراجعات وامتحانات ثانوية عامة</title>
 <link rel="icon" href="https://raw.githubusercontent.com/ky8694429-oss/kimo-academy/main/logo.png" type="image/png">
 
 <meta property="og:image" content="https://raw.githubusercontent.com/ky8694429-oss/kimo-academy/main/logo.png">
 
     
-    <meta name="description" content="أقوى منصة تعليمية مجانية لطلاب الثانوية العامة 2026. ملخصات، امتحانات تفاعلية، ومراجعات نهائية في الفيزياء، الكيمياء، وكل المواد للنظام الجديد.">
-    <meta name="keywords" content="ثانوية عامة 2026, مراجعات مجانية, امتحانات الكترونية, ملخصات فيزياء, كيمو اكاديمي, مراجعة ليلة الامتحان">
+    <meta name="description" content="أقوى منصة تعليمية لطلاب الثانوية العامة. ملخصات، امتحانات تفاعلية، ومراجعات نهائية في الفيزياء، الكيمياء، وكل المواد للنظام الجديد.">
+    <meta name="keywords" content="ثانوية عامة, مراجعات, امتحانات الكترونية, ملخصات فيزياء, محاضراتي, مراجعة ليلة الامتحان">
     
-    <meta property="og:title" content="كيمو أكاديمي - مراجعات الثانوية العامة 2026">
-    <meta property="og:description" content="كل اللي تحتاجه للثانوية العامة في مكان واحد وببلاش.">
+    <meta property="og:title" content="محاضراتي - مراجعات الثانوية العامة">
+    <meta property="og:description" content="كل اللي تحتاجه للثانوية العامة في مكان واحد.">
     <meta property="og:url" content="https://ky8694429-oss.github.io/kimo-academy/">
     <meta property="og:type" content="website">
     
@@ -47,23 +47,9 @@
         body { 
             margin: 0; background: linear-gradient(-45deg, var(--main-bg), #0a192f, var(--card-bg), var(--main-bg)); 
             background-size: 400% 400%; animation: gradientBG 15s ease infinite; color: var(--text); 
-            font-family: 'Cairo', sans-serif; display: flex; min-height: 100vh; position: relative; user-select: none; 
+            font-family: 'Cairo', sans-serif; display: flex; min-height: 100vh; position: relative; 
             overflow-x: hidden;
             font-variant-numeric: tabular-nums;
-        }
-
-        /* --- تأثير البرق والكهرباء للسهم --- */
-        #lightning-flash {
-            position: fixed; inset: 0; pointer-events: none; z-index: 100000; background: white; opacity: 0;
-        }
-        @keyframes lightning {
-            0% { opacity: 0; } 10% { opacity: 0.8; } 20% { opacity: 0.2; } 30% { opacity: 0.9; } 100% { opacity: 0; }
-        }
-        .shock-effect { animation: shock 0.2s linear 2; }
-        @keyframes shock {
-            0% { transform: translate(2px, 1px) rotate(0deg); }
-            50% { transform: translate(-3px, -2px) rotate(-1deg); }
-            100% { transform: translate(0px, 0px) rotate(0deg); }
         }
 
         /* سهم القائمة المطور */
@@ -80,7 +66,6 @@
         .logo-master-container {
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             padding: 20px; margin: 0 auto; position: relative;
-            animation: masterPulse 3s infinite ease-in-out; 
         }
 
         .logo-main-name { 
@@ -91,7 +76,6 @@
         .logo-crown-icon {
             position: absolute; top: -15px; right: -5px; 
             font-size: 22px; color: #FFD700;
-            animation: crownFloat 3s infinite ease-in-out;
         }
 
         @keyframes masterPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }

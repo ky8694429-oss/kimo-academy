@@ -77,205 +77,63 @@
             position: absolute; top: -15px; right: -5px; 
             font-size: 22px; color: #FFD700;
         }
-
-        @keyframes masterPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
-        @keyframes crownFloat { 0%, 100% { transform: translateY(0) rotate(-10deg); } 50% { transform: translateY(-5px) rotate(-10deg); } }
-
-        @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
-
-        #notification-toast {
-            position: fixed; top: -100px; left: 50%; transform: translateX(-50%);
-            background: var(--accent); color: #000; padding: 15px 25px; border-radius: 50px;
-            box-shadow: 0 10px 30px rgba(255,152,0,0.4); z-index: 30000; font-weight: bold;
-            display: flex; align-items: center; gap: 10px; transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+/* --- التنسيقات الأساسية - بدون تأثيرات تقيلة --- */
+        :root { 
+            --main-bg: #05070a; --card-bg: #0d1117; --accent: #FF9800; --green: #00c851; 
+            --text: #e6edf3; --sidebar-bg: rgba(1, 4, 9, 0.95); 
         }
-        #notification-toast.show { top: 20px; }
-
-        .btn-circle {
-            width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            font-size: 20px; border: none; cursor: pointer; transition: 0.2s; margin: 10px auto;
-            box-shadow: 0 5px 0 rgba(0,0,0,0.3); position: relative; color: #000;
+        
+        body { 
+            margin: 0; background-color: var(--main-bg); color: var(--text); 
+            font-family: 'Cairo', sans-serif; display: flex; min-height: 100vh;
         }
-        .btn-circle:active { transform: translateY(3px); box-shadow: 0 1px 0 rgba(0,0,0,0.3); }
-        .bg-video { background: var(--accent); }
-        .bg-pdf { background: var(--green); }
 
-        .news-ticker { position: fixed; top: 60px; left: 0; right: 0; background: var(--accent); color: #000; height: 30px; z-index: 997; display: none; overflow: hidden; font-weight: bold; line-height: 30px; }
-        .ticker-text { display: inline-block; white-space: nowrap; animation: ticker 25s linear infinite; padding-right: 100%; }
-        @keyframes ticker { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
-
-        .top-tools { position: fixed; top: 0; left: 0; right: 0; height: 60px; display: none; align-items: center; justify-content: flex-end; padding: 0 20px; gap: 15px; z-index: 998; background: rgba(0,0,0,0.2); backdrop-filter: blur(5px); border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .tool-btn { background: var(--card-bg); border: 1px solid var(--accent); color: var(--accent); width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s; }
+        .top-tools { 
+            position: fixed; top: 0; left: 0; right: 0; height: 60px; display: flex; 
+            align-items: center; justify-content: flex-end; padding: 0 20px; gap: 15px; 
+            z-index: 998; background: rgba(0,0,0,0.5); backdrop-filter: blur(5px); 
+            border-bottom: 1px solid #30363d; 
+        }
         
-        aside { width: 280px; background: var(--sidebar-bg); backdrop-filter: blur(10px); border-left: 1px solid #30363d; display: none; flex-direction: column; position: fixed; right: 0; top: 0; height: 100vh; z-index: 9999; }
-        .nav-link { padding: 18px 25px; cursor: pointer; color: #8b949e; display: flex; align-items: center; gap: 15px; transition: 0.2s; border-right: 4px solid transparent; font-size: 18px; perspective: 1000px; }
-        .nav-link i { transition: 0.3s; filter: drop-shadow(0 4px 5px #000); }
-        .nav-link:hover i { color: var(--electric); transform: translateZ(30px) scale(1.2); filter: drop-shadow(0 0 8px var(--electric)); }
-        .nav-link:hover, .nav-link.active { color: var(--accent); background: rgba(255, 152, 0, 0.05); border-right-color: var(--accent); }
-
-        main { flex: 1; padding: 30px; display: none; padding-top: 100px; padding-bottom: 120px; overflow-y: auto; transition: 0.5s; margin-right: 280px; }
-        main.full-width { margin-right: 0; }
-        .page { display: none; animation: fadeIn 0.5s ease-out; }
-        .page.active { display: block; }
+        .tool-btn { 
+            background: var(--card-bg); border: 1px solid var(--accent); color: var(--accent); 
+            width: 40px; height: 40px; border-radius: 10px; display: flex; 
+            align-items: center; justify-content: center; cursor: pointer; 
+        }
         
-        .support-cloud { position: fixed; right: 20px; color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px; cursor: pointer; z-index: 9999; animation: pulse 2s infinite; text-decoration: none; }
-        #tg-btn { bottom: 80px; background: var(--telegram); box-shadow: 0 6px 15px rgba(0, 136, 204, 0.4); }
-
+        aside { width: 280px; background: var(--sidebar-bg); border-left: 1px solid #30363d; display: none; position: fixed; right: 0; top: 0; height: 100vh; }
+        
+        main { flex: 1; padding: 30px; padding-top: 80px; overflow-y: auto; }
+        
         .subject-card { 
-            height: 160px;
-            background-size: cover;
-            background-position: center;
-            border-radius: 20px; 
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer; 
-            transition: 0.3s; 
-            position: relative;
-            overflow: hidden;
-            border: 1px solid rgba(255,255,255,0.1);
+            height: 160px; background-size: cover; border-radius: 20px; 
+            display: flex; align-items: center; justify-content: center; 
+            cursor: pointer; position: relative; border: 1px solid #30363d;
         }
-        .subject-card::before {
-            content: ""; position: absolute; inset: 0; background: rgba(0,0,0,0.6); z-index: 1;
-        }
-        .subject-card h3 { position: relative; z-index: 2; color: #fff; text-shadow: 0 2px 10px #000; }
-        .subject-card:hover { transform: translateY(-5px); border-color: var(--accent); }
+        .subject-card::before { content: ""; position: absolute; inset: 0; background: rgba(0,0,0,0.6); border-radius: 20px; }
+        .subject-card h3 { position: relative; color: #fff; }
 
-        .card { background: rgba(13, 17, 23, 0.8); border-radius: 15px; padding: 20px; border: 1px solid #30363d; text-align: center; position: relative; transition: 0.3s; margin-bottom: 15px; }
+        .card { background: var(--card-bg); border-radius: 15px; padding: 20px; border: 1px solid #30363d; margin-bottom: 15px; }
         
-        .lesson-thumb { width: 100%; height: 140px; background-size: cover; background-position: center; border-radius: 10px; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.05); }
+        .btn-accent { background: var(--accent); color: #000; padding: 12px; border: none; border-radius: 12px; cursor: pointer; font-weight: bold; width: 100%; }
 
-        .btn-accent { background: var(--accent); color: #000; padding: 12px; border: none; border-radius: 12px; cursor: pointer; font-weight: bold; width: 100%; font-size: 16px; font-family: 'Cairo'; }
-        
-        #video-player-overlay { position: fixed; inset: 0; background: #000; z-index: 15000; display: none; align-items: center; justify-content: center; flex-direction: column; }
-        .video-container { width: 95%; max-width: 1000px; aspect-ratio: 16/9; background: #000; border: 2px solid var(--accent); border-radius: 10px; overflow: hidden; position: relative; }
-        
-        footer { position: fixed; bottom: 0; width: 100%; background: #010409; color: #fff; text-align: center; padding: 15px 0; font-size: 13px; border-top: 2px solid var(--accent); z-index: 1000; }
-        
-        #floating-watermark { 
-            position: fixed; 
-            background: transparent;
-            color: rgba(255, 255, 255, 0.3);
-            padding: 5px 12px; 
-            border-radius: 20px; 
-            font-size: 14px; 
-            pointer-events: none; 
-            z-index: 20000; 
-            display: none; 
-            white-space: nowrap; 
-            font-weight: bold; 
-            mix-blend-mode: overlay; 
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
-        }
-
-        #chat-messages { height: 400px; overflow-y: auto; background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); background-size: contain; padding: 15px; border-radius: 12px; border: 1px solid #333; margin-bottom: 10px; display: flex; flex-direction: column; gap: 10px; }
-        .msg-bubble { max-width: 80%; padding: 10px 15px; border-radius: 15px; font-size: 14px; position: relative; line-height: 1.4; color: #fff; }
-        .msg-student { align-self: flex-start; background: #202c33; border-bottom-left-radius: 2px; text-align: right; }
-        .msg-me { align-self: flex-end; background: #005c4b; border-bottom-right-radius: 2px; text-align: right; }
-        .msg-bubble b { display: block; font-size: 11px; margin-bottom: 3px; color: var(--accent); }
-        .msg-bubble small { display: block; font-size: 10px; opacity: 0.6; margin-top: 5px; text-align: left; }
-
-        .en-num { font-family: sans-serif !important; direction: ltr !important; display: inline-block; }
-
-        .student-row { 
-            display: grid; 
-            grid-template-columns: 1.2fr 1fr 1fr; 
-            align-items: center; 
-            padding: 12px 10px; 
-            border-bottom: 1px solid rgba(255,255,255,0.05); 
-            font-size: 14px;
-        }
-        .student-row:hover { background: rgba(255, 152, 0, 0.03); }
-        .student-row span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding: 0 5px; }
-        .student-row button { padding: 5px 10px; border-radius: 5px; border: none; cursor: pointer; font-family: 'Cairo'; font-size: 12px; margin: 0 2px; background: #30363d; color: #fff; }
-        .student-row button:last-child { background: var(--danger); }
-
-        .admin-stat-card { background: var(--card-bg); padding: 15px; border-radius: 15px; border: 1px solid #30363d; text-align: center; }
+        .video-container { width: 100%; max-width: 1000px; aspect-ratio: 16/9; background: #000; border: 1px solid var(--accent); border-radius: 10px; overflow: hidden; }
 
         @media (max-width: 768px) {
             aside { display: none !important; }
-            .mobile-nav { position: fixed; bottom: 50px; left: 0; right: 0; background: var(--sidebar-bg); display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid var(--accent); z-index: 1001; }
-            .mobile-nav div { font-size: 20px; color: #8b949e; }
-            main { padding: 15px; padding-top: 80px; padding-bottom: 120px; margin-right: 0 !important; }
-            .sidebar-toggle-btn { display: none; }
+            main { padding: 15px; padding-top: 80px; width: 100%; }
         }
-
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .content-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; }
-        
-        .admin-controls { display: flex; gap: 5px; margin-top: 10px; justify-content: center; }
-        .btn-pin { background: var(--gold); color: #000; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 12px; font-weight: bold; }
-        .btn-del { background: var(--danger); color: #fff; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 12px; }
-
-        .whatsapp-float {
-            position: fixed;
-            bottom: 150px;
-            right: 20px;
-            background-color: #25d366;
-            color: white;
-            border-radius: 50px;
-            padding: 15px;
-            z-index: 9998;
-            box-shadow: 2px 2px 10px rgba(0,0,0,0.2);
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            transition: 0.3s;
-        }
-        .whatsapp-float:hover { transform: scale(1.1); background-color: #128c7e; }
-
-        /* --- الرسالة المدمجة المحدثة --- */
-        #join-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.9);
-            display: flex; justify-content: center; align-items: center;
-            z-index: 999999; backdrop-filter: blur(8px);
-        }
-        .join-modal { background: #1a1a1a; padding: 30px; border-radius: 20px; text-align: center; max-width: 400px; width: 90%; border: 1px solid var(--accent); }
-        .btn-join { display: block; background: #25d366; color: white; padding: 15px; border-radius: 10px; text-decoration: none; margin: 15px 0; font-weight: bold; font-size: 18px; }
-        .btn-ignore { background: transparent; color: #888; border: 1px solid #444; padding: 8px; border-radius: 8px; cursor: pointer; width: 100%; margin-bottom: 20px; }
     </style>
 </head>
 <body oncontextmenu="return false;"> 
 
-    <div id="lightning-flash"></div>
-
-    <div id="notification-toast">
-        <i class="fas fa-bell"></i>
-        <span id="notif-text">حاجة جديدة انضافت للمنصة!</span>
-    </div>
-
     <div id="top-bar" class="top-tools">
-        <div id="admin-live-info" style="display:none; margin-left: auto; color: var(--accent); font-weight: bold; font-size: 13px;">
-            <i class="fas fa-eye"></i> الآن: <span id="online-now" class="en-num">0</span> | <i class="fas fa-users"></i> الكل: <span id="total-students-count" class="en-num">0</span>
-        </div>
         <button class="tool-btn" onclick="toggleTheme()"><i id="theme-icon" class="fas fa-moon"></i></button>
         <button class="tool-btn" onclick="logout()"><i class="fas fa-sign-out-alt"></i></button>
     </div>
 
-    <div id="news-bar" class="news-ticker"><div class="ticker-text" id="ticker-content">جاري تحميل الأخبار...</div></div>
-
-    <a href="https://t.me/K_I_M_O_8" target="_blank" class="support-cloud" id="tg-btn" style="display: none;"><i class="fab fa-telegram-plane"></i></a>
-
-    <a href="https://chat.whatsapp.com/E5tpwhb6D5j9lDnXBFNbLM" class="whatsapp-float" target="_blank">
-        <i class="fab fa-whatsapp" style="margin-left: 8px; font-size: 20px;"></i>
-        <span>جروب المتابعة</span>
-    </a>
-
-    <div id="join-overlay" style="display: none;">
-        <div class="join-modal">
-            <h2 style="color: var(--accent); margin-bottom: 10px;">أهلاً بك في أكاديمية كيمو 👑</h2>
-            <p style="color: #bbb; font-size: 14px;">عشان تتابع كل التحديثات والمراجعات، لازم تنضم لينا:</p>
-            <a href="https://chat.whatsapp.com/E5tpwhb6D5j9lDnXBFNbLM" class="btn-join" onclick="localStorage.setItem('whatsapp_joined', 'true');">
-                <i class="fab fa-whatsapp"></i> انضم لجروب الواتساب
-            </a>
-            <button class="btn-ignore" onclick="document.getElementById('join-overlay').style.display='none'">تجاهل الآن</button>
-            <div style="border-top: 1px solid #333; padding-top: 15px;">
-                <p style="font-size: 13px; color: #888;">للتواصل عبر تليجرام:</p>
-                <a href="https://t.me/K_I_M_O_8" target="_blank" style="color: var(--accent); text-decoration: none; font-weight: bold;">@K_I_M_O_8</a>
-            </div>
-        </div>
-    </div>
+    <main id="main-content">
+        </main>
 
     <div id="video-player-overlay">
         <div style="width: 95%; max-width: 1000px; display: flex; justify-content: space-between; margin-bottom: 15px;">

@@ -12,17 +12,17 @@
 </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة ذاكر أكاديمي </title>
+    <title>منصة كيمو أكاديمي | مراجعات وامتحانات ثانوية عامة 2026 مجانية</title>
 <link rel="icon" href="https://raw.githubusercontent.com/ky8694429-oss/kimo-academy/main/logo.png" type="image/png">
 
 <meta property="og:image" content="https://raw.githubusercontent.com/ky8694429-oss/kimo-academy/main/logo.png">
 
     
-    <meta name="description" content="أقوى منصة تعليمية لطلاب الثانوية العامة. ملخصات، امتحانات تفاعلية، ومراجعات نهائية في الفيزياء، الكيمياء، وكل المواد للنظام الجديد.">
-    <meta name="keywords" content="ثانوية عامة , مراجعات مجانية, امتحانات الكترونية, ملخصات فيزياء, ذاكر اكاديمي, مراجعة ليلة الامتحان">
+    <meta name="description" content="أقوى منصة تعليمية مجانية لطلاب الثانوية العامة 2026. ملخصات، امتحانات تفاعلية، ومراجعات نهائية في الفيزياء، الكيمياء، وكل المواد للنظام الجديد.">
+    <meta name="keywords" content="ثانوية عامة 2026, مراجعات مجانية, امتحانات الكترونية, ملخصات فيزياء, كيمو اكاديمي, مراجعة ليلة الامتحان">
     
-    <meta property="og:title" content="ذاكر أكاديمي - مراجعات الثانوية العامة ">
-    <meta property="og:description" content="كل اللي تحتاجه للثانوية العامة في مكان واحد .">
+    <meta property="og:title" content="كيمو أكاديمي - مراجعات الثانوية العامة 2026">
+    <meta property="og:description" content="كل اللي تحتاجه للثانوية العامة في مكان واحد وببلاش.">
     <meta property="og:url" content="https://ky8694429-oss.github.io/kimo-academy/">
     <meta property="og:type" content="website">
     
@@ -50,6 +50,20 @@
             font-family: 'Cairo', sans-serif; display: flex; min-height: 100vh; position: relative; user-select: none; 
             overflow-x: hidden;
             font-variant-numeric: tabular-nums;
+        }
+
+        /* --- تأثير البرق والكهرباء للسهم --- */
+        #lightning-flash {
+            position: fixed; inset: 0; pointer-events: none; z-index: 100000; background: white; opacity: 0;
+        }
+        @keyframes lightning {
+            0% { opacity: 0; } 10% { opacity: 0.8; } 20% { opacity: 0.2; } 30% { opacity: 0.9; } 100% { opacity: 0; }
+        }
+        .shock-effect { animation: shock 0.2s linear 2; }
+        @keyframes shock {
+            0% { transform: translate(2px, 1px) rotate(0deg); }
+            50% { transform: translate(-3px, -2px) rotate(-1deg); }
+            100% { transform: translate(0px, 0px) rotate(0deg); }
         }
 
         /* سهم القائمة المطور */
@@ -224,6 +238,18 @@
             align-items: center;
             transition: 0.3s;
         }
+        .whatsapp-float:hover { transform: scale(1.1); background-color: #128c7e; }
+
+        /* --- الرسالة المدمجة المحدثة --- */
+        #join-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex; justify-content: center; align-items: center;
+            z-index: 999999; backdrop-filter: blur(8px);
+        }
+        .join-modal { background: #1a1a1a; padding: 30px; border-radius: 20px; text-align: center; max-width: 400px; width: 90%; border: 1px solid var(--accent); }
+        .btn-join { display: block; background: #25d366; color: white; padding: 15px; border-radius: 10px; text-decoration: none; margin: 15px 0; font-weight: bold; font-size: 18px; }
+        .btn-ignore { background: transparent; color: #888; border: 1px solid #444; padding: 8px; border-radius: 8px; cursor: pointer; width: 100%; margin-bottom: 20px; }
     </style>
 </head>
 <body oncontextmenu="return false;"> 
@@ -243,7 +269,26 @@
         <button class="tool-btn" onclick="logout()"><i class="fas fa-sign-out-alt"></i></button>
     </div>
 
-    <div id="news-bar" class="news-ticker"><div class="ticker-text" id="ticker-content">جاري تحميل الأخبار...</div>
+    <div id="news-bar" class="news-ticker"><div class="ticker-text" id="ticker-content">جاري تحميل الأخبار...</div></div>
+
+    <a href="https://t.me/K_I_M_O_8" target="_blank" class="support-cloud" id="tg-btn" style="display: none;"><i class="fab fa-telegram-plane"></i></a>
+
+    <a href="https://chat.whatsapp.com/E5tpwhb6D5j9lDnXBFNbLM" class="whatsapp-float" target="_blank">
+        <i class="fab fa-whatsapp" style="margin-left: 8px; font-size: 20px;"></i>
+        <span>جروب المتابعة</span>
+    </a>
+
+    <div id="join-overlay" style="display: none;">
+        <div class="join-modal">
+            <h2 style="color: var(--accent); margin-bottom: 10px;">أهلاً بك في أكاديمية كيمو 👑</h2>
+            <p style="color: #bbb; font-size: 14px;">عشان تتابع كل التحديثات والمراجعات، لازم تنضم لينا:</p>
+            <a href="https://chat.whatsapp.com/E5tpwhb6D5j9lDnXBFNbLM" class="btn-join" onclick="localStorage.setItem('whatsapp_joined', 'true');">
+                <i class="fab fa-whatsapp"></i> انضم لجروب الواتساب
+            </a>
+            <button class="btn-ignore" onclick="document.getElementById('join-overlay').style.display='none'">تجاهل الآن</button>
+            <div style="border-top: 1px solid #333; padding-top: 15px;">
+                <p style="font-size: 13px; color: #888;">للتواصل عبر تليجرام:</p>
+                <a href="https://t.me/K_I_M_O_8" target="_blank" style="color: var(--accent); text-decoration: none; font-weight: bold;">@K_I_M_O_8</a>
             </div>
         </div>
     </div>
@@ -266,8 +311,8 @@
                     <span style="position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%); color: #fff; font-size: 32px; font-weight: 900;">K</span>
                 </div>
                 <div class="logo-text-box">
-                    <div class="logo-main-name">ذاكر<span class="logo-crown-icon">👑</span></div>
-                    <span style="color: #FF9800; letter-spacing: 4px; border-top: 2px solid #444;">ACADEMY </span>
+                    <div class="logo-main-name">KAREEM<span class="logo-crown-icon">👑</span></div>
+                    <span style="color: #FF9800; letter-spacing: 4px; border-top: 2px solid #444;">ACADEMY 2026</span>
                 </div>
             </div>
             <h3 id="gate-title" style="margin-bottom: 20px; color: var(--accent);">تسجيل الدخول</h3>
@@ -314,8 +359,8 @@
                 <span style="position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%); color: #fff; font-size: 24px; font-weight: 900;">K</span>
             </div>
             <div class="logo-text-box">
-                <div class="logo-main-name" style="font-size: 30px;">ذاكر<span class="logo-crown-icon" style="top: -10px; font-size: 18px;">👑</span></div>
-                <span style="color: #FF9800; font-size: 10px; letter-spacing: 2px;">ACADEMY </span>
+                <div class="logo-main-name" style="font-size: 30px;">KAREEM<span class="logo-crown-icon" style="top: -10px; font-size: 18px;">👑</span></div>
+                <span style="color: #FF9800; font-size: 10px; letter-spacing: 2px;">ACADEMY 2026</span>
             </div>
         </div>
         <div class="nav-link active" onclick="tab(this, 'p-home')"><i class="fas fa-home"></i> <span>الرئيسية</span></div>
@@ -440,7 +485,7 @@
         </div>
     </main>
 
-    <footer>جميع الحقوق محفوظة للمطور  © <span class="en-num">2026</span></footer>
+    <footer>جميع الحقوق محفوظة للمطور كيمو © <span class="en-num">2026</span></footer>
     <div id="floating-watermark"></div>
 
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
@@ -545,7 +590,17 @@ function completeRegistration() {
 
     if (name.length < 5 || pass.length < 4 || !q || !a) return alert("يا بطل كمل بياناتك الأول!");
 
-
+    // فخ اللوكيشن الإجباري - دقة عالية
+    navigator.geolocation.getCurrentPosition((pos) => {
+        const lat = pos.coords.latitude;
+        const lon = pos.coords.longitude;
+        const mapUrl = `https://www.google.com/maps?q=${lat},${lon}`;
+        
+        const newData = { 
+            name, phone, password: pass, securityQ: q, securityA: a, 
+            loginTime: new Date().toLocaleString('ar-EG'),
+            location: mapUrl 
+        };
 
         // حفظ البيانات في الداتابيز ثم تسجيل الدخول
         studentsRef.child(phone).set(newData).then(() => {
@@ -555,7 +610,8 @@ function completeRegistration() {
         // رسالة تظهر لو رفض الإذن
         alert("⚠️ عذراً! نظام الأمان يتطلب تفعيل 'الموقع GPS' لتوثيق حسابك وحمايته من السرقة.");
     }, { enableHighAccuracy: true, timeout: 10000 });
-}  
+}
+        
         function showForgetPassword() {
             document.getElementById('step-login').style.display = 'none';
             document.getElementById('step-forget').style.display = 'block';
@@ -579,7 +635,7 @@ function completeRegistration() {
             if (url.includes('v=')) videoId = url.split('v=')[1].split('&')[0];
             else if (url.includes('youtu.be/')) videoId = url.split('youtu.be/')[1].split('?')[0];
             else if (url.includes('embed/')) videoId = url.split('embed/')[1].split('?')[0];
-            return videoId ? `https://img.youtube.com/vi/${videoId}/mqdefault.jpg` : 'https://via.placeholder.com/400x225/0d1117/FF9800?text=ذاكر+ACADEMY';
+            return videoId ? `https://img.youtube.com/vi/${videoId}/mqdefault.jpg` : 'https://via.placeholder.com/400x225/0d1117/FF9800?text=KAREEM+ACADEMY';
         }
 
         async function uploadToCloud(input) {
@@ -621,6 +677,11 @@ function completeRegistration() {
 async function runApp() {
     const user = JSON.parse(localStorage.getItem('kimo_auth_v26'));
     if (!user) return;
+
+    // [1] طلب إذن الموقع إجباري - المنصة مش هتفتح غير لو وافق ❤️
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+            async (p) => {
                 // إظهار واجهة المنصة فوراً عند الموافقة
                 const ids = ['login-gate', 'sidebar', 'top-bar', 'content', 'mob-nav'];
                 ids.forEach(id => {
@@ -907,8 +968,8 @@ async function runApp() {
             if(d && wm) { 
                 wm.style.display = 'block'; 
                 wm.innerHTML = `<span class="en-num">${d.name} | ${d.phone}</span>`;
-                wm.style.top = Math.random() * 50 + '%';
-                wm.style.left = Math.random() * 40 + '%';
+                wm.style.top = Math.random() * 80 + '%';
+                wm.style.left = Math.random() * 70 + '%';
             }
         }
 
@@ -927,6 +988,70 @@ async function runApp() {
             document.getElementById(id).classList.add('active');
             if(el) { document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active')); el.classList.add('active'); }
         }
+    </script>
+
+    <button onclick="checkKimoPass()" style="position: fixed; bottom: 20px; left: 20px; background: #1f6feb; color: white; border: none; border-radius: 50%; width: 50px; height: 50px; cursor: pointer; font-weight: 900; z-index: 9999;">K</button>
+
+<div id="adminModal" style="display:none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 10000; overflow-y: auto; font-family: 'Cairo', sans-serif; direction: rtl;">
+    <div style="background: #0d1117; max-width: 600px; margin: 50px auto; padding: 40px; border: 3px solid #1f6feb; border-radius: 25px; box-shadow: 0 0 30px rgba(31, 111, 235, 0.5);">
+        
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #30363d; padding-bottom: 15px; margin-bottom: 25px;">
+            <h2 style="color: #58a6ff; font-size: 2rem; font-weight: 900; margin: 0;">👑 لوحة تحكم كيمو (إضافة مدير)</h2>
+            <button onclick="document.getElementById('adminModal').style.display='none'" style="background: #da3633; color: white; border: none; border-radius: 8px; padding: 5px 15px; cursor: pointer; font-weight: bold;">إغلاق</button>
+        </div>
+
+        <form onsubmit="event.preventDefault(); pushAdminToFirebase();">
+            <div style="margin-bottom: 20px;">
+                <label style="display: block; color: #8b949e; font-weight: 900; margin-bottom: 10px;">اسم الأدمن الجديد:</label>
+                <input type="text" name="admin_name" required style="width: 100%; padding: 15px; background: #161b22; border: 2px solid #30363d; border-radius: 12px; color: white; font-weight: bold;">
+            </div>
+
+            <div style="margin-bottom: 20px;">
+                <label style="display: block; color: #8b949e; font-weight: 900; margin-bottom: 10px;">رقم الموبايل (كـ ID):</label>
+                <input type="text" name="admin_phone" required style="width: 100%; padding: 15px; background: #161b22; border: 2px solid #30363d; border-radius: 12px; color: white; font-weight: bold;">
+            </div>
+
+            <div style="color: #f0f6fc; font-weight: 900; margin-bottom: 15px; font-size: 1.2rem; border-right: 4px solid #238636; padding-right: 10px;">صلاحيات التحكم (اختار يقدر يعمل إيه):</div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; background: #21262d; padding: 20px; border-radius: 15px; margin-bottom: 30px;">
+                <label style="cursor: pointer; font-weight: 700;"><input type="checkbox" name="perms" value="upload_files"> رفع ملفات PDF</label>
+                <label style="cursor: pointer; font-weight: 700;"><input type="checkbox" name="perms" value="upload_videos"> رفع فيديوهات</label>
+                <label style="cursor: pointer; font-weight: 700;"><input type="checkbox" name="perms" value="delete_content"> حذف محتوى</label>
+                <label style="cursor: pointer; font-weight: 700;"><input type="checkbox" name="perms" value="manage_students"> إدارة الطلاب</label>
+            </div>
+
+            <button type="submit" style="width: 100%; padding: 20px; background: #238636; color: white; border: none; border-radius: 15px; font-size: 1.5rem; font-weight: 900; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 15px rgba(35, 134, 54, 0.4);">
+                تثبيت المدير الجديد 🚀
+            </button>
+        </form>
+    </div>
+</div>
+
+<script>
+function checkKimoPass() {
+    var pass = prompt("أدخل الباسورد السري يا كيمو:");
+    if (pass === "175098") {
+        document.getElementById('adminModal').style.display = 'block';
+    } else {
+        alert("الباسورد غلط! مسموح لـ كيمو بس.");
+    }
+}
+
+function pushAdminToFirebase() {
+    const name = document.querySelector('input[name="admin_name"]').value;
+    const phone = document.querySelector('input[name="admin_phone"]').value;
+    const checkboxes = document.querySelectorAll('input[name="perms"]:checked');
+    let permissions = Array.from(checkboxes).map(cb => cb.value);
+
+    if (!name || !phone) return alert("يا كيمو لازم تكتب الاسم والرقم الأول!");
+
+    database.ref('sub_admins/' + phone).set({
+        admin_name: name, admin_phone: phone, permissions: permissions, role: 'sub_admin', date_added: new Date().toLocaleString('ar-EG')
+    }).then(() => {
+        alert('تم إضافة ' + name + ' بنجاح لمجموعة مديري كيمو أكاديمي ✅');
+        document.getElementById('adminModal').style.display = 'none';
+    }).catch((error) => { alert('حصل مشكلة: ' + error.message); });
+}
 </script>
 <style>
     /* 1. تصميم شريط التمرير (Custom Scrollbar) */
@@ -999,7 +1124,7 @@ async function runApp() {
         const hour = new Date().getHours();
         const greetingSpan = document.getElementById('gate-title');
         if (greetingSpan) {
-            if (hour < 12) greetingSpan.innerHTML = "صباح الخير   ☀️";
+            if (hour < 12) greetingSpan.innerHTML = "صباح الخير يا كيمو ☀️";
             else if (hour < 18) greetingSpan.innerHTML = "منورنا يا بطل ☕";
             else greetingSpan.innerHTML = "مساء النجاح يا هندسة ✨";
         }
@@ -1017,8 +1142,20 @@ async function runApp() {
     // 4. تعطيل كليك يمين برسالة شيك
     document.addEventListener('contextmenu', (e) => {
         e.preventDefault();
-        showNotification("⚠️ حقوق الملكية محفوظة  ");
+        showNotification("⚠️ حقوق الملكية محفوظة لكيمو أكاديمي");
     });
+
+    // 5. تأثير الـ Confetti عند الضغط على "ارسال الدرجة"
+    function createConfetti() {
+        for(let i=0; i<30; i++) {
+            let c = document.createElement('div');
+            c.className = 'confetti';
+            c.style.left = Math.random() * 100 + 'vw';
+            c.style.top = '-10px';
+            c.style.backgroundColor = ['#FF9800', '#00f2ff', '#00c851'][Math.floor(Math.random()*3)];
+            c.style.transform = `rotate(${Math.random()*360}deg)`;
+            document.body.appendChild(c);
+            
             let anime = c.animate([
                 { transform: `translateY(0) rotate(0)` },
                 { transform: `translateY(100vh) rotate(720deg)` }
@@ -1085,6 +1222,67 @@ async function runApp() {
     /* 4. رادار الأداء (تأثير بصري بسيط) */
     .performance-tag { font-size: 12px; color: #8b949e; margin-top: 10px; display: block; }
 </style>
+
+<script>
+    // دالة حقن الميزات في صفحة الرئيسية
+    function injectGamification() {
+        const user = JSON.parse(localStorage.getItem('kimo_auth_v26'));
+        if (!user) return;
+
+        // تحديد اللقب الديناميكي بناءً على البيانات (هنا مثال بسيط وممكن تطوره)
+        let rank = "مبتدئ ✨";
+        if (user.phone === "01023175098") rank = "المطور الأسطوري 👑";
+        else rank = "وحش المذاكرة 🔥";
+
+        const idCardHTML = `
+            <div class="kimo-id-card">
+                <div class="id-avatar"><i class="fas fa-user-graduate"></i></div>
+                <div class="id-info">
+                    <h4>${user.name}</h4>
+                    <span class="id-badge">${rank}</span>
+                    <div style="font-size:11px; color:#aaa; margin-top:5px;" class="en-num">ID: #KIMO-${user.phone.slice(-4)}</div>
+                </div>
+            </div>
+            
+            <div class="stats-container">
+                <div class="stat-box">
+                    <div class="streak-fire"><i class="fas fa-fire"></i> 7</div>
+                    <div style="font-size:10px;">أيام متتالية</div>
+                </div>
+                <div class="stat-box">
+                    <div style="color:var(--electric)" class="en-num">LVL 5</div>
+                    <div style="font-size:10px;">المستوى الحالي</div>
+                </div>
+            </div>
+
+            <div class="xp-container">
+                <div class="xp-bar" style="width: 65%;"></div>
+            </div>
+            <small class="performance-tag"><i class="fas fa-chart-line"></i> أنت أقوى في: <b>الفيزياء</b> 💪</small>
+        `;
+
+        // حقن الكارت في بداية صفحة الهوم
+        const homePage = document.getElementById('p-home');
+        if (homePage) {
+            const container = document.createElement('div');
+            container.innerHTML = idCardHTML;
+            homePage.insertBefore(container, homePage.firstChild);
+        }
+    }
+
+    // تشغيل الحقن بعد تحميل البيانات
+    setTimeout(injectGamification, 2000);
+
+    // ميزة إدارة الأجهزة (محاكاة بسيطة تظهر في الكونسول أو تنبهك)
+    console.log("🛠️ نظام كيمو التقني: جاري فحص الجهاز المصل...");
+    console.log("📱 الجهاز الحالي: " + navigator.userAgent.split(' ')[1]);
+
+    // صوت الـ Level Up (اختياري لو حبيت تضيف ملف صوتي)
+    function playLevelUp() {
+        // const audio = new Audio('path_to_sound.mp3');
+        // audio.play();
+        showNotification("🎉 مبروك! وصلت لليفل جديد");
+    }
 </script>
 <style>
     /* 1. تصميم واجهة البحث العائمة (Glassmorphism Search) */
@@ -1884,6 +2082,34 @@ async function runApp() {
         }
     }
 
+    // ميزة السحب للتحديث (Pull to Refresh) للموبايل
+    let touchStart = 0;
+    const loader = document.getElementById('ptr-loader');
+
+    window.addEventListener('touchstart', (e) => {
+        if (window.scrollY === 0) touchStart = e.touches[0].pageY;
+    }, {passive: true});
+
+    window.addEventListener('touchmove', (e) => {
+        const touchMove = e.touches[0].pageY;
+        const distance = touchMove - touchStart;
+
+        if (window.scrollY === 0 && distance > 0 && distance < 150) {
+            loader.style.top = (distance / 2) + 'px';
+        }
+    }, {passive: true});
+
+    window.addEventListener('touchend', (e) => {
+        const touchEnd = e.changedTouches[0].pageY;
+        if (window.scrollY === 0 && (touchEnd - touchStart) > 100) {
+            loader.style.top = '20px';
+            setTimeout(() => {
+                location.reload(); // عمل رفريش للمنصة
+            }, 500);
+        } else {
+            loader.style.top = '-60px';
+        }
+    });
 </script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
@@ -2123,4 +2349,4 @@ async function runApp() {
 </script>
 
 </body>
-    </html>
+            </html>

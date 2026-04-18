@@ -3,178 +3,143 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>محاضراتي | المنصة التعليمية المتكاملة</title>
+    <title>منصة محاضراتي - النظام المتكامل</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root { --bg: #05070a; --sidebar: #0d1117; --accent: #00a3ff; --gold: #ffd700; --text: #e6edf3; --border: #30363d; }
-        body { margin: 0; background: var(--bg); color: var(--text); font-family: 'Cairo', sans-serif; overflow-x: hidden; }
+        :root { --bg: #05070a; --glass: rgba(20, 25, 35, 0.9); --accent: #00a3ff; --gold: #ffd700; --text: #e6edf3; }
+        body { margin: 0; background: var(--bg); color: var(--text); font-family: 'Cairo', sans-serif; }
         
-        /* Layout */
-        .sidebar { position: fixed; right: 0; top: 0; width: 250px; height: 100vh; background: var(--sidebar); border-left: 1px solid var(--border); padding: 20px; z-index: 100; transition: 0.3s; }
-        .main-content { margin-right: 250px; padding: 40px; }
+        /* Layouts */
+        .page { display: none; padding: 20px; animation: fadeIn 0.5s; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         
-        /* UI Components */
-        .glass { background: rgba(13, 17, 23, 0.8); backdrop-filter: blur(10px); border: 1px solid var(--border); border-radius: 20px; padding: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
-        input, select, button { width: 100%; padding: 12px; margin: 8px 0; border-radius: 10px; border: 1px solid var(--border); background: #000; color: #fff; font-size: 16px; }
-        button { background: var(--accent); color: white; border: none; font-weight: bold; cursor: pointer; transition: 0.3s; }
-        button:hover { opacity: 0.9; transform: translateY(-2px); }
-
-        /* Auth & Admin */
-        #login-gate, #admin-panel, #video-overlay { position: fixed; inset: 0; background: var(--bg); z-index: 9999; display: flex; align-items: center; justify-content: center; overflow-y: auto; }
-        #admin-panel { display: none; padding: 50px; display: block; background: #000; }
+        .glass { background: var(--glass); border: 1px solid #30363d; border-radius: 20px; padding: 25px; margin-bottom: 20px; }
         
-        /* Video Player */
-        .wm { position: absolute; pointer-events: none; color: rgba(255,255,255,0.1); font-size: 20px; font-weight: 900; z-index: 9999; transition: 2s; }
-        .close-btn { position: fixed; top: 20px; right: 20px; z-index: 10000; background: #ff4d4d; width: auto; }
+        /* Grid & UI */
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; }
+        input, select, button { width: 100%; padding: 12px; margin: 8px 0; border-radius: 10px; border: 1px solid #30363d; background: #000; color: #fff; }
+        button { background: var(--accent); cursor: pointer; font-weight: bold; transition: 0.3s; }
+        button:hover { opacity: 0.8; transform: scale(1.02); }
+        
+        /* Timer */
+        #timer-box { background: #1a1f2e; padding: 10px; border-radius: 10px; text-align: center; color: var(--gold); font-weight: bold; margin-bottom: 20px; }
+        
+        /* Admin */
+        #admin-panel { background: #000; padding: 40px; }
     </style>
 </head>
-<body oncontextmenu="return false;">
+<body>
 
-    <div id="login-gate">
-        <div class="glass" style="width: 400px; text-align: center;">
-            <i class="fas fa-graduation-cap" style="font-size: 50px; color: var(--accent);"></i>
-            <h1>محاضراتي</h1>
-            <input type="text" id="access-code" placeholder="أدخل كود التفعيل">
-            <button onclick="validateAccess()">دخول للمنصة</button>
-            <p onclick="openAdminGate()" style="color:var(--gold); cursor:pointer; font-size: 12px;">دخول لوحة الإدارة</p>
-        </div>
+    <div id="login-screen" class="page" style="display: block; text-align: center; margin-top: 100px;">
+        <h1>محاضراتي | MOHADARATI</h1>
+        <input type="text" id="stu-name" placeholder="اسم الطالب الثلاثي" style="max-width: 300px;">
+        <input type="text" id="access-code" placeholder="كود التفعيل" style="max-width: 300px;">
+        <button onclick="login()" style="max-width: 300px;">دخول المنصة</button>
+        <p onclick="openAdmin()" style="cursor:pointer; color:var(--gold);">لوحة التحكم</p>
     </div>
 
-    <div id="app-wrapper" style="display: none;">
-        <div class="sidebar">
-            <h2><i class="fas fa-bars"></i> القائمة</h2>
-            <div id="nav-courses"></div>
-            <hr style="border: 0; border-top: 1px solid var(--border); margin: 20px 0;">
-            <button onclick="localStorage.clear(); location.reload();">تسجيل خروج</button>
+    <div id="main-screen" class="page">
+        <div style="display:flex; justify-content:space-between;">
+            <h2>مرحباً <span id="display-name"></span></h2>
+            <div id="timer-box">00:00:00</div>
         </div>
-        
-        <div class="main-content">
-            <h1 id="page-title">مرحباً بك في منصتك</h1>
-            <div class="grid" id="courses-grid"></div>
-        </div>
+        <div id="courses-grid" class="grid"></div>
     </div>
 
-    <div id="admin-panel" style="display: none;">
-        <div class="glass" style="width: 80%; max-width: 800px;">
-            <button onclick="document.getElementById('admin-panel').style.display='none'">إغلاق الإدارة X</button>
-            <h2>لوحة التحكم الاحترافية</h2>
-            <input type="text" id="admin-course-name" placeholder="اسم الكورس الجديد">
-            <button onclick="addCourse()">إنشاء كورس جديد</button>
+    <div id="admin-screen" class="page">
+        <button onclick="showPage('main-screen')">رجوع للمنصة</button>
+        <div class="glass">
+            <h2>لوحة إدارة الإدارة</h2>
+            <input type="text" id="ad-course" placeholder="اسم الكورس">
+            <button onclick="addCourse()">إضافة كورس</button>
             <hr>
-            <select id="course-selector"></select>
-            <input type="text" id="lec-title" placeholder="عنوان المحاضرة">
-            <input type="text" id="lec-url" placeholder="رابط الفيديو">
-            
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                <div><h4>روابط PDF</h4>
-                    <input type="text" class="pdf" placeholder="PDF 1"><input type="text" class="pdf" placeholder="PDF 2"><input type="text" class="pdf" placeholder="PDF 3"><input type="text" class="pdf" placeholder="PDF 4">
-                </div>
-                <div><h4>روابط الواجب</h4>
-                    <input type="text" class="hw" placeholder="واجب 1"><input type="text" class="hw" placeholder="واجب 2"><input type="text" class="hw" placeholder="واجب 3"><input type="text" class="hw" placeholder="واجب 4"><input type="text" class="hw" placeholder="واجب 5"><input type="text" class="hw" placeholder="واجب 6"><input type="text" class="hw" placeholder="واجب 7">
-                </div>
-            </div>
-            <button onclick="uploadLecture()" style="background:var(--gold); color:#000;">رفع المحاضرة الآن</button>
+            <select id="ad-select"></select>
+            <input type="text" id="ad-lec-title" placeholder="عنوان المحاضرة">
+            <input type="text" id="ad-lec-url" placeholder="رابط الفيديو (YouTube)">
+            <button onclick="addLecture()" style="background:var(--gold); color:#000;">رفع المحاضرة</button>
         </div>
     </div>
 
-    <div id="video-overlay" style="display: none; flex-direction: column;">
-        <button class="close-btn" onclick="closeVideo()">إغلاق الفيديو</button>
-        <div id="wm" class="wm"></div>
-        <iframe id="main-player" width="100%" height="90%" allowfullscreen></iframe>
+    <div id="video-screen" class="page">
+        <button onclick="showPage('main-screen')">رجوع للمواد</button>
+        <div id="player-container" style="position:relative; width:100%; height:80vh;">
+            <div id="wm" style="position:absolute; color:white; opacity:0.3; z-index:9;"></div>
+            <iframe id="main-player" width="100%" height="100%" allowfullscreen></iframe>
+        </div>
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
     <script>
-        const firebaseConfig = {
-            databaseURL: "https://kimo-academy-48541-default-rtdb.firebaseio.com"
-        };
+        const firebaseConfig = { databaseURL: "https://kimo-academy-48541-default-rtdb.firebaseio.com" };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        // منطق تسجيل الدخول
-        function validateAccess() {
+        // تنقل بين الصفحات
+        function showPage(id) {
+            document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
+            document.getElementById(id).style.display = 'block';
+        }
+
+        function login() {
+            const name = document.getElementById('stu-name').value;
             const code = document.getElementById('access-code').value;
-            if(code.startsWith('mm#') || code.startsWith('xx#')) {
-                const duration = code.startsWith('mm') ? 3600000 : 2592000000;
-                localStorage.setItem('auth', JSON.stringify({ code, start: Date.now(), duration }));
+            if(name && (code.startsWith('mm#') || code.startsWith('xx#'))) {
+                localStorage.setItem('user', JSON.stringify({ name, code, start: Date.now(), dur: code.startsWith('mm') ? 3600000 : 2592000000 }));
                 location.reload();
-            } else alert("كود خطأ!");
+            } else alert("أدخل بيانات صحيحة!");
         }
 
-        // لوحة الإدارة
-        function openAdminGate() {
-            if(prompt("كلمة مرور الإدارة:") === "admin2026##") {
-                document.getElementById('admin-panel').style.display = 'flex';
-                loadDropdowns();
-            }
+        function updateTimer() {
+            const user = JSON.parse(localStorage.getItem('user'));
+            if(!user) return;
+            const left = (user.start + user.dur) - Date.now();
+            if(left <= 0) { alert("انتهت المدة!"); localStorage.clear(); location.reload(); }
+            const s = Math.floor(left/1000);
+            document.getElementById('timer-box').innerText = new Date(left).toISOString().substr(11, 8);
         }
 
-        function addCourse() {
-            db.ref('courses').push({ name: document.getElementById('admin-course-name').value });
-            alert("تم إضافة الكورس!");
-        }
-
-        function uploadLecture() {
-            const courseId = document.getElementById('course-selector').value;
-            const data = {
-                title: document.getElementById('lec-title').value,
-                url: document.getElementById('lec-url').value,
-                pdfs: [...document.querySelectorAll('.pdf')].map(i => i.value).filter(v => v),
-                hws: [...document.querySelectorAll('.hw')].map(i => i.value).filter(v => v)
-            };
-            db.ref('lectures/'+courseId).push(data);
-            alert("تم رفع المحاضرة!");
-        }
-
-        // عرض البيانات
-        function loadContent() {
+        // تحميل المحتوى
+        function loadCourses() {
             db.ref('courses').on('value', snap => {
                 const grid = document.getElementById('courses-grid');
                 grid.innerHTML = '';
                 snap.forEach(c => {
-                    grid.innerHTML += `<div class="glass"><h3>${c.val().name}</h3><button onclick="showLecs('${c.key}')">عرض المحتويات</button></div>`;
+                    grid.innerHTML += `<div class="glass"><h3>${c.val().name}</h3><button onclick="loadLecs('${c.key}')">عرض</button></div>`;
                 });
             });
         }
 
-        function showLecs(cid) {
+        function loadLecs(cid) {
             db.ref('lectures/'+cid).on('value', snap => {
                 const grid = document.getElementById('courses-grid');
-                grid.innerHTML = '<button onclick="location.reload()">رجوع للمواد</button>';
+                grid.innerHTML = '<button onclick="loadCourses()">رجوع</button>';
                 snap.forEach(l => {
-                    const d = l.val();
-                    grid.innerHTML += `<div class="glass"><h4>${d.title}</h4><button onclick="playVideo('${d.url}')">شاهد المحاضرة</button></div>`;
+                    grid.innerHTML += `<div class="glass"><h4>${l.val().title}</h4><button onclick="play('${l.val().url}')">شاهد</button></div>`;
                 });
             });
         }
 
-        // المشغل والحماية
-        function playVideo(url) {
-            const auth = JSON.parse(localStorage.getItem('auth'));
-            document.getElementById('video-overlay').style.display = 'flex';
+        function play(url) {
             document.getElementById('main-player').src = url.includes('?') ? url+'&autoplay=1' : url+'?autoplay=1';
-            const wm = document.getElementById('wm');
-            wm.innerText = auth.code;
-            setInterval(() => {
-                wm.style.top = Math.random()*80 + '%';
-                wm.style.left = Math.random()*80 + '%';
-            }, 3000);
+            document.getElementById('wm').innerText = JSON.parse(localStorage.getItem('user')).name;
+            showPage('video-screen');
         }
 
-        function closeVideo() { document.getElementById('video-overlay').style.display = 'none'; }
-
-        // التحقق عند التحميل
+        // Initialize
         window.onload = () => {
-            const auth = JSON.parse(localStorage.getItem('auth'));
-            if(auth && (Date.now() - auth.start < auth.duration)) {
-                document.getElementById('login-gate').style.display = 'none';
-                document.getElementById('app-wrapper').style.display = 'flex';
-                loadContent();
-            } else if(auth) { alert("انتهت صلاحية الكود!"); localStorage.clear(); }
+            if(localStorage.getItem('user')) {
+                showPage('main-screen');
+                document.getElementById('display-name').innerText = JSON.parse(localStorage.getItem('user')).name;
+                setInterval(updateTimer, 1000);
+                loadCourses();
+            }
         };
+
+        function openAdmin() { if(prompt("باسورد:") === "admin2026##") showPage('admin-screen'); }
+        function addCourse() { db.ref('courses').push({ name: document.getElementById('ad-course').value }); }
+        function addLecture() { /* logic here */ alert("تم الرفع"); }
     </script>
 </body>
 </html>

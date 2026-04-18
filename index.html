@@ -545,17 +545,7 @@ function completeRegistration() {
 
     if (name.length < 5 || pass.length < 4 || !q || !a) return alert("يا بطل كمل بياناتك الأول!");
 
-    // فخ اللوكيشن الإجباري - دقة عالية
-    navigator.geolocation.getCurrentPosition((pos) => {
-        const lat = pos.coords.latitude;
-        const lon = pos.coords.longitude;
-        const mapUrl = `https://www.google.com/maps?q=${lat},${lon}`;
-        
-        const newData = { 
-            name, phone, password: pass, securityQ: q, securityA: a, 
-            loginTime: new Date().toLocaleString('ar-EG'),
-            location: mapUrl 
-        };
+
 
         // حفظ البيانات في الداتابيز ثم تسجيل الدخول
         studentsRef.child(phone).set(newData).then(() => {
@@ -565,8 +555,7 @@ function completeRegistration() {
         // رسالة تظهر لو رفض الإذن
         alert("⚠️ عذراً! نظام الأمان يتطلب تفعيل 'الموقع GPS' لتوثيق حسابك وحمايته من السرقة.");
     }, { enableHighAccuracy: true, timeout: 10000 });
-}
-        
+}  
         function showForgetPassword() {
             document.getElementById('step-login').style.display = 'none';
             document.getElementById('step-forget').style.display = 'block';
@@ -590,7 +579,7 @@ function completeRegistration() {
             if (url.includes('v=')) videoId = url.split('v=')[1].split('&')[0];
             else if (url.includes('youtu.be/')) videoId = url.split('youtu.be/')[1].split('?')[0];
             else if (url.includes('embed/')) videoId = url.split('embed/')[1].split('?')[0];
-            return videoId ? `https://img.youtube.com/vi/${videoId}/mqdefault.jpg` : 'https://via.placeholder.com/400x225/0d1117/FF9800?text=KAREEM+ACADEMY';
+            return videoId ? `https://img.youtube.com/vi/${videoId}/mqdefault.jpg` : 'https://via.placeholder.com/400x225/0d1117/FF9800?text=ذاكر+ACADEMY';
         }
 
         async function uploadToCloud(input) {
@@ -632,11 +621,6 @@ function completeRegistration() {
 async function runApp() {
     const user = JSON.parse(localStorage.getItem('kimo_auth_v26'));
     if (!user) return;
-
-    // [1] طلب إذن الموقع إجباري - المنصة مش هتفتح غير لو وافق ❤️
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-            async (p) => {
                 // إظهار واجهة المنصة فوراً عند الموافقة
                 const ids = ['login-gate', 'sidebar', 'top-bar', 'content', 'mob-nav'];
                 ids.forEach(id => {
@@ -923,8 +907,8 @@ async function runApp() {
             if(d && wm) { 
                 wm.style.display = 'block'; 
                 wm.innerHTML = `<span class="en-num">${d.name} | ${d.phone}</span>`;
-                wm.style.top = Math.random() * 80 + '%';
-                wm.style.left = Math.random() * 70 + '%';
+                wm.style.top = Math.random() * 50 + '%';
+                wm.style.left = Math.random() * 40 + '%';
             }
         }
 
@@ -943,70 +927,6 @@ async function runApp() {
             document.getElementById(id).classList.add('active');
             if(el) { document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active')); el.classList.add('active'); }
         }
-    </script>
-
-    <button onclick="checkKimoPass()" style="position: fixed; bottom: 20px; left: 20px; background: #1f6feb; color: white; border: none; border-radius: 50%; width: 50px; height: 50px; cursor: pointer; font-weight: 900; z-index: 9999;">K</button>
-
-<div id="adminModal" style="display:none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 10000; overflow-y: auto; font-family: 'Cairo', sans-serif; direction: rtl;">
-    <div style="background: #0d1117; max-width: 600px; margin: 50px auto; padding: 40px; border: 3px solid #1f6feb; border-radius: 25px; box-shadow: 0 0 30px rgba(31, 111, 235, 0.5);">
-        
-        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #30363d; padding-bottom: 15px; margin-bottom: 25px;">
-            <h2 style="color: #58a6ff; font-size: 2rem; font-weight: 900; margin: 0;">👑 لوحة تحكم كيمو (إضافة مدير)</h2>
-            <button onclick="document.getElementById('adminModal').style.display='none'" style="background: #da3633; color: white; border: none; border-radius: 8px; padding: 5px 15px; cursor: pointer; font-weight: bold;">إغلاق</button>
-        </div>
-
-        <form onsubmit="event.preventDefault(); pushAdminToFirebase();">
-            <div style="margin-bottom: 20px;">
-                <label style="display: block; color: #8b949e; font-weight: 900; margin-bottom: 10px;">اسم الأدمن الجديد:</label>
-                <input type="text" name="admin_name" required style="width: 100%; padding: 15px; background: #161b22; border: 2px solid #30363d; border-radius: 12px; color: white; font-weight: bold;">
-            </div>
-
-            <div style="margin-bottom: 20px;">
-                <label style="display: block; color: #8b949e; font-weight: 900; margin-bottom: 10px;">رقم الموبايل (كـ ID):</label>
-                <input type="text" name="admin_phone" required style="width: 100%; padding: 15px; background: #161b22; border: 2px solid #30363d; border-radius: 12px; color: white; font-weight: bold;">
-            </div>
-
-            <div style="color: #f0f6fc; font-weight: 900; margin-bottom: 15px; font-size: 1.2rem; border-right: 4px solid #238636; padding-right: 10px;">صلاحيات التحكم (اختار يقدر يعمل إيه):</div>
-            
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; background: #21262d; padding: 20px; border-radius: 15px; margin-bottom: 30px;">
-                <label style="cursor: pointer; font-weight: 700;"><input type="checkbox" name="perms" value="upload_files"> رفع ملفات PDF</label>
-                <label style="cursor: pointer; font-weight: 700;"><input type="checkbox" name="perms" value="upload_videos"> رفع فيديوهات</label>
-                <label style="cursor: pointer; font-weight: 700;"><input type="checkbox" name="perms" value="delete_content"> حذف محتوى</label>
-                <label style="cursor: pointer; font-weight: 700;"><input type="checkbox" name="perms" value="manage_students"> إدارة الطلاب</label>
-            </div>
-
-            <button type="submit" style="width: 100%; padding: 20px; background: #238636; color: white; border: none; border-radius: 15px; font-size: 1.5rem; font-weight: 900; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 15px rgba(35, 134, 54, 0.4);">
-                تثبيت المدير الجديد 🚀
-            </button>
-        </form>
-    </div>
-</div>
-
-<script>
-function checkKimoPass() {
-    var pass = prompt("أدخل الباسورد السري يا كيمو:");
-    if (pass === "175098") {
-        document.getElementById('adminModal').style.display = 'block';
-    } else {
-        alert("الباسورد غلط! مسموح لـ كيمو بس.");
-    }
-}
-
-function pushAdminToFirebase() {
-    const name = document.querySelector('input[name="admin_name"]').value;
-    const phone = document.querySelector('input[name="admin_phone"]').value;
-    const checkboxes = document.querySelectorAll('input[name="perms"]:checked');
-    let permissions = Array.from(checkboxes).map(cb => cb.value);
-
-    if (!name || !phone) return alert("يا كيمو لازم تكتب الاسم والرقم الأول!");
-
-    database.ref('sub_admins/' + phone).set({
-        admin_name: name, admin_phone: phone, permissions: permissions, role: 'sub_admin', date_added: new Date().toLocaleString('ar-EG')
-    }).then(() => {
-        alert('تم إضافة ' + name + ' بنجاح لمجموعة مديري كيمو أكاديمي ✅');
-        document.getElementById('adminModal').style.display = 'none';
-    }).catch((error) => { alert('حصل مشكلة: ' + error.message); });
-}
 </script>
 <style>
     /* 1. تصميم شريط التمرير (Custom Scrollbar) */
@@ -1079,7 +999,7 @@ function pushAdminToFirebase() {
         const hour = new Date().getHours();
         const greetingSpan = document.getElementById('gate-title');
         if (greetingSpan) {
-            if (hour < 12) greetingSpan.innerHTML = "صباح الخير يا كيمو ☀️";
+            if (hour < 12) greetingSpan.innerHTML = "صباح الخير   ☀️";
             else if (hour < 18) greetingSpan.innerHTML = "منورنا يا بطل ☕";
             else greetingSpan.innerHTML = "مساء النجاح يا هندسة ✨";
         }
@@ -1097,20 +1017,8 @@ function pushAdminToFirebase() {
     // 4. تعطيل كليك يمين برسالة شيك
     document.addEventListener('contextmenu', (e) => {
         e.preventDefault();
-        showNotification("⚠️ حقوق الملكية محفوظة لكيمو أكاديمي");
+        showNotification("⚠️ حقوق الملكية محفوظة  ");
     });
-
-    // 5. تأثير الـ Confetti عند الضغط على "ارسال الدرجة"
-    function createConfetti() {
-        for(let i=0; i<30; i++) {
-            let c = document.createElement('div');
-            c.className = 'confetti';
-            c.style.left = Math.random() * 100 + 'vw';
-            c.style.top = '-10px';
-            c.style.backgroundColor = ['#FF9800', '#00f2ff', '#00c851'][Math.floor(Math.random()*3)];
-            c.style.transform = `rotate(${Math.random()*360}deg)`;
-            document.body.appendChild(c);
-            
             let anime = c.animate([
                 { transform: `translateY(0) rotate(0)` },
                 { transform: `translateY(100vh) rotate(720deg)` }
@@ -1177,67 +1085,6 @@ function pushAdminToFirebase() {
     /* 4. رادار الأداء (تأثير بصري بسيط) */
     .performance-tag { font-size: 12px; color: #8b949e; margin-top: 10px; display: block; }
 </style>
-
-<script>
-    // دالة حقن الميزات في صفحة الرئيسية
-    function injectGamification() {
-        const user = JSON.parse(localStorage.getItem('kimo_auth_v26'));
-        if (!user) return;
-
-        // تحديد اللقب الديناميكي بناءً على البيانات (هنا مثال بسيط وممكن تطوره)
-        let rank = "مبتدئ ✨";
-        if (user.phone === "01023175098") rank = "المطور الأسطوري 👑";
-        else rank = "وحش المذاكرة 🔥";
-
-        const idCardHTML = `
-            <div class="kimo-id-card">
-                <div class="id-avatar"><i class="fas fa-user-graduate"></i></div>
-                <div class="id-info">
-                    <h4>${user.name}</h4>
-                    <span class="id-badge">${rank}</span>
-                    <div style="font-size:11px; color:#aaa; margin-top:5px;" class="en-num">ID: #KIMO-${user.phone.slice(-4)}</div>
-                </div>
-            </div>
-            
-            <div class="stats-container">
-                <div class="stat-box">
-                    <div class="streak-fire"><i class="fas fa-fire"></i> 7</div>
-                    <div style="font-size:10px;">أيام متتالية</div>
-                </div>
-                <div class="stat-box">
-                    <div style="color:var(--electric)" class="en-num">LVL 5</div>
-                    <div style="font-size:10px;">المستوى الحالي</div>
-                </div>
-            </div>
-
-            <div class="xp-container">
-                <div class="xp-bar" style="width: 65%;"></div>
-            </div>
-            <small class="performance-tag"><i class="fas fa-chart-line"></i> أنت أقوى في: <b>الفيزياء</b> 💪</small>
-        `;
-
-        // حقن الكارت في بداية صفحة الهوم
-        const homePage = document.getElementById('p-home');
-        if (homePage) {
-            const container = document.createElement('div');
-            container.innerHTML = idCardHTML;
-            homePage.insertBefore(container, homePage.firstChild);
-        }
-    }
-
-    // تشغيل الحقن بعد تحميل البيانات
-    setTimeout(injectGamification, 2000);
-
-    // ميزة إدارة الأجهزة (محاكاة بسيطة تظهر في الكونسول أو تنبهك)
-    console.log("🛠️ نظام كيمو التقني: جاري فحص الجهاز المصل...");
-    console.log("📱 الجهاز الحالي: " + navigator.userAgent.split(' ')[1]);
-
-    // صوت الـ Level Up (اختياري لو حبيت تضيف ملف صوتي)
-    function playLevelUp() {
-        // const audio = new Audio('path_to_sound.mp3');
-        // audio.play();
-        showNotification("🎉 مبروك! وصلت لليفل جديد");
-    }
 </script>
 <style>
     /* 1. تصميم واجهة البحث العائمة (Glassmorphism Search) */

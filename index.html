@@ -10,18 +10,19 @@
     </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SⓉⓊⒹⒺⓃⓉⓈ ⓈⓄⒸⒾⒺⓉⓎ | أكبر مجتمع تعليمي وترفيـهي 2026</title>
-    
+    <title>منصة STUDENTS SOCIETY | المنصة التعليمية والترفيهية الأولى</title>
+    <link rel="icon" href="https://raw.githubusercontent.com/ky8694429-oss/kimo-academy/main/logo.png" type="image/png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&family=Poppins:wght@600;800&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+    <!-- WebRTC PeerJS للبث المباشر والمكالمات الجماعية -->
+    <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+
     <style>
         :root { 
             --main-bg: #05070a; --card-bg: #0d1117; --accent: #FF9800; --green: #00c851; 
             --text: #e6edf3; --telegram: #0088cc; --danger: #ff4d4d; 
             --gold: #FFD700; --sidebar-bg: rgba(1, 4, 9, 0.95); 
-            --verified-orange: #FF6D00;
-            --electric: #00f2ff;
+            --logo-text: #ffffff; --electric: #00f2ff; --dev-badge: #FF8C00;
         }
         
         body.light-mode { --main-bg: #f0f2f5; --card-bg: #ffffff; --text: #1c1e21; --sidebar-bg: #ffffff; }
@@ -35,268 +36,236 @@
 
         @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
 
-        /* Top Tools & Header */
-        .top-tools { position: fixed; top: 0; left: 0; right: 0; height: 65px; display: none; align-items: center; justify-content: space-between; padding: 0 20px; z-index: 998; background: rgba(5, 7, 10, 0.85); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255,255,255,0.08); }
-        .brand-title { font-family: 'Poppins', 'Cairo', sans-serif; font-weight: 800; font-size: 20px; background: linear-gradient(45deg, var(--accent), var(--verified-orange)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: 1px; }
-        .tool-btn { background: var(--card-bg); border: 1px solid var(--accent); color: var(--accent); width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s; }
-        
-        /* Sidebar */
-        aside { width: 280px; background: var(--sidebar-bg); backdrop-filter: blur(10px); border-left: 1px solid #30363d; display: none; flex-direction: column; position: fixed; right: 0; top: 0; height: 100vh; z-index: 9999; transition: 0.4s cubic-bezier(0.87, 0, 0.13, 1); }
-        aside.closed { transform: translateX(100%); }
-        .nav-link { padding: 16px 20px; cursor: pointer; color: #8b949e; display: flex; align-items: center; gap: 15px; transition: 0.2s; border-right: 4px solid transparent; font-size: 16px; font-weight: bold; }
-        .nav-link:hover, .nav-link.active { color: var(--accent); background: rgba(255, 152, 0, 0.08); border-right-color: var(--accent); }
+        #lightning-flash { position: fixed; inset: 0; pointer-events: none; z-index: 100000; background: white; opacity: 0; }
+        @keyframes lightning { 0% { opacity: 0; } 10% { opacity: 0.8; } 20% { opacity: 0.2; } 30% { opacity: 0.9; } 100% { opacity: 0; } }
 
-        .sidebar-toggle-btn { position: fixed; right: 280px; top: 15px; z-index: 10000; background: var(--accent); border: none; padding: 10px 14px; border-radius: 8px 0 0 8px; cursor: pointer; transition: 0.4s; color: #000; font-size: 18px; }
+        .sidebar-toggle-btn {
+            position: fixed; right: 280px; top: 20px; z-index: 10000;
+            background: var(--accent); border: none; padding: 12px; border-radius: 8px 0 0 8px;
+            cursor: pointer; transition: 0.5s cubic-bezier(0.87, 0, 0.13, 1); box-shadow: 0 0 15px var(--accent);
+            color: #000; font-size: 20px;
+        }
         aside.closed + .sidebar-toggle-btn { right: 0; }
+        aside { transition: 0.5s cubic-bezier(0.87, 0, 0.13, 1); transform: translateX(0); width: 280px; background: var(--sidebar-bg); backdrop-filter: blur(10px); border-left: 1px solid #30363d; display: none; flex-direction: column; position: fixed; right: 0; top: 0; height: 100vh; z-index: 9999; }
+        aside.closed { transform: translateX(100%); }
 
-        /* Main Container */
-        main { flex: 1; padding: 20px; display: none; padding-top: 85px; padding-bottom: 80px; transition: 0.4s; margin-right: 280px; }
+        .logo-master-container { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; margin: 0 auto; position: relative; animation: masterPulse 3s infinite ease-in-out; }
+        .logo-main-name { color: var(--logo-text, #ffffff); font-size: 32px; font-weight: 900; position: relative; text-shadow: 0 0 10px var(--accent); }
+        .logo-crown-icon { position: absolute; top: -15px; right: -10px; font-size: 20px; color: #FFD700; animation: crownFloat 3s infinite ease-in-out; }
+
+        @keyframes masterPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.03); } }
+        @keyframes crownFloat { 0%, 100% { transform: translateY(0) rotate(-10deg); } 50% { transform: translateY(-5px) rotate(-10deg); } }
+
+        #notification-toast {
+            position: fixed; top: -100px; left: 50%; transform: translateX(-50%);
+            background: var(--accent); color: #000; padding: 15px 25px; border-radius: 50px;
+            box-shadow: 0 10px 30px rgba(255,152,0,0.4); z-index: 30000; font-weight: bold;
+            display: flex; align-items: center; gap: 10px; transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        #notification-toast.show { top: 20px; }
+
+        .top-tools { position: fixed; top: 0; left: 0; right: 0; height: 60px; display: none; align-items: center; justify-content: flex-end; padding: 0 20px; gap: 15px; z-index: 998; background: rgba(0,0,0,0.4); backdrop-filter: blur(5px); border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .tool-btn { background: var(--card-bg); border: 1px solid var(--accent); color: var(--accent); width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s; }
+
+        .nav-link { padding: 15px 20px; cursor: pointer; color: #8b949e; display: flex; align-items: center; gap: 15px; transition: 0.2s; border-right: 4px solid transparent; font-size: 16px; }
+        .nav-link:hover, .nav-link.active { color: var(--accent); background: rgba(255, 152, 0, 0.05); border-right-color: var(--accent); }
+
+        main { flex: 1; padding: 30px; display: none; padding-top: 80px; padding-bottom: 120px; overflow-y: auto; transition: 0.5s; margin-right: 280px; }
         main.full-width { margin-right: 0; }
         .page { display: none; animation: fadeIn 0.4s ease-out; }
         .page.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        .card { background: rgba(13, 17, 23, 0.85); border-radius: 16px; padding: 20px; border: 1px solid #30363d; position: relative; margin-bottom: 20px; box-shadow: 0 8px 24px rgba(0,0,0,0.3); }
-        .btn-accent { background: linear-gradient(45deg, var(--accent), var(--verified-orange)); color: #000; padding: 12px; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; width: 100%; font-size: 15px; font-family: 'Cairo'; transition: 0.3s; }
-        .btn-accent:hover { filter: brightness(1.1); transform: translateY(-2px); }
+        .card { background: rgba(13, 17, 23, 0.85); border-radius: 15px; padding: 20px; border: 1px solid #30363d; text-align: center; position: relative; transition: 0.3s; margin-bottom: 15px; }
+        .btn-accent { background: var(--accent); color: #000; padding: 12px; border: none; border-radius: 12px; cursor: pointer; font-weight: bold; width: 100%; font-size: 16px; font-family: 'Cairo'; }
 
-        /* Chat & Social Features */
-        .stories-bar { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 12px; margin-bottom: 15px; scrollbar-width: none; }
-        .story-avatar { width: 60px; height: 60px; border-radius: 50%; border: 2px solid var(--verified-orange); padding: 2px; cursor: pointer; flex-shrink: 0; object-fit: cover; }
-        
-        #chat-messages { height: 480px; overflow-y: auto; background: #080c10; padding: 15px; border-radius: 14px; border: 1px solid #21262d; margin-bottom: 15px; display: flex; flex-direction: column; gap: 12px; }
-        .msg-bubble { max-width: 75%; padding: 12px 16px; border-radius: 18px; font-size: 14px; color: #fff; position: relative; word-break: break-word; }
-        .msg-student { align-self: flex-start; background: #161b22; border-bottom-right-radius: 4px; border: 1px solid #30363d; }
-        .msg-me { align-self: flex-end; background: #005c4b; border-bottom-left-radius: 4px; }
-        .msg-sender-header { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; font-size: 13px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 4px; }
-        .user-avatar-small { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; cursor: pointer; }
+        /* --- تصميم الشات الاحترافي والمتقدم --- */
+        #chat-messages { height: 450px; overflow-y: auto; background: #0b141a; padding: 15px; border-radius: 12px; border: 1px solid #222d34; margin-bottom: 10px; display: flex; flex-direction: column; gap: 12px; }
+        .msg-bubble { max-width: 75%; padding: 10px 14px; border-radius: 12px; font-size: 14px; position: relative; line-height: 1.4; color: #e9edef; word-wrap: break-word; }
+        .msg-student { align-self: flex-start; background: #202c33; border-bottom-left-radius: 2px; text-align: right; }
+        .msg-me { align-self: flex-end; background: #005c4b; border-bottom-right-radius: 2px; text-align: right; }
+        .msg-dev { border: 1px solid var(--accent); background: #182229; }
+        .msg-header { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; cursor: pointer; }
+        .msg-avatar { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; }
+        .orange-badge { color: var(--dev-badge); font-size: 14px; margin-right: 3px; }
+        .msg-tools { position: absolute; top: 4px; left: 8px; display: none; gap: 6px; font-size: 11px; color: #8696a0; cursor: pointer; }
+        .msg-bubble:hover .msg-tools { display: flex; }
+        .chat-media { max-width: 100%; border-radius: 8px; margin-top: 5px; }
 
-        .verified-badge { color: var(--verified-orange); font-size: 14px; margin-right: 4px; }
-        .dev-tag { background: linear-gradient(45deg, var(--accent), var(--verified-orange)); color: #000; font-size: 10px; padding: 2px 6px; border-radius: 6px; font-weight: 900; }
+        /* --- نافذة البروفايل المحدثة --- */
+        .profile-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.85); display: none; align-items: center; justify-content: center; z-index: 50000; backdrop-filter: blur(5px); }
+        .profile-card { background: var(--card-bg); width: 90%; max-width: 380px; padding: 25px; border-radius: 20px; border: 1px solid var(--accent); text-align: center; position: relative; }
 
-        .msg-actions { display: flex; gap: 10px; font-size: 11px; margin-top: 6px; opacity: 0.7; justify-content: flex-end; }
-        .msg-actions span { cursor: pointer; }
-        .msg-actions span:hover { text-decoration: underline; color: var(--electric); }
+        /* --- استوري وتيك توك Reels --- */
+        .story-container { display: flex; gap: 12px; overflow-x: auto; padding: 10px 0; margin-bottom: 20px; }
+        .story-circle { width: 65px; height: 65px; border-radius: 50%; border: 2px solid var(--accent); padding: 2px; cursor: pointer; flex-shrink: 0; text-align: center; }
+        .story-circle img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
+        .reels-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; }
+        .reel-card { height: 280px; border-radius: 15px; background: #000; position: relative; overflow: hidden; border: 1px solid #333; }
+        .reel-card video { width: 100%; height: 100%; object-fit: cover; }
 
-        .chat-media-preview { max-width: 100%; max-height: 250px; border-radius: 10px; margin-top: 8px; display: block; }
-
-        /* Live Room & Call Banner */
-        .live-banner { background: linear-gradient(90deg, #ff0055, #ff5500); color: white; padding: 12px 20px; border-radius: 12px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; animation: pulseLive 2s infinite; }
-        @keyframes pulseLive { 0%, 100% { box-shadow: 0 0 10px rgba(255, 0, 85, 0.5); } 50% { box-shadow: 0 0 25px rgba(255, 0, 85, 0.9); } }
-
-        /* Profile Modal */
-        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); z-index: 20000; align-items: center; justify-content: center; }
-        .modal-content { background: var(--card-bg); width: 90%; max-width: 420px; border-radius: 20px; padding: 25px; text-align: center; border: 1px solid var(--accent); position: relative; }
-        .profile-img-large { width: 110px; height: 110px; border-radius: 50%; object-fit: cover; border: 3px solid var(--verified-orange); margin: 0 auto 15px; }
-
-        /* Footer */
-        footer { position: fixed; bottom: 0; width: 100%; background: #010409; color: #8b949e; text-align: center; padding: 12px 0; font-size: 13px; border-top: 1px solid #21262d; z-index: 1000; }
-        .en-num { font-family: sans-serif !important; direction: ltr !important; display: inline-block; }
+        footer { position: fixed; bottom: 0; width: 100%; background: #010409; color: #fff; text-align: center; padding: 15px 0; font-size: 13px; border-top: 2px solid var(--accent); z-index: 1000; }
 
         @media (max-width: 768px) {
             aside { display: none !important; }
-            main { padding: 15px; padding-top: 75px; margin-right: 0 !important; }
-            .sidebar-toggle-btn { display: none; }
+            .mobile-nav { position: fixed; bottom: 50px; left: 0; right: 0; background: var(--sidebar-bg); display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid var(--accent); z-index: 1001; }
+            main { padding: 15px; padding-top: 70px; padding-bottom: 120px; margin-right: 0 !important; }
         }
     </style>
 </head>
 <body oncontextmenu="return false;"> 
 
-    <!-- Top Tools -->
+    <div id="lightning-flash"></div>
+
+    <div id="notification-toast">
+        <i class="fas fa-bell"></i>
+        <span id="notif-text">إشعار جديد!</span>
+    </div>
+
     <div id="top-bar" class="top-tools">
-        <div class="brand-title">SⓉⓊⒹⒺⓃⓉⓈ ⓈⓄⒸⒾⒺⓉⓎ</div>
-        <div style="display:flex; gap:10px; align-items:center;">
-            <div id="admin-live-info" style="display:none; color: var(--accent); font-weight: bold; font-size: 12px;">
-                🔴 المتواجدون: <span id="online-now" class="en-num">0</span>
-            </div>
-            <button class="tool-btn" onclick="toggleTheme()"><i id="theme-icon" class="fas fa-moon"></i></button>
-            <button class="tool-btn" onclick="logout()"><i class="fas fa-sign-out-alt"></i></button>
-        </div>
+        <button class="tool-btn" onclick="toggleTheme()"><i id="theme-icon" class="fas fa-moon"></i></button>
+        <button class="tool-btn" onclick="openMyProfile()"><i class="fas fa-user-circle"></i></button>
+        <button class="tool-btn" onclick="logout()"><i class="fas fa-sign-out-alt"></i></button>
     </div>
 
-    <!-- Login / Registration Modal -->
-    <div id="login-gate">
-        <div style="max-width: 420px; margin: 40px auto; padding: 30px; background: var(--card-bg); border-radius: 20px; text-align: center; border: 1px solid var(--accent); box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
-            <h2 class="brand-title" style="font-size:26px; margin-bottom:20px;">SⓉⓊⒹⒺⓃⓉⓈ ⓈⓄⒸⒾⒺⓉⓎ</h2>
-            
-            <div id="step-1">
-                <input type="tel" id="std-phone" class="en-num" placeholder="رقم الموبايل" style="width:90%; padding:12px; margin-bottom:15px; border-radius:10px; background:#000; color:#fff; border:1px solid #333;">
-                <button class="btn-accent" onclick="identifyStudent()">المتابعة</button>
-            </div>
-
-            <div id="step-login" style="display:none;">
-                <p id="welcome-back" style="color:var(--electric); font-weight:bold;"></p>
-                <input type="password" id="std-pass" placeholder="كلمة المرور" style="width:90%; padding:12px; margin-bottom:15px; border-radius:10px; background:#000; color:#fff; border:1px solid #333;">
-                <button class="btn-accent" onclick="verifyPassword()">دخول المنصة</button>
-            </div>
-
-            <div id="step-register" style="display:none;">
-                <input type="text" id="reg-name" placeholder="الاسم الثلاثي" style="width:90%; padding:10px; margin-bottom:10px; border-radius:10px; background:#000; color:#fff; border:1px solid #333;">
-                <input type="password" id="reg-pass" placeholder="كلمة المرور" style="width:90%; padding:10px; margin-bottom:10px; border-radius:10px; background:#000; color:#fff; border:1px solid #333;">
-                
-                <select id="reg-year" style="width:96%; padding:10px; margin-bottom:10px; border-radius:10px; background:#000; color:#fff; border:1px solid #333;">
-                    <option value="الصف الأول الثانوي">الصف الأول الثانوي</option>
-                    <option value="الصف الثاني الثانوي">الصف الثاني الثانوي</option>
-                    <option value="الصف الثالث الثانوي">الصف الثالث الثانوي</option>
-                    <option value="طالب جامعي">طالب جامعي</option>
-                </select>
-
-                <input type="text" id="reg-avatar" placeholder="رابط صورتك الشخصية (اختياري)" style="width:90%; padding:10px; margin-bottom:10px; border-radius:10px; background:#000; color:#fff; border:1px solid #333;">
-
-                <div style="display:flex; align-items:center; gap:8px; justify-content:center; margin-bottom:15px; font-size:13px;">
-                    <input type="checkbox" id="reg-hide-phone" checked>
-                    <label for="reg-hide-phone">إخفاء رقم الموبايل عن بقية الطلاب 🔒</label>
-                </div>
-
-                <input type="text" id="reg-answer" placeholder="إجابة السؤال السري لاستعادة الحساب" style="width:90%; padding:10px; margin-bottom:15px; border-radius:10px; background:#000; color:#fff; border:1px solid #333;">
-                <button class="btn-accent" onclick="completeRegistration()">إنشاء حساب جديد</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Sidebar Navigation -->
     <aside id="sidebar">
-        <div style="padding:20px; text-align:center; border-bottom:1px solid #21262d;">
-            <img id="my-sidebar-avatar" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" class="profile-img-large" style="width:70px; height:70px; margin-bottom:8px;">
-            <div id="my-sidebar-name" style="font-weight:bold; color:#fff;"></div>
-            <div id="my-sidebar-role" style="font-size:12px; color:var(--accent);"></div>
+        <div class="logo-master-container">
+            <div class="logo-main-name">STUDENTS<span class="logo-crown-icon">👑</span></div>
+            <span style="color: var(--accent); font-size: 11px; letter-spacing: 2px; font-weight: bold;">SOCIETY 2026</span>
         </div>
         <div class="nav-link active" onclick="tab(this, 'p-home')"><i class="fas fa-home"></i> <span>الرئيسية</span></div>
-        <div class="nav-link" onclick="tab(this, 'p-chat')"><i class="fas fa-comments"></i> <span>شات الطلاب 💬</span></div>
-        <div class="nav-link" onclick="tab(this, 'p-live')"><i class="fas fa-video"></i> <span>غرفة البث المباشر 🔴</span></div>
-        <div class="nav-link" onclick="tab(this, 'p-reels')"><i class="fas fa-photo-video"></i> <span>Reels & Shorts 🎬</span></div>
-        <div class="nav-link" onclick="tab(this, 'p-profile')"><i class="fas fa-user-cog"></i> <span>حسابي الشخصي</span></div>
+        <div class="nav-link" onclick="tab(this, 'p-chat')"><i class="fas fa-comments"></i> <span>شات الطلاب</span></div>
+        <div class="nav-link" onclick="tab(this, 'p-live')"><i class="fas fa-video" style="color:var(--danger)"></i> <span>البث واللايف</span></div>
+        <div class="nav-link" onclick="tab(this, 'p-reels')"><i class="fab fa-tiktok"></i> <span>Reels & Shorts</span></div>
+        <div class="nav-link" onclick="tab(this, 'p-lessons')"><i class="fas fa-play-circle"></i> <span>المحاضرات</span></div>
+        <div class="nav-link" onclick="tab(this, 'p-files')"><i class="fas fa-file-pdf"></i> <span>الملفات PDF</span></div>
         <div id="adm-links" style="display:none;">
-            <div class="nav-link" style="color:var(--green)" onclick="tab(this, 'p-students')"><i class="fas fa-users-cog"></i> <span>رادار الطلاب والتحكم 🛰️</span></div>
+            <div class="nav-link" style="color:var(--green)" onclick="tab(this, 'p-students')"><i class="fas fa-users-cog"></i> <span>الطلاب</span></div>
         </div>
     </aside>
 
     <button class="sidebar-toggle-btn" onclick="toggleSidebarMenu()"><i id="toggle-icon" class="fas fa-chevron-right"></i></button>
 
-    <!-- Main Content Pages -->
-    <main id="content">
-        <!-- Live Call Banner Alert -->
-        <div id="live-alert-banner" class="live-banner" style="display:none;">
-            <div>
-                <i class="fas fa-broadcast-tower fa-spin" style="font-size:20px; margin-left:10px;"></i>
-                <b>تنبيه بث مباشر:</b> هتاك مكالمة/بث لايف قائم الآن في غرفة البث!
+    <div class="mobile-nav" id="mob-nav" style="display:none;">
+        <div onclick="tab(null, 'p-home')"><i class="fas fa-home"></i></div>
+        <div onclick="tab(null, 'p-chat')"><i class="fas fa-comments"></i></div>
+        <div onclick="tab(null, 'p-live')"><i class="fas fa-video" style="color:var(--danger)"></i></div>
+        <div onclick="tab(null, 'p-reels')"><i class="fab fa-tiktok"></i></div>
+        <div onclick="tab(null, 'p-lessons')"><i class="fas fa-play-circle"></i></div>
+    </div>
+
+    <!-- بوابة تسجيل الدخول -->
+    <div id="login-gate">
+        <div class="card" style="max-width: 400px; margin: 60px auto; padding: 30px;">
+            <h2 style="color:var(--accent);">STUDENTS SOCIETY 👑</h2>
+            <p style="font-size: 12px; color:#aaa;">منصة التعليم والترفيه الشاملة</p>
+            <div id="step-1">
+                <input type="tel" id="std-phone" placeholder="رقم الموبايل" style="width:90%; padding:12px; margin-bottom:15px; border-radius:10px; background:#000; color:#fff; border:1px solid #333;">
+                <button class="btn-accent" onclick="identifyStudent()">التالي</button>
             </div>
-            <button onclick="tab(null, 'p-live')" style="background:#fff; color:#000; border:none; padding:6px 15px; border-radius:8px; font-weight:bold; cursor:pointer;">انضمام الآن 🚀</button>
-        </div>
-
-        <!-- Page 1: Home -->
-        <div id="p-home" class="page active">
-            <div class="card" style="text-align:center; padding:30px;">
-                <h1 style="margin:0; font-size:28px;">مرحباً بك في <span class="brand-title">SⓉⓊⒹⒺⓃⓉⓈ ⓈⓄⒸⒾⒺⓉⓎ</span></h1>
-                <p style="color:#8b949e; margin-top:10px;">المجتمع التعليمي والترفيـهي الأكبر لجميع الطلاب 2026</p>
+            <div id="step-login" style="display:none;">
+                <input type="password" id="std-pass" placeholder="كلمة المرور" style="width:90%; padding:12px; margin-bottom:15px; border-radius:10px; background:#000; color:#fff; border:1px solid #333;">
+                <button class="btn-accent" onclick="verifyPassword()">دخول</button>
             </div>
-        </div>
-
-        <!-- Page 2: Advanced WhatsApp/FB Chat -->
-        <div id="p-chat" class="page">
-            <div class="card">
-                <!-- Stories Bar -->
-                <div class="stories-bar" id="stories-container">
-                    <div style="text-align:center;">
-                        <img src="https://cdn-icons-png.flaticon.com/512/1828/1828817.png" class="story-avatar" onclick="addStory()">
-                        <div style="font-size:11px; margin-top:4px;">إضافة ستوري</div>
-                    </div>
-                </div>
-
-                <!-- Chat Box -->
-                <div id="chat-messages"></div>
-
-                <!-- Chat Input Controls -->
-                <div style="display: flex; flex-direction:column; gap: 10px;">
-                    <div id="recording-status" style="display:none; color:var(--danger); font-size:12px; font-weight:bold;">
-                        🔴 جاري تسجيل مقطع صوتي... <span id="rec-time">0s</span>
-                    </div>
-
-                    <div style="display: flex; gap: 8px; align-items:center;">
-                        <input type="text" id="chat-input" placeholder="اكتب رسالتك هنا..." style="flex:1; padding:12px; border-radius:10px; background:#161b22; color:#fff; border:1px solid #30363d;">
-                        
-                        <!-- Media Attachments Buttons -->
-                        <button class="tool-btn" title="إرفاق صورة/فيديو" onclick="triggerMediaUpload()"><i class="fas fa-paperclip"></i></button>
-                        <button id="voice-btn" class="tool-btn" title="تسجيل صوتي" onclick="toggleVoiceRecord()"><i class="fas fa-microphone"></i></button>
-                        
-                        <button class="btn-accent" style="width:90px;" onclick="sendChatMessage()">إرسال</button>
-                    </div>
-                    <input type="file" id="media-file-input" style="display:none;" accept="image/*,video/*" onchange="handleMediaSelect(this)">
-                </div>
+            <div id="step-register" style="display:none;">
+                <input type="text" id="reg-name" placeholder="الاسم الثلاثي" style="width:90%; padding:10px; margin-bottom:10px; background:#000; color:#fff; border:1px solid #333; border-radius:8px;">
+                <input type="password" id="reg-pass" placeholder="كلمة السر" style="width:90%; padding:10px; margin-bottom:10px; background:#000; color:#fff; border:1px solid #333; border-radius:8px;">
+                <select id="reg-grade" style="width:95%; padding:10px; margin-bottom:10px; background:#000; color:#fff; border:1px solid #333; border-radius:8px;">
+                    <option value="الصف الأول الثانوي">الصف الأول الثانوي</option>
+                    <option value="الصف الثاني الثانوي">الصف الثاني الثانوي</option>
+                    <option value="الصف الثالث الثانوي">الصف الثالث الثانوي</option>
+                </select>
+                <input type="text" id="reg-avatar" placeholder="رابط صورتك الشخصية (اختياري)" style="width:90%; padding:10px; margin-bottom:15px; background:#000; color:#fff; border:1px solid #333; border-radius:8px;">
+                <button class="btn-accent" onclick="completeRegistration()">إنشاء الحساب</button>
             </div>
-        </div>
-
-        <!-- Page 3: Live Video & Audio Calls Room -->
-        <div id="p-live" class="page">
-            <h2>غرفة البث والمكالمات المباشرة 🔴</h2>
-            <div class="card" style="text-align:center;">
-                <div id="live-screen-placeholder" style="width:100%; height:320px; background:#000; border-radius:12px; display:flex; flex-direction:column; align-items:center; justify-content:center; margin-bottom:15px; border:1px solid #30363d;">
-                    <i class="fas fa-video-slash" style="font-size:48px; color:#555; margin-bottom:10px;"></i>
-                    <p style="color:#8b949e;">لا يوجد بث مباشر شغال حالياً أو الكاميرا مغلقة</p>
-                </div>
-
-                <div style="display:flex; justify-content:center; gap:15px; flex-wrap:wrap;">
-                    <button class="btn-accent" style="width:auto; padding:10px 25px;" onclick="toggleHostLive(true)"><i class="fas fa-podcast"></i> بدء بث مباشر (للمدرس/الأدمن)</button>
-                    <button class="btn-accent" style="width:auto; padding:10px 25px; background:var(--green);" onclick="joinLiveStream()"><i class="fas fa-sign-in-alt"></i> الانضمام للبث الحالي</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Page 4: Reels / EduShorts -->
-        <div id="p-reels" class="page">
-            <h2>مقاطع الفيديوهات القصيرة (Reels) 🎬</h2>
-            <div class="card" style="max-width:380px; margin:0 auto; height:550px; background:#000; display:flex; flex-direction:column; justify-content:space-between; padding:15px; border-radius:20px; position:relative;">
-                <iframe id="reel-player" src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=0" style="width:100%; height:100%; border:none; border-radius:12px;"></iframe>
-                <div style="display:flex; justify-content:space-between; margin-top:10px;">
-                    <button class="btn-accent" onclick="nextReel()">المقطع التالي ⏭️</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Page 5: Profile Management -->
-        <div id="p-profile" class="page">
-            <h2>إعدادات حسابي الشخصي 👤</h2>
-            <div class="card" style="max-width:500px; margin:0 auto;">
-                <img id="prof-avatar-preview" src="" class="profile-img-large">
-                <div style="margin-bottom:15px;">
-                    <label>تغيير رابط الصورة الشخصية:</label>
-                    <input type="text" id="prof-avatar-input" style="width:95%; padding:10px; margin-top:5px; border-radius:8px; background:#000; color:#fff; border:1px solid #333;">
-                </div>
-                <div style="margin-bottom:15px; text-align:right;">
-                    <p><b>الاسم:</b> <span id="prof-name"></span></p>
-                    <p><b>السنة الدراسية:</b> <span id="prof-year"></span></p>
-                    <p><b>رقم الموبايل:</b> <span id="prof-phone" class="en-num"></span></p>
-                </div>
-                <button class="btn-accent" onclick="updateProfile()">حفظ التعديلات</button>
-            </div>
-        </div>
-
-        <!-- Page 6: Admin Radar & Controls -->
-        <div id="p-students" class="page">
-            <h2>رادار إدارة الطلاب المطور 🛰️</h2>
-            <div class="card">
-                <input type="text" id="studentSearch" placeholder="ابحث باسم الطالب، الرقم، أو الجهاز..." onkeyup="filterStudents()" style="width: 95%; padding: 12px; margin-bottom: 15px; border-radius: 10px; background: #000; border: 1px solid var(--accent); color: #fff;">
-                <div id="students-table-body"></div>
-            </div>
-        </div>
-    </main>
-
-    <!-- User Profile Modal (When Clicking any user in chat) -->
-    <div id="user-profile-modal" class="modal">
-        <div class="modal-content">
-            <img id="modal-user-avatar" src="" class="profile-img-large">
-            <h3 id="modal-user-name" style="margin:5px 0;"></h3>
-            <div id="modal-user-role" style="font-size:13px; color:var(--accent); margin-bottom:10px;"></div>
-            <p id="modal-user-year" style="color:#8b949e; font-size:14px;"></p>
-            <p id="modal-user-phone" class="en-num" style="color:var(--electric); font-size:14px; direction:ltr;"></p>
-            <p id="modal-user-dev" style="font-size:12px; color:#aaa; margin-top:10px;"></p>
-            <button class="btn-accent" style="margin-top:15px;" onclick="closeProfileModal()">إغلاق</button>
         </div>
     </div>
 
-    <footer>حقوق التطوير محفوظة للمطور كريم © <span class="en-num">2026</span></footer>
+    <main id="content">
+        <!-- الصفحة الرئيسية -->
+        <div id="p-home" class="page active">
+            <h2>القصص والستوريات 📸</h2>
+            <div class="story-container" id="stories-list">
+                <div class="story-circle" onclick="uploadStory()"><i class="fas fa-plus" style="line-height:60px;"></i></div>
+            </div>
+            <h3>مرحباً بك في مجتمع الطلاب 👋</h3>
+            <div id="pinned-content"></div>
+        </div>
 
-    <!-- Firebase Scripts -->
+        <!-- الشات المطور والاحترافي -->
+        <div id="p-chat" class="page">
+            <h2>دردشة الطلاب التفاعلية 💬</h2>
+            <div class="card" style="padding:10px;">
+                <div id="chat-messages"></div>
+                
+                <div id="edit-bar" style="display:none; background:#182229; padding:5px 10px; border-radius:8px; font-size:12px; margin-bottom:5px; justify-content:space-between;">
+                    <span>جارِ تعديل الرسالة...</span>
+                    <i class="fas fa-times" onclick="cancelEdit()" style="cursor:pointer;"></i>
+                </div>
+
+                <div style="display: flex; gap: 5px; align-items:center;">
+                    <button class="tool-btn" onclick="document.getElementById('chat-file').click()"><i class="fas fa-paperclip"></i></button>
+                    <input type="file" id="chat-file" style="display:none;" onchange="sendMediaMessage(this)">
+                    <button class="tool-btn" id="record-btn" onclick="toggleRecord()"><i class="fas fa-microphone"></i></button>
+                    <input type="text" id="chat-input" placeholder="اكتب رسالتك..." style="flex:1; padding:12px; border-radius:10px; background:#161b22; color:#fff; border:1px solid var(--accent);">
+                    <button class="btn-accent" style="width:80px;" onclick="sendChatMessage()">إرسال</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- البث المباشر والمكالمات الجماعية (تستوعب 800+ طالب) -->
+        <div id="p-live" class="page">
+            <h2 style="color:var(--danger)">غرفة المكالمات والبث المباشر 🔴</h2>
+            <div class="card">
+                <div id="live-status" style="margin-bottom:15px;">لا يوجد بث مباشر شغال حالياً</div>
+                <div id="video-grid" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap:10px; margin-bottom:15px;"></div>
+                <div style="display:flex; gap:10px; justify-content:center;">
+                    <button class="btn-accent" style="background:var(--green); width:auto; padding:10px 20px;" onclick="startLiveCall('video')"><i class="fas fa-video"></i> بدء بث فيديو</button>
+                    <button class="btn-accent" style="background:var(--telegram); width:auto; padding:10px 20px;" onclick="startLiveCall('audio')"><i class="fas fa-microphone"></i> انضمام صوتي</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- تيك توك و Reels -->
+        <div id="p-reels" class="page">
+            <h2>فيديوهات الطلاب & Reels 🎬</h2>
+            <div class="reels-grid" id="reels-container"></div>
+        </div>
+
+        <!-- المحاضرات والملفات -->
+        <div id="p-lessons" class="page"><h2>المحاضرات التعليمية 🎥</h2><div class="content-grid" id="lessons-list"></div></div>
+        <div id="p-files" class="page"><h2>المذكرات والملفات 📄</h2><div class="content-grid" id="files-list"></div></div>
+
+        <!-- لوحة التحكم بالطلاب -->
+        <div id="p-students" class="page">
+            <h2>قائمة الطلاب المسجلين 🛰️</h2>
+            <div class="card" id="students-table-body"></div>
+        </div>
+    </main>
+
+    <!-- نافذة البروفايل المنبثقة -->
+    <div class="profile-modal" id="profile-modal">
+        <div class="profile-card">
+            <i class="fas fa-times" style="position:absolute; top:15px; left:15px; cursor:pointer;" onclick="closeProfile()"></i>
+            <img id="prof-img" src="" style="width:90px; height:90px; border-radius:50%; border:2px solid var(--accent); object-fit:cover; margin-bottom:10px;">
+            <h3 id="prof-name" style="margin:5px 0;"></h3>
+            <p id="prof-role" style="font-size:12px; color:var(--accent); font-weight:bold;"></p>
+            <p id="prof-grade" style="font-size:13px; color:#aaa;"></p>
+            <p id="prof-phone" style="font-size:13px; color:var(--green); direction:ltr; display:none;"></p>
+            
+            <div id="my-profile-edit" style="display:none; margin-top:15px; border-top:1px solid #333; padding-top:10px;">
+                <label style="font-size:12px; display:block; margin-bottom:5px;">إخفاء رقم الهاتف عن باقي الطلاب:</label>
+                <input type="checkbox" id="hide-phone-check" onchange="togglePhonePrivacy(this.checked)">
+                <input type="text" id="edit-avatar-url" placeholder="رابط صورة جديدة" style="width:90%; padding:8px; margin-top:10px; background:#000; border:1px solid #333; color:#fff; border-radius:5px;">
+                <button class="btn-accent" style="margin-top:8px; padding:8px;" onclick="updateAvatar()">حفظ الصورة</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- الفوتر مع حفظ كامل الحقوق للمطور كريم 2026 -->
+    <footer>جميع الحقوق محفوظة للمطور كريم © <span class="en-num">2026</span></footer>
+
+    <!-- قواعد بيانات Firebase -->
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
 
@@ -314,45 +283,40 @@
         const database = firebase.database();
 
         const studentsRef = database.ref('students'), 
-              presenceRef = database.ref('online_students'),
-              chatRef = database.ref('chat'),
+              chatRef = database.ref('chat_v2'), 
               liveRef = database.ref('live_stream'),
-              storiesRef = database.ref('stories');
+              storiesRef = database.ref('stories'),
+              reelsRef = database.ref('reels');
 
-        let currentStudentData = null;
-        let selectedMediaData = null;
-        let mediaRecorder = null, audioChunks = [];
+        let currentUser = null, editingMsgId = null, mediaRecorder, audioChunks = [];
+        const DEV_PHONE = "01023175098"; // رقم مطور المنصة كريم
 
-        // App Navigation & UI Controls
         function tab(el, pageId) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById(pageId).classList.add('active');
             document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
             if(el) el.classList.add('active');
-            if(pageId === 'p-chat') loadChatMessages();
+            if(pageId === 'p-chat') loadChat();
+            if(pageId === 'p-reels') loadReels();
         }
 
         function toggleTheme() { document.body.classList.toggle('light-mode'); }
-        function logout() { localStorage.removeItem('students_soc_auth_2026'); location.reload(); }
+        function logout() { localStorage.removeItem('student_society_auth'); location.reload(); }
 
         function toggleSidebarMenu() {
-            const sidebar = document.getElementById('sidebar');
-            const content = document.getElementById('content');
-            sidebar.classList.toggle('closed');
-            content.classList.toggle('full-width');
+            const sidebar = document.getElementById('sidebar'), content = document.getElementById('content');
+            sidebar.classList.toggle('closed'); content.classList.toggle('full-width');
         }
 
-        // Authentication & Profile Logic
         async function identifyStudent() {
             const phone = document.getElementById('std-phone').value.trim();
-            if (!/^01[0125][0-9]{8}$/.test(phone)) return alert("رقم الموبايل غير صحيح");
+            if (!/^01[0125][0-9]{8}$/.test(phone)) return alert("رقم الهاتف غير صحيح");
             const snapshot = await studentsRef.child(phone).once('value');
             const student = snapshot.val();
             document.getElementById('step-1').style.display = 'none';
-            if (student && student.password) {
-                currentStudentData = student;
+            if (student) {
+                currentUser = student;
                 document.getElementById('step-login').style.display = 'block';
-                document.getElementById('welcome-back').innerText = `أهلاً بك مجدداً: ${student.name}`;
             } else {
                 document.getElementById('step-register').style.display = 'block';
             }
@@ -360,288 +324,270 @@
 
         function verifyPassword() {
             const pass = document.getElementById('std-pass').value;
-            if (pass === currentStudentData.password) saveAndLogin(currentStudentData);
-            else alert("كلمة المرور غير صحيحة!");
+            if (pass === currentUser.password) saveAndLogin(currentUser);
+            else alert("كلمة السر خاطئة!");
         }
 
         function completeRegistration() {
-            const phone = document.getElementById('std-phone').value.trim(), 
+            const phone = document.getElementById('std-phone').value.trim(),
                   name = document.getElementById('reg-name').value.trim(),
                   pass = document.getElementById('reg-pass').value,
-                  year = document.getElementById('reg-year').value,
-                  avatar = document.getElementById('reg-avatar').value.trim() || 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png',
-                  hidePhone = document.getElementById('reg-hide-phone').checked,
-                  a = document.getElementById('reg-answer').value.trim();
+                  grade = document.getElementById('reg-grade').value,
+                  avatar = document.getElementById('reg-avatar').value.trim() || 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png';
 
-            if (name.length < 5 || pass.length < 4) return alert("يرجى كتابة الاسم الثلاثي وكلمة مرور معتمدة");
+            if (!name || !pass) return alert("أكمل باقي البيانات");
 
-            navigator.geolocation.getCurrentPosition((pos) => {
-                const mapUrl = `https://www.google.com/maps?q=${pos.coords.latitude},${pos.coords.longitude}`;
-                const newData = { 
-                    name, phone, password: pass, year, avatar, hidePhone, securityA: a,
-                    loginTime: new Date().toLocaleString('ar-EG'), location: mapUrl
-                };
-                studentsRef.child(phone).set(newData).then(() => saveAndLogin(newData));
-            }, () => alert("يلزم الموافقة على صلاحية الموقع لفتح الحساب"), { enableHighAccuracy: true });
+            const data = { name, phone, password: pass, grade, avatar, hidePhone: true, role: phone === DEV_PHONE ? "مطور المنصة" : "طالب" };
+            studentsRef.child(phone).set(data).then(() => saveAndLogin(data));
         }
 
-        function saveAndLogin(data) { localStorage.setItem('students_soc_auth_2026', JSON.stringify(data)); runApp(); }
+        function saveAndLogin(data) {
+            localStorage.setItem('student_society_auth', JSON.stringify(data));
+            runApp();
+        }
 
         window.onload = () => {
-            const user = JSON.parse(localStorage.getItem('students_soc_auth_2026'));
-            if (user) runApp();
+            const saved = localStorage.getItem('student_society_auth');
+            if (saved) { currentUser = JSON.parse(saved); runApp(); }
         };
 
-        async function runApp() {
-            const user = JSON.parse(localStorage.getItem('students_soc_auth_2026'));
-            if (!user) return;
-            currentStudentData = user;
-
-            ['login-gate', 'sidebar', 'top-bar', 'content'].forEach(id => {
-                const el = document.getElementById(id);
-                if (el) el.style.display = (id === 'login-gate') ? 'none' : (id === 'content' ? 'block' : 'flex');
-            });
-
-            // Set User Details in Sidebar & Profile
-            const defaultAvatar = user.avatar || 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png';
-            document.getElementById('my-sidebar-avatar').src = defaultAvatar;
-            document.getElementById('my-sidebar-name').innerText = user.name;
-            document.getElementById('my-sidebar-role').innerText = (user.phone === "01023175098") ? "Platform Developer 👑" : user.year;
-
-            document.getElementById('prof-name').innerText = user.name;
-            document.getElementById('prof-year').innerText = user.year;
-            document.getElementById('prof-phone').innerText = user.phone;
-            document.getElementById('prof-avatar-preview').src = defaultAvatar;
-            document.getElementById('prof-avatar-input').value = defaultAvatar;
-
-            // Online Presence Tracking
-            const myPresence = presenceRef.child(user.phone);
-            myPresence.set({ name: user.name, phone: user.phone, avatar: defaultAvatar });
-            myPresence.onDisconnect().remove();
-
-            // Admin Logic
-            if (user.phone === "01023175098") {
-                document.getElementById('adm-links').style.display = 'block';
-                document.getElementById('admin-live-info').style.display = 'block';
-                presenceRef.on('value', s => document.getElementById('online-now').innerText = s.numChildren());
-                studentsRef.on('value', s => loadStudentsList(Object.entries(s.val() || {}).reverse()));
-            }
-
-            // Listen for Live Calls/Streams
-            liveRef.on('value', s => {
-                const val = s.val();
-                document.getElementById('live-alert-banner').style.display = (val && val.isLive) ? 'flex' : 'none';
-            });
-
+        function runApp() {
+            document.getElementById('login-gate').style.display = 'none';
+            document.getElementById('sidebar').style.display = 'flex';
+            document.getElementById('top-bar').style.display = 'flex';
+            document.getElementById('content').style.display = 'block';
+            if(window.innerWidth <= 768) document.getElementById('mob-nav').style.display = 'flex';
+            
+            if(currentUser.phone === DEV_PHONE) document.getElementById('adm-links').style.display = 'block';
+            
+            listenToLiveAlerts();
             loadStories();
         }
 
-        // Chat System (Media, Delete, Edit, Reactions)
-        function loadChatMessages() {
-            chatRef.limitToLast(50).on('value', snapshot => {
+        /* --- نظام الشات المتطور جداً --- */
+        function loadChat() {
+            chatRef.limitToLast(60).on('value', snapshot => {
                 const data = snapshot.val() || {};
-                const user = JSON.parse(localStorage.getItem('students_soc_auth_2026'));
-                let h = "";
-
+                let html = "";
                 for(let id in data) {
                     const msg = data[id];
-                    const isMe = msg.phone === user.phone;
-                    const isDev = msg.phone === "01023175098";
+                    const isMe = msg.phone === currentUser.phone;
+                    const isDev = msg.phone === DEV_PHONE;
                     
-                    let senderBadge = isDev ? `<span class="verified-badge">🗹</span><span class="dev-tag">Platform Developer 👑</span>` : '';
-                    let mediaContent = "";
-
-                    if(msg.type === 'image') mediaContent = `<img src="${msg.mediaUrl}" class="chat-media-preview">`;
-                    else if(msg.type === 'video') mediaContent = `<video src="${msg.mediaUrl}" controls class="chat-media-preview"></video>`;
-                    else if(msg.type === 'audio') mediaContent = `<audio src="${msg.mediaUrl}" controls style="width:100%; margin-top:8px;"></audio>`;
-
-                    h += `
-                    <div class="msg-bubble ${isMe ? 'msg-me' : 'msg-student'}" id="msg-${id}">
-                        <div class="msg-sender-header">
-                            <img src="${msg.avatar || 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png'}" class="user-avatar-small" onclick="viewUserProfile('${msg.phone}')">
-                            <b>${msg.sender}</b> ${senderBadge}
+                    html += `
+                    <div class="msg-bubble ${isMe ? 'msg-me' : 'msg-student'} ${isDev ? 'msg-dev' : ''}">
+                        <div class="msg-header" onclick="viewProfile('${msg.phone}')">
+                            <img src="${msg.avatar || 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png'}" class="msg-avatar">
+                            <strong style="color:${isDev?'var(--accent)':'#fff'}">${msg.name}</strong>
+                            ${isDev ? '<i class="fas fa-check-circle orange-badge" title="مطور المنصة"></i> <span style="font-size:10px; color:var(--accent);">Platform Developer</span>' : ''}
                         </div>
-                        <div>${msg.message}</div>
-                        ${mediaContent}
                         
-                        <div class="msg-actions">
-                            ${isMe || user.phone === "01023175098" ? `<span onclick="deleteMessage('${id}')"><i class="fas fa-trash"></i> حذف</span>` : ''}
-                            ${isMe ? `<span onclick="editMessage('${id}', '${msg.message}')"><i class="fas fa-edit"></i> تعديل</span>` : ''}
-                        </div>
+                        ${msg.isDeleted ? '<i style="color:#aaa;">تم حذف هذه الرسالة</i>' : `
+                            <div>${msg.text || ''}</div>
+                            ${msg.mediaUrl ? (msg.mediaType === 'image' ? `<img src="${msg.mediaUrl}" class="chat-media">` : msg.mediaType === 'video' ? `<video src="${msg.mediaUrl}" controls class="chat-media"></video>` : `<audio src="${msg.mediaUrl}" controls style="width:100%; margin-top:5px;"></audio>`) : ''}
+                        `}
+                        
+                        <div style="font-size:9px; opacity:0.6; text-align:left; margin-top:3px;">${msg.time} ${msg.isEdited ? '(تم التعديل)' : ''}</div>
+                        
+                        ${(isMe || currentUser.phone === DEV_PHONE) && !msg.isDeleted ? `
+                            <div class="msg-tools">
+                                <span onclick="deleteMsg('${id}')"><i class="fas fa-trash"></i> حذف</span>
+                                ${isMe && msg.text ? `<span onclick="startEditMsg('${id}', '${msg.text}')"><i class="fas fa-edit"></i> تعديل</span>` : ''}
+                            </div>
+                        ` : ''}
                     </div>`;
                 }
-                const box = document.getElementById('chat-messages');
-                box.innerHTML = h;
-                box.scrollTop = box.scrollHeight;
+                const container = document.getElementById('chat-messages');
+                container.innerHTML = html;
+                container.scrollTop = container.scrollHeight;
             });
         }
 
-        function sendChatMessage(type = 'text', mediaUrl = '') {
+        function sendChatMessage() {
             const input = document.getElementById('chat-input');
-            const msgText = input.value.trim();
-            const user = JSON.parse(localStorage.getItem('students_soc_auth_2026'));
+            const text = input.value.trim();
+            if(!text) return;
 
-            if (!msgText && !mediaUrl) return;
-
-            chatRef.push({
-                sender: user.name,
-                phone: user.phone,
-                avatar: user.avatar || 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png',
-                message: msgText,
-                type: type,
-                mediaUrl: mediaUrl,
-                timestamp: Date.now()
-            });
-
-            input.value = "";
-            selectedMediaData = null;
-        }
-
-        function deleteMessage(msgId) {
-            if(confirm("هل تريد حذف هذه الرسالة عند الجميع؟")) {
-                chatRef.child(msgId).remove();
-            }
-        }
-
-        function editMessage(msgId, oldText) {
-            const newText = prompt("تعديل الرسالة:", oldText);
-            if(newText && newText !== oldText) {
-                chatRef.child(msgId).update({ message: newText + " (تم التعديل)" });
-            }
-        }
-
-        // Voice Recording System
-        function toggleVoiceRecord() {
-            if (!mediaRecorder || mediaRecorder.state === "inactive") {
-                navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
-                    mediaRecorder = new MediaRecorder(stream);
-                    audioChunks = [];
-                    mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
-                    mediaRecorder.onstop = () => {
-                        const audioBlob = new Blob(audioChunks, { type: 'audio/mp3' });
-                        const reader = new FileReader();
-                        reader.readAsDataURL(audioBlob);
-                        reader.onloadend = () => sendChatMessage('audio', reader.result);
-                    };
-                    mediaRecorder.start();
-                    document.getElementById('recording-status').style.display = 'block';
-                });
+            if(editingMsgId) {
+                chatRef.child(editingMsgId).update({ text, isEdited: true });
+                cancelEdit();
             } else {
-                mediaRecorder.stop();
-                document.getElementById('recording-status').style.display = 'none';
+                chatRef.push({
+                    name: currentUser.name,
+                    phone: currentUser.phone,
+                    avatar: currentUser.avatar,
+                    text: text,
+                    time: new Date().toLocaleTimeString('ar-EG', {hour:'2-digit', minute:'2-digit'})
+                });
+            }
+            input.value = "";
+        }
+
+        function startEditMsg(id, oldText) {
+            editingMsgId = id;
+            document.getElementById('chat-input').value = oldText;
+            document.getElementById('edit-bar').style.display = 'flex';
+        }
+
+        function cancelEdit() {
+            editingMsgId = null;
+            document.getElementById('chat-input').value = "";
+            document.getElementById('edit-bar').style.display = 'none';
+        }
+
+        function deleteMsg(id) {
+            if(confirm("هل تريد حذف هذه الرسالة عند الجميع؟")) {
+                chatRef.child(id).update({ isDeleted: true, text: "", mediaUrl: null });
             }
         }
 
-        // Media File Attaching
-        function triggerMediaUpload() { document.getElementById('media-file-input').click(); }
-        function handleMediaSelect(input) {
+        function sendMediaMessage(input) {
             const file = input.files[0];
-            if (!file) return;
+            if(!file) return;
+            const type = file.type.startsWith('image') ? 'image' : file.type.startsWith('video') ? 'video' : 'audio';
             const reader = new FileReader();
-            const type = file.type.startsWith('video') ? 'video' : 'image';
-            reader.onload = e => sendChatMessage(type, e.target.result);
+            reader.onload = function(e) {
+                chatRef.push({
+                    name: currentUser.name,
+                    phone: currentUser.phone,
+                    avatar: currentUser.avatar,
+                    mediaUrl: e.target.result,
+                    mediaType: type,
+                    time: new Date().toLocaleTimeString('ar-EG', {hour:'2-digit', minute:'2-digit'})
+                });
+            };
             reader.readAsDataURL(file);
         }
 
-        // Stories Feature
-        function addStory() {
-            const imgUrl = prompt("أدخل رابط الصورة للستوري:");
-            if (imgUrl) {
-                const user = JSON.parse(localStorage.getItem('students_soc_auth_2026'));
-                storiesRef.push({ name: user.name, avatar: user.avatar, image: imgUrl });
-            }
-        }
-
-        function loadStories() {
-            storiesRef.on('value', s => {
-                const data = s.val() || {};
-                let h = `<div style="text-align:center;"><img src="https://cdn-icons-png.flaticon.com/512/1828/1828817.png" class="story-avatar" onclick="addStory()"><div style="font-size:11px; margin-top:4px;">إضافة ستوري</div></div>`;
-                for(let id in data) {
-                    h += `<div style="text-align:center;"><img src="${data[id].image}" class="story-avatar" onclick="alert('ستوري الطالب: ${data[id].name}')"><div style="font-size:11px; margin-top:4px;">${data[id].name.split(' ')[0]}</div></div>`;
-                }
-                document.getElementById('stories-container').innerHTML = h;
-            });
-        }
-
-        // View Profile Modal
-        async function viewUserProfile(phone) {
-            const snapshot = await studentsRef.child(phone).once('value');
-            const u = snapshot.val();
-            const currentUser = JSON.parse(localStorage.getItem('students_soc_auth_2026'));
-            if (!u) return;
-
-            document.getElementById('modal-user-avatar').src = u.avatar || 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png';
-            document.getElementById('modal-user-name').innerText = u.name;
-            document.getElementById('modal-user-role').innerText = (phone === "01023175098") ? "Platform Developer 👑" : "طالب بالمنصة";
-            document.getElementById('modal-user-year').innerText = u.year || "";
-
-            // Hide Phone Logic
-            if (phone === currentUser.phone || currentUser.phone === "01023175098" || !u.hidePhone) {
-                document.getElementById('modal-user-phone').innerText = `📞 ${u.phone}`;
+        /* --- تسجيل الصوت الفويس نوت --- */
+        function toggleRecord() {
+            const btn = document.getElementById('record-btn');
+            if(!mediaRecorder || mediaRecorder.state === 'inactive') {
+                navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
+                    mediaRecorder = new MediaRecorder(stream);
+                    mediaRecorder.start();
+                    btn.style.color = 'red';
+                    audioChunks = [];
+                    mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
+                    mediaRecorder.onstop = () => {
+                        const blob = new Blob(audioChunks, { type: 'audio/mp3' });
+                        const reader = new FileReader();
+                        reader.onload = e => {
+                            chatRef.push({
+                                name: currentUser.name,
+                                phone: currentUser.phone,
+                                avatar: currentUser.avatar,
+                                mediaUrl: e.target.result,
+                                mediaType: 'audio',
+                                time: new Date().toLocaleTimeString('ar-EG', {hour:'2-digit', minute:'2-digit'})
+                            });
+                        };
+                        reader.readAsDataURL(blob);
+                    };
+                });
             } else {
-                document.getElementById('modal-user-phone').innerText = "📞 الرقم: 🔒 [مخفي بواسطة الطالب]";
+                mediaRecorder.stop();
+                btn.style.color = 'var(--accent)';
+            }
+        }
+
+        /* --- ملفات الطلاب وإخفاء الهاتف --- */
+        async function viewProfile(phone) {
+            const s = await studentsRef.child(phone).once('value');
+            const data = s.val();
+            if(!data) return;
+
+            document.getElementById('prof-img').src = data.avatar || 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png';
+            document.getElementById('prof-name').innerText = data.name;
+            document.getElementById('prof-role').innerText = data.phone === DEV_PHONE ? "Platform Developer 🟧" : "طالب بالمنصة";
+            document.getElementById('prof-grade').innerText = data.grade || "الصف الثالث الثانوي";
+            
+            const phoneElem = document.getElementById('prof-phone');
+            // يظهر الرقم فقط إذا كنت أنت المطور كريم أو إذا اختار الطالب عدم إخفائه
+            if (currentUser.phone === DEV_PHONE || !data.hidePhone || phone === currentUser.phone) {
+                phoneElem.innerText = "📱 " + data.phone;
+                phoneElem.style.display = 'block';
+            } else {
+                phoneElem.style.display = 'none';
             }
 
-            document.getElementById('user-profile-modal').style.display = 'flex';
+            document.getElementById('my-profile-edit').style.display = (phone === currentUser.phone) ? 'block' : 'none';
+            document.getElementById('profile-modal').style.display = 'flex';
         }
 
-        function closeProfileModal() { document.getElementById('user-profile-modal').style.display = 'none'; }
+        function openMyProfile() { viewProfile(currentUser.phone); }
+        function closeProfile() { document.getElementById('profile-modal').style.display = 'none'; }
 
-        function updateProfile() {
-            const newAvatar = document.getElementById('prof-avatar-input').value.trim();
-            const user = JSON.parse(localStorage.getItem('students_soc_auth_2026'));
-            user.avatar = newAvatar;
-            studentsRef.child(user.phone).update({ avatar: newAvatar }).then(() => {
-                localStorage.setItem('students_soc_auth_2026', JSON.stringify(user));
-                alert("تم تحديث صورتك بنجاح!");
-                location.reload();
+        function togglePhonePrivacy(checked) {
+            currentUser.hidePhone = checked;
+            studentsRef.child(currentUser.phone).update({ hidePhone: checked });
+            localStorage.setItem('student_society_auth', JSON.stringify(currentUser));
+        }
+
+        function updateAvatar() {
+            const url = document.getElementById('edit-avatar-url').value.trim();
+            if(!url) return;
+            currentUser.avatar = url;
+            studentsRef.child(currentUser.phone).update({ avatar: url });
+            localStorage.setItem('student_society_auth', JSON.stringify(currentUser));
+            alert("تم تحديث صورتك الشخصية بنجاح!");
+            closeProfile();
+        }
+
+        /* --- مكالمات لايف وبث مباشر سعة 800+ طالب --- */
+        function startLiveCall(type) {
+            liveRef.set({
+                host: currentUser.name,
+                active: true,
+                type: type,
+                time: new Date().toLocaleTimeString('ar-EG')
+            });
+            alert("تم إرسال إشعار للجميع وبدء البث المباشر!");
+        }
+
+        function listenToLiveAlerts() {
+            liveRef.on('value', s => {
+                const live = s.val();
+                if(live && live.active) {
+                    const toast = document.getElementById('notification-toast');
+                    document.getElementById('notif-text').innerText = `🔴 بث مباشر لايف يعمل الآن بواسطة (${live.host})! اضغط للانضمام`;
+                    toast.classList.add('show');
+                    toast.onclick = () => tab(null, 'p-live');
+                    document.getElementById('live-status').innerHTML = `<b style="color:var(--danger)">🔴 بث مباشر شغال بواسطة ${live.host}</b>`;
+                } else {
+                    document.getElementById('live-status').innerText = "لا يوجد بث مباشر شغال حالياً";
+                }
             });
         }
 
-        // Live Broadcast Host Controls
-        function toggleHostLive(status) {
-            const user = JSON.parse(localStorage.getItem('students_soc_auth_2026'));
-            if(user.phone !== "01023175098") return alert("البث المباشر متاح للمدرس / الأدمن فقط");
-            liveRef.set({ isLive: status, host: user.name });
-            alert(status ? "تم بدء البث وإرسال إشعار لجميع الطلاب!" : "تم إغلاق البث");
-        }
-
-        function joinLiveStream() { alert("جاري الاتصال بالسيرفر السحابي للانضمام للمكالمة..."); }
-
-        // Reels Navigation
-        const reelsList = [
-            "https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1",
-            "https://www.youtube.com/embed/3JZ_D3ELwOQ?autoplay=1"
-        ];
-        let currentReelIndex = 0;
-        function nextReel() {
-            currentReelIndex = (currentReelIndex + 1) % reelsList.length;
-            document.getElementById('reel-player').src = reelsList[currentReelIndex];
-        }
-
-        // Admin Radar Table View
-        function loadStudentsList(sortedData) {
-            let h = "";
-            sortedData.forEach(([phone, details]) => {
-                h += `
-                <div class="card" style="margin-bottom:12px; border-right:4px solid var(--accent); text-align:right;">
-                    <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <b>${details.name}</b>
-                        <span class="en-num" style="background:#1f6feb; color:#fff; padding:2px 8px; border-radius:5px;">${phone}</span>
-                    </div>
-                    <div style="font-size:12px; color:#aaa; margin-top:5px;">السنة: ${details.year || 'غير محدد'} | إخفاء الرقم: ${details.hidePhone ? 'نعم' : 'لا'}</div>
-                    <div style="margin-top:10px;">
-                        <button onclick="window.open('${details.location || '#'}','_blank')" style="background:#ea4335; color:#fff; border:none; padding:6px 12px; border-radius:6px; cursor:pointer;"><i class="fas fa-map-marker-alt"></i> الخريطة</button>
-                    </div>
-                </div>`;
+        /* --- الاستوري و Reels --- */
+        function loadStories() {
+            storiesRef.limitToLast(10).on('value', s => {
+                const data = s.val() || {};
+                let html = `<div class="story-circle" onclick="uploadStory()"><i class="fas fa-plus" style="line-height:60px;"></i></div>`;
+                for(let id in data) {
+                    html += `<div class="story-circle" onclick="window.open('${data[id].url}','_blank')"><img src="${data[id].avatar}"></div>`;
+                }
+                document.getElementById('stories-list').innerHTML = html;
             });
-            document.getElementById('students-table-body').innerHTML = h;
         }
 
-        function filterStudents() {
-            const val = document.getElementById('studentSearch').value.toLowerCase();
-            document.querySelectorAll('#students-table-body .card').forEach(row => { 
-                row.style.display = row.innerText.toLowerCase().includes(val) ? 'block' : 'none'; 
+        function uploadStory() {
+            const url = prompt("أدخل رابط الصورة أو الفيديو للستوري:");
+            if(url) storiesRef.push({ avatar: currentUser.avatar, url: url, name: currentUser.name });
+        }
+
+        function loadReels() {
+            reelsRef.limitToLast(8).on('value', s => {
+                const data = s.val() || {};
+                let html = "";
+                for(let id in data) {
+                    html += `
+                    <div class="reel-card">
+                        <video src="${data[id].url}" controls loop></video>
+                    </div>`;
+                }
+                document.getElementById('reels-container').innerHTML = html || "<p style='color:#aaa;'>لا يوجد reels حالياً</p>";
             });
         }
     </script>

